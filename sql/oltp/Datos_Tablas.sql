@@ -31,11 +31,11 @@ PRINT '';
 PRINT '[1/7] Insertando Categorias...';
 
 INSERT INTO dbo.Categoria (Codigo, Nombre, Descripcion) VALUES
-('CAT01', 'Electronica', 'Dispositivos electronicos, computadores, celulares y accesorios'),
-('CAT02', 'Hogar', 'Articulos para el hogar, muebles y decoracion'),
-('CAT03', 'Alimentos', 'Productos alimenticios, bebidas y snacks'),
-('CAT04', 'Ropa', 'Vestimenta, calzado y accesorios de moda'),
-('CAT05', 'Deportes', 'Articulos deportivos, equipos y accesorios fitness');
+('CAT01', 'Despensa y Abarrotes', 'Productos de abarrotes y conservas habituales en Supermaxi Ecuador'),
+('CAT02', 'Lácteos y Refrigerados', 'Lácteos, embutidos y refrigerados de consumo diario'),
+('CAT03', 'Bebidas y Snacks', 'Bebidas sin alcohol, cervezas y snacks vendidos en Supermaxi'),
+('CAT04', 'Limpieza del Hogar', 'Detergentes, desinfectantes y artículos de aseo de hogar'),
+('CAT05', 'Cuidado Personal y Bebé', 'Higiene personal, cuidado infantil y salud familiar');
 GO
 
 PRINT '   5 categorias insertadas.';
@@ -47,16 +47,16 @@ PRINT '   5 categorias insertadas.';
 PRINT '[2/7] Insertando Proveedores...';
 
 INSERT INTO dbo.Proveedor (Codigo, Nombre, NombreContacto, Telefono, Email, Ciudad, Pais) VALUES
-('PROV01', 'TechDistribuidores S.A.', 'Carlos Mendoza', '0991234567', 'ventas@techdist.com', 'Quito', 'Ecuador'),
-('PROV02', 'ElectroImport Cia. Ltda.', 'Maria Garcia', '0992345678', 'info@electroimport.com', 'Guayaquil', 'Ecuador'),
-('PROV03', 'Hogar y Decoracion S.A.', 'Juan Perez', '0993456789', 'contacto@hogardeco.com', 'Cuenca', 'Ecuador'),
-('PROV04', 'Muebles del Ecuador', 'Ana Torres', '0994567890', 'ventas@mueblesec.com', 'Quito', 'Ecuador'),
-('PROV05', 'Alimentos Frescos S.A.', 'Pedro Ramirez', '0995678901', 'pedidos@alimentosfrescos.com', 'Guayaquil', 'Ecuador'),
-('PROV06', 'Distribuidora Nacional', 'Laura Sanchez', '0996789012', 'info@distnacional.com', 'Manta', 'Ecuador'),
-('PROV07', 'Moda Express Cia. Ltda.', 'Roberto Flores', '0997890123', 'ventas@modaexpress.com', 'Quito', 'Ecuador'),
-('PROV08', 'Textiles Andinos S.A.', 'Carmen Lopez', '0998901234', 'comercial@textilesandinos.com', 'Cuenca', 'Ecuador'),
-('PROV09', 'DeporTotal S.A.', 'Miguel Herrera', '0999012345', 'info@deportotal.com', 'Guayaquil', 'Ecuador'),
-('PROV10', 'Fitness Equipment Cia.', 'Sofia Castillo', '0990123456', 'ventas@fitnessequip.com', 'Quito', 'Ecuador');
+('PROV01', 'La Fabril S.A.', 'Contacto Comercial', '0991112233', 'ventas@lafabril.com', 'Guayaquil', 'Ecuador'),
+('PROV02', 'PRONACA S.A.', 'Mesa de Negocios', '0992345566', 'negocios@pronaca.com', 'Quito', 'Ecuador'),
+('PROV03', 'Tonicorp S.A.', 'Canal Moderno', '0993456677', 'comercial@tonicorp.com', 'Guayaquil', 'Ecuador'),
+('PROV04', 'Moderna Alimentos S.A.', 'Cuentas Clave', '0994567788', 'clientes@moderna.com.ec', 'Quito', 'Ecuador'),
+('PROV05', 'Nestlé Ecuador S.A.', 'Atención Retail', '0995678899', 'retail@ec.nestle.com', 'Quito', 'Ecuador'),
+('PROV06', 'Tesalia CBC Cia. Ltda.', 'Equipo Supermercados', '0996789900', 'ventas@tesaliacbc.com', 'Quito', 'Ecuador'),
+('PROV07', 'La Universal S.A.', 'Key Account', '0997890011', 'contacto@launiversal.com.ec', 'Guayaquil', 'Ecuador'),
+('PROV08', 'Cervecería Nacional CN S.A.', 'Canal Moderno', '0998901122', 'servicio@cn.com.ec', 'Guayaquil', 'Ecuador'),
+('PROV09', 'Kimberly-Clark Ecuador S.A.', 'Trade Marketing', '0999012233', 'clientes@kcc.com', 'Guayaquil', 'Ecuador'),
+('PROV10', 'Industrias Lácteas Toni S.A.', 'Atención Comercial', '0990123344', 'servicio@toni.com.ec', 'Guayaquil', 'Ecuador');
 GO
 
 PRINT '   10 proveedores insertados.';
@@ -142,71 +142,71 @@ DECLARE @IVA DECIMAL(5,2);
 DECLARE @Codigo NVARCHAR(30);
 DECLARE @Nombre NVARCHAR(200);
 
--- Array de nombres de productos por categoria
-DECLARE @NombresElectronica TABLE (ID INT IDENTITY(1,1), Nombre NVARCHAR(100));
-INSERT INTO @NombresElectronica VALUES 
-('Laptop HP ProBook'), ('Laptop Dell Inspiron'), ('Laptop Lenovo ThinkPad'), ('MacBook Air'),
-('Monitor Samsung 24"'), ('Monitor LG 27"'), ('Monitor Dell 22"'), ('Monitor Asus 32"'),
-('Teclado Logitech'), ('Teclado Razer'), ('Mouse Inalambrico'), ('Mouse Gamer'),
-('Audifonos Sony'), ('Audifonos JBL'), ('Parlante Bluetooth'), ('Webcam HD'),
-('Disco Duro Externo 1TB'), ('SSD 500GB'), ('Memoria USB 64GB'), ('Hub USB'),
-('Tablet Samsung'), ('Tablet iPad'), ('Smartphone Samsung'), ('Smartphone Xiaomi'),
-('Cargador Universal'), ('Cable HDMI'), ('Adaptador USB-C'), ('Power Bank 10000mAh'),
-('Router WiFi'), ('Switch de Red'), ('Impresora HP'), ('Escaner Epson'),
-('Proyector Epson'), ('Camara Web Logitech'), ('Microfono USB'), ('UPS 1000VA'),
-('Tarjeta Grafica RTX'), ('Procesador Intel i7'), ('Memoria RAM 16GB'), ('Placa Madre Asus');
+-- Array de nombres de productos por categoria usando SKUs reales de Supermaxi Ecuador
+DECLARE @NombresDespensa TABLE (ID INT IDENTITY(1,1), Nombre NVARCHAR(100));
+INSERT INTO @NombresDespensa VALUES
+('Arroz Favorita 5kg'), ('Azúcar San Carlos 2kg'), ('Aceite Alesol 1L'), ('Aceite Gustadina Girasol 900ml'),
+('Sal Cris-Sal 1kg'), ('Fideos La Moderna Spaghetti 500g'), ('Fideos La Moderna Tornillo 500g'), ('Harina YA 1kg'),
+('Avena Quaker Tradicional 500g'), ('Atún Real en Agua 170g'), ('Atún Van Camps en Aceite 170g'), ('Sardinas Real 155g'),
+('Lenteja Ina 500g'), ('Garbanzo Ina 500g'), ('Frijol Rojo Ina 500g'), ('Maíz Pira Ina 500g'),
+('Sopa Maggi Gallina 65g'), ('Caldo de Pollo Maggi 12 cubos'), ('Salsa de Tomate Gustadina 397g'), ('Mayonesa Maggi 380g'),
+('Mostaza Ina 200g'), ('Alcaparras Gustadina 100g'), ('Aceitunas Fragata Verdes 300g'), ('Vinagre San Jorge 500ml'),
+('Salsa de Soya Kikkoman 150ml'), ('Fideos Orientales Oriental 85g'), ('Galletas Ducales 255g'), ('Galletas Oreo Clásica 432g'),
+('Pan de Molde Bimbo Artesano'), ('Cereal Zucaritas 300g'), ('Cereal Choco Krispis 300g'), ('Chocolate en Polvo Milo 400g'),
+('Café Nescafé Tradición 200g'), ('Té Hornimans Manzanilla 20u'), ('Achiote La Favorita 120g'), ('Harina de Maíz P.A.N. 1kg'),
+('Levadura Fleischmann 10g'), ('Mermelada de Mora Los Andes 454g'), ('Crema de Maní Skippy 340g'), ('Pasta de Tomate Cirio 200g');
 
-DECLARE @NombresHogar TABLE (ID INT IDENTITY(1,1), Nombre NVARCHAR(100));
-INSERT INTO @NombresHogar VALUES
-('Sofa 3 Puestos'), ('Sillon Reclinable'), ('Mesa de Centro'), ('Mesa de Comedor'),
-('Silla de Comedor'), ('Cama Queen'), ('Cama King'), ('Colchon Ortopedico'),
-('Armario 3 Puertas'), ('Comoda 5 Cajones'), ('Escritorio Ejecutivo'), ('Silla de Oficina'),
-('Lampara de Pie'), ('Lampara de Mesa'), ('Cortinas Blackout'), ('Alfombra Grande'),
-('Espejo Decorativo'), ('Cuadro Decorativo'), ('Reloj de Pared'), ('Florero Ceramica'),
-('Juego de Sabanas'), ('Edredon Queen'), ('Almohada Memory'), ('Toalla Set'),
-('Vajilla 24 Piezas'), ('Juego de Ollas'), ('Sarten Antiadherente'), ('Licuadora Oster'),
-('Microondas LG'), ('Tostadora'), ('Cafetera Nespresso'), ('Hervidor Electrico'),
-('Aspiradora Robot'), ('Plancha de Ropa'), ('Ventilador de Pie'), ('Aire Acondicionado'),
-('Organizador Closet'), ('Perchero de Pie'), ('Zapatero'), ('Basurero Automatico');
+DECLARE @NombresLacteos TABLE (ID INT IDENTITY(1,1), Nombre NVARCHAR(100));
+INSERT INTO @NombresLacteos VALUES
+('Leche Toni Entera 1L'), ('Leche Toni Descremada 1L'), ('Leche Parmalat Entera 1L'), ('Yogurt Toni Durazno 1L'),
+('Yogurt Toni Frutilla 1L'), ('Yogurt Griego Chobani Natural 500g'), ('Queso Mozzarella El Ordeño 400g'), ('Queso Fresco El Ordeño 400g'),
+('Queso Edam Kiosko 400g'), ('Queso Manchego Los Andes 300g'), ('Mantequilla Reina con Sal 200g'), ('Margarina La Favorita 250g'),
+('Crema de Leche Nestlé 200g'), ('Queso Crema Philadelphia 226g'), ('Jamón de Pavo Plumrose 250g'), ('Jamón Ahumado Mr. Pollo 250g'),
+('Salchicha Vienesa Plumrose 500g'), ('Mortadela Don Diego 500g'), ('Yogurt Toni Griego Mora 500g'), ('Queso Panela Toni 400g'),
+('Huevos Kike Docena'), ('Huevos Supermaxi Docena'), ('Mantequilla Gloria Light 200g'), ('Leche Condensada Nestlé 397g'),
+('Natilla La Vaquita 200g'), ('Queso Ricotta Los Andes 400g'), ('Yogurt Yogu Yogu Durazno 1L'), ('Bebida de Almendra Silk 946ml'),
+('Bebida de Soya Ades Vainilla 946ml'), ('Queso Parmesano Parmalat 100g'), ('Queso Gouda Kiosko 400g'), ('Yogurt Kiosko Natural 1L'),
+('Queso Crema Los Andes Light 200g'), ('Leche Deslactosada Toni 1L'), ('Mantequilla Toni sin Sal 200g'), ('Queso Cottage Toni 200g'),
+('Crema Agria Toni 200g'), ('Requesón El Ordeño 250g'), ('Yogurt Toni Kids Fresa 4x100g'), ('Queso Doble Crema Kiosko 400g');
 
-DECLARE @NombresAlimentos TABLE (ID INT IDENTITY(1,1), Nombre NVARCHAR(100));
-INSERT INTO @NombresAlimentos VALUES
-('Arroz Premium 5kg'), ('Azucar Blanca 2kg'), ('Aceite Vegetal 1L'), ('Sal de Mesa 1kg'),
-('Fideos Spaghetti 500g'), ('Fideos Tornillo 500g'), ('Harina de Trigo 1kg'), ('Avena 500g'),
-('Leche Entera 1L'), ('Leche Descremada 1L'), ('Yogurt Natural 1L'), ('Queso Fresco 500g'),
-('Mantequilla 250g'), ('Huevos Docena'), ('Pan de Molde'), ('Galletas Surtidas'),
-('Cafe Molido 500g'), ('Te Verde Caja'), ('Chocolate en Polvo'), ('Cereal Integral'),
-('Atun en Lata'), ('Sardinas en Lata'), ('Pollo Entero'), ('Carne Molida 1kg'),
-('Jamon de Pavo'), ('Salchichas'), ('Mortadela'), ('Queso Mozzarella'),
-('Manzanas 1kg'), ('Bananas 1kg'), ('Naranjas 1kg'), ('Papas 2kg'),
-('Tomates 1kg'), ('Cebolla 1kg'), ('Pimiento'), ('Zanahoria 1kg'),
-('Agua Mineral 6L'), ('Gaseosa 3L'), ('Jugo Natural 1L'), ('Cerveza Pack 6');
+DECLARE @NombresBebidasSnacks TABLE (ID INT IDENTITY(1,1), Nombre NVARCHAR(100));
+INSERT INTO @NombresBebidasSnacks VALUES
+('Agua Güitig 1.5L'), ('Agua Cielo 2L'), ('Gaseosa Coca-Cola 2.5L'), ('Gaseosa Fanta Naranja 2L'),
+('Gaseosa Sprite 2L'), ('Gaseosa Tropical Manzana 2L'), ('Jugo Tampico Naranja 2L'), ('Jugo Del Valle Durazno 1L'),
+('Néctar Levité Durazno 1.5L'), ('Gatorade Cool Blue 1L'), ('Bebida Isotónica Sporade Uva 600ml'), ('Té Helado Fuze Tea Limón 600ml'),
+('Té Lipton Durazno 1.5L'), ('Bebida Energética Vive100 473ml'), ('Bebida Energética Monster Verde 473ml'), ('Bebida Energética Red Bull 250ml'),
+('Cerveza Pilsener Six Pack'), ('Cerveza Club Verde Six Pack'), ('Vino Santa Carolina Reservado 750ml'), ('Ron San Miguel Añejo 750ml'),
+('Chips Doritos Queso 170g'), ('Chips Ruffles Original 160g'), ('Papas Fritas Lays Clásicas 150g'), ('Chifles Inalecsa 150g'),
+('Tortolines Naturales 140g'), ('Maní Japonés Gauchitos 200g'), ('Galletas Amor Fresa 150g'), ('Galletas Festival Vainilla 150g'),
+('Chocolate Pacari 70% 50g'), ('Barra de Cereal Nature Valley Avena'), ('Canguil Act II Mantequilla 3pack'), ('Rosquitas Inalecsa 130g'),
+('Galletas Salti Noel 300g'), ('Nachos Mission Triangulares 300g'), ('Mix de Nueces Kirkland 1kg'), ('Galletas Cracker Field Integral 225g'),
+('Canguil Gourmet Gauchitos 200g'), ('Galletas ChocoChips Nestlé 180g'), ('Palomitas Popcorn Popetas 100g'), ('Pan de Yuca Listo Amalie 12u');
 
-DECLARE @NombresRopa TABLE (ID INT IDENTITY(1,1), Nombre NVARCHAR(100));
-INSERT INTO @NombresRopa VALUES
-('Camisa Formal Hombre'), ('Camisa Casual Hombre'), ('Camiseta Basica'), ('Polo Deportivo'),
-('Pantalon Jean Hombre'), ('Pantalon Formal'), ('Bermuda Casual'), ('Short Deportivo'),
-('Blusa Mujer'), ('Vestido Casual'), ('Falda Midi'), ('Pantalon Jean Mujer'),
-('Chaqueta Cuero'), ('Chompa Lana'), ('Sudadera Con Capucha'), ('Chaleco Acolchado'),
-('Zapatos Formales'), ('Zapatos Casuales'), ('Zapatillas Deportivas'), ('Sandalias'),
-('Cinturon Cuero'), ('Corbata Seda'), ('Bufanda'), ('Gorra Deportiva'),
-('Cartera Mujer'), ('Mochila Escolar'), ('Maleta de Viaje'), ('Bolso Deportivo'),
-('Ropa Interior Hombre'), ('Ropa Interior Mujer'), ('Medias Pack'), ('Pijama'),
-('Traje Formal'), ('Vestido de Noche'), ('Abrigo Invierno'), ('Impermeable'),
-('Gafas de Sol'), ('Reloj Casual'), ('Pulsera'), ('Collar');
+DECLARE @NombresLimpieza TABLE (ID INT IDENTITY(1,1), Nombre NVARCHAR(100));
+INSERT INTO @NombresLimpieza VALUES
+('Detergente Deja Floral 3kg'), ('Detergente Ariel Revitacolor 2.7kg'), ('Detergente OMO Matic 2.7kg'), ('Jabón Líquido Persil 3L'),
+('Suavizante Downy Brisa 1.8L'), ('Suavizante Ensueño Primavera 1.8L'), ('Quitamanchas Vanish Pink 900g'), ('Blanqueador Clorox Tradicional 1L'),
+('Lavavajilla Axion Limón 800g'), ('Lavavajilla Salvo Limón 1L'), ('Esponja Scotch-Brite Doble Acción 3u'), ('Paño Scott Duramax 6u'),
+('Toallas de Cocina Scott 2u'), ('Bolsas de Basura Glad 30L 20u'), ('Desinfectante Lysol Aerosol 360ml'), ('Limpiador Fabuloso Lavanda 1.8L'),
+('Limpiador Mr. Músculo Baño 500ml'), ('Limpiador Cif Crema 500ml'), ('Insecticida Baygon Mata Mosquitos 360ml'), ('Repelente OFF! Family 200ml'),
+('Ambientador Glade Gel Manzana 70g'), ('Ambientador Glade PlugIn Vainilla'), ('Papel Higiénico Familia 12 rollos'), ('Papel Higiénico Suave 18 rollos'),
+('Servilletas Elite 200u'), ('Toalla de Cocina Elite MegaRoll'), ('Guantes de Limpieza Mapa Talla M'), ('Trapero Vileda Microfiber'),
+('Balde Plástico Supermaxi 12L'), ('Escoba Virutex Suave'), ('Recogedor Plástico Mango Largo'), ('Cepillo para Baño Virutex'),
+('Limpiador Vidrios Windex 500ml'), ('Pastillas Desinfectantes Pato Tanque 2u'), ('Desinfectante Pinesol Original 1.2L'), ('Ambientador Air Wick Aerosol 345ml'),
+('Frazada Multiuso Virutex 3u'), ('Paños Húmedos Desinfectantes Clorox 30u'), ('Limpiador de Piso Poett Lavanda 900ml'), ('Purificador de Aire Glade Auto Sport');
 
-DECLARE @NombresDeportes TABLE (ID INT IDENTITY(1,1), Nombre NVARCHAR(100));
-INSERT INTO @NombresDeportes VALUES
-('Balon de Futbol'), ('Balon de Basquet'), ('Balon de Voleibol'), ('Raqueta de Tenis'),
-('Pesas 5kg Par'), ('Pesas 10kg Par'), ('Mancuernas Ajustables'), ('Barra Olimpica'),
-('Banco de Pesas'), ('Caminadora Electrica'), ('Bicicleta Estatica'), ('Eliptica'),
-('Colchoneta Yoga'), ('Banda Elastica Set'), ('Cuerda de Saltar'), ('Rueda Abdominal'),
-('Guantes de Boxeo'), ('Saco de Boxeo'), ('Vendas Boxeo'), ('Protector Bucal'),
-('Bicicleta Montana'), ('Casco Ciclismo'), ('Guantes Ciclismo'), ('Luces Bicicleta'),
-('Carpa Camping 4P'), ('Sleeping Bag'), ('Linterna LED'), ('Termo 1L'),
-('Pelota de Golf Set'), ('Palos de Golf'), ('Raqueta Badminton'), ('Red Voleibol'),
-('Patines Linea'), ('Patineta'), ('Scooter'), ('Protecciones Set'),
-('Cronometro Digital'), ('Pulsera Fitness'), ('Botella Deportiva'), ('Toalla Gym');
+DECLARE @NombresCuidado TABLE (ID INT IDENTITY(1,1), Nombre NVARCHAR(100));
+INSERT INTO @NombresCuidado VALUES
+('Shampoo Sedal Ceramidas 400ml'), ('Acondicionador Sedal Ceramidas 400ml'), ('Shampoo Pantene Micelar 400ml'), ('Gel de Ducha Dove Original 500ml'),
+('Jabón de Barra Rexona Cotton 3x90g'), ('Pasta Dental Colgate Total 12 150g'), ('Cepillo Dental Oral-B Indicator 2u'), ('Hilo Dental Oral-B Essential 50m'),
+('Enjuague Bucal Listerine Cool Mint 500ml'), ('Desodorante Rexona Clinical 48g'), ('Desodorante Dove Original 50ml'), ('Crema Corporal Nivea Soft 200ml'),
+('Bloqueador Solar Nivea Sun FPS50 125ml'), ('Crema Facial Pond''s Rejuveness 100g'), ('Maquinillas Gillette Prestobarba3 4u'), ('Espuma de Afeitar Gillette 250ml'),
+('Toallas Sanitarias Kotex Nocturna 10u'), ('Toallas Sanitarias Always Ultrafina 12u'), ('Protectores Diarios Carefree 40u'), ('Shampoo Johnson''s Baby Manzanilla 400ml'),
+('Jabón Líquido Huggies Recién Nacido 400ml'), ('Pañales Huggies Natural Care G 40u'), ('Pañales Pampers Premium Care M 40u'), ('Toallitas Húmedas Huggies Aloe 96u'),
+('Crema Protectora Desitin 57g'), ('Talco Johnson''s Baby 200g'), ('Aceite Johnson''s Baby 200ml'), ('Gel Antibacterial Lifebuoy 250ml'),
+('Alcohol Antiséptico Superior 500ml'), ('Vendas Nexcare 10u'), ('Vitaminas Centrum Hombre 60u'), ('Vitaminas Centrum Mujer 60u'),
+('Termómetro Digital Omron MC246'), ('Mascarilla KN95 Pack 10u'), ('Toallas Húmedas Kleenex Antibacterial 60u'), ('Crema de Manos Neutrogena 56g'),
+('Bálsamo Labial Chapstick Cereza 4g'), ('Tinte para Cabello L''Oreal Casting 5.0'), ('Removedor de Esmalte Vogue 120ml'), ('Esmalte de Uñas Valmy Rojo 10ml');
 
 -- Insertar 200 productos (40 por categoria)
 WHILE @i <= 200
@@ -229,11 +229,11 @@ BEGIN
     
     -- Nombre segun categoria
     SET @Nombre = CASE @CategoriaID
-        WHEN 1 THEN (SELECT Nombre FROM @NombresElectronica WHERE ID = ((@i - 1) % 40) + 1)
-        WHEN 2 THEN (SELECT Nombre FROM @NombresHogar WHERE ID = ((@i - 1) % 40) + 1)
-        WHEN 3 THEN (SELECT Nombre FROM @NombresAlimentos WHERE ID = ((@i - 1) % 40) + 1)
-        WHEN 4 THEN (SELECT Nombre FROM @NombresRopa WHERE ID = ((@i - 1) % 40) + 1)
-        WHEN 5 THEN (SELECT Nombre FROM @NombresDeportes WHERE ID = ((@i - 1) % 40) + 1)
+        WHEN 1 THEN (SELECT Nombre FROM @NombresDespensa WHERE ID = ((@i - 1) % 40) + 1)
+        WHEN 2 THEN (SELECT Nombre FROM @NombresLacteos WHERE ID = ((@i - 1) % 40) + 1)
+        WHEN 3 THEN (SELECT Nombre FROM @NombresBebidasSnacks WHERE ID = ((@i - 1) % 40) + 1)
+        WHEN 4 THEN (SELECT Nombre FROM @NombresLimpieza WHERE ID = ((@i - 1) % 40) + 1)
+        WHEN 5 THEN (SELECT Nombre FROM @NombresCuidado WHERE ID = ((@i - 1) % 40) + 1)
     END;
     
     -- Agregar sufijo si es necesario para evitar duplicados
