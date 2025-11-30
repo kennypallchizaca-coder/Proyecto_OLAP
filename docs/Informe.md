@@ -43,6 +43,27 @@ El sistema debe responder a las siguientes preguntas de negocio:
 2. ¿Cómo varían las modalidades de pago según región y tiempo?
 3. ¿Cuál es el producto más vendido por categoría, tiempo, ubicación y forma de pago?
 
+### 1.4 Checklist de Requerimientos del Enunciado
+
+| # | Requerimiento | Evidencia de cumplimiento |
+|---|---------------|---------------------------|
+| 1.a | Registrar modalidad de pago (efectivo, transferencia, tarjeta con cuotas) y relacionar con clientes y proveedores | Tablas `ModalidadPago`, `Pedido` y `DetallePedido` en `sql/oltp/Tablas.sql` capturan tipo de pago y cuotas; el ETL lleva la dimensión `DimModalidadPago` y las vistas usan la relación con clientes/proveedores. |
+| 1.b | Cobrar IVA (15% o 0% por producto) | Columna `PorcentajeIVA` con restricción `CK_Producto_IVA` en `Producto` y cálculo de `MontoIVA` en ETL (`sql/olap/ETL.sql`). |
+| 2 | Carga de datos mínima: 10 proveedores, 5 empleados, 20 clientes, 5 categorías, 200 productos (100 con IVA 15% y 100 con IVA 0%), 100.000 pedidos con 3-10 productos y fechas 2020-2025 | Script `sql/oltp/Datos_Tablas.sql` genera exactamente estos volúmenes, rangos de fechas y cantidades aleatorias (1-50) por producto. |
+| 3 | Diseño OLAP con al menos tres hechos (4+ dimensiones cada uno) | Modelo estrella en `sql/olap/TablaDatosDim.sql` y vistas analíticas en `sql/olap/VistasOLAP_PowerBI.sql` cubren: (a) producto por proveedor/tiempo/ubicación, (b) modalidad de pago por tiempo/región, (e) mejor vendedor por categoría/tiempo/ubicación/modalidad. |
+| 4 | Herramienta OLAP instalada y configurada con Azure SQL | Power BI configurado en modo Import contra Azure SQL (sección 3 y 8.4). |
+| 5 | Procedimientos ETL | Procedimiento `sp_ETL_CargarOLAP` en `sql/olap/ETL.sql` con MERGE para dimensiones y recarga de hechos. |
+| 6 | Usuario específico de consulta OLAP | Script `sql/olap/UsuarioOLAP.sql` crea usuario de solo lectura para Power BI/Tableau. |
+| 7 | Consultas con Tableau u otra herramienta | Dashboard diseñado en Power BI (sección 8) consumiendo las vistas OLAP. |
+| 8 | Informe con esquema, justificación de modelo, configuración DBMS/OLAP y proceso ETL | Este documento incluye los apartados solicitados (secciones 2, 3, 5 y 6). |
+| 9 | Sustentación de 15 minutos el 26/11/2025 | Fecha y duración reflejadas en la portada y en la sección de conclusiones (9.1). |
+
+### 1.5 Datos alineados a Supermaxi Ecuador
+
+- **Categorías de góndola:** Las cinco categorías del OLTP corresponden a despensa/abarrotes, lácteos y refrigerados, bebidas y snacks, limpieza del hogar y cuidado personal/bebé.
+- **Proveedores reales:** Se usan fabricantes que venden en Supermaxi (La Fabril, PRONACA, Tonicorp, Moderna Alimentos, Nestlé Ecuador, Tesalia CBC, La Universal, Cervecería Nacional, Kimberly-Clark e Industrias Lácteas Toni).
+- **SKUs auténticos:** Los 200 productos incluyen marcas y presentaciones reales de las góndolas (Güitig 1.5L, Atún Real 170g, Detergente Deja 3kg, Huggies Natural Care, etc.), manteniendo el IVA 15%/0% y las 100k órdenes de prueba en `sql/oltp/Datos_Tablas.sql`.
+
 ---
 
 ## 2. JUSTIFICACIÓN DEL MODELO ESTRELLA
@@ -442,6 +463,8 @@ FROM Ranking WHERE Rank = 1;
 ✅ **Usuario de solo lectura** para seguridad en producción
 
 ✅ **Documentación completa** del sistema
+
+✅ **Sustentación agendada** para el 26 de noviembre de 2025 (15 minutos)
 
 ### 9.2 Lecciones Aprendidas
 
