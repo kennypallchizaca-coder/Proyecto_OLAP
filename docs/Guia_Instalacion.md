@@ -1,45 +1,80 @@
-# 📖 GUÍA DE INSTALACIÓN Y MIGRACIÓN
+# 📖 GUÍA COMPLETA DEL PROYECTO OLAP
 
-## Sistema OLAP de Pedidos - Oracle Database 21c
-
-Esta guía detalla los pasos para replicar el proyecto OLAP completo en Oracle Database.
+## Sistema de Pedidos - Oracle Database 21c + Power BI
 
 ---
 
-## 📋 REQUISITOS PREVIOS
+# 📚 ÍNDICE
 
-### Software Necesario
-
-| Software | Versión | Uso |
-|----------|---------|-----|
-| Oracle Database | 21c o superior | Base de datos principal |
-| SQL Developer / SQLcl | Última versión | Ejecutar scripts SQL |
-| Power BI Desktop | Última versión | Visualización de datos |
-| Oracle Instant Client | 21c | Conexión Power BI → Oracle |
-
-### Credenciales Oracle
-
-- Usuario administrador con permisos para crear usuarios
-- Acceso a la instancia de Oracle
+1. [Requisitos Previos](#-parte-1-requisitos-previos)
+2. [Instalación de la Base de Datos](#-parte-2-instalación-de-la-base-de-datos)
+3. [Cómo Usar el Sistema OLAP](#-parte-3-cómo-usar-el-sistema-olap)
+4. [Conexión con Power BI](#-parte-4-conexión-con-power-bi)
+5. [Consultas OLAP de Ejemplo](#-parte-5-consultas-olap-de-ejemplo)
+6. [Solución de Problemas](#-parte-6-solución-de-problemas)
 
 ---
 
-## 🚀 PASO 1: CREAR USUARIO EN ORACLE
+# 🔧 PARTE 1: REQUISITOS PREVIOS
 
-### 1.1 Conectarse como SYSDBA
+## 1.1 Software Necesario
+
+| Software | Versión | Descarga | Uso |
+|----------|---------|----------|-----|
+| **Oracle Database** | 21c o superior | [oracle.com](https://www.oracle.com/database/) | Base de datos |
+| **SQL Developer** | Última | [oracle.com](https://www.oracle.com/tools/downloads/sqldev-downloads.html) | Interfaz gráfica SQL |
+| **SQLcl** | Última | [oracle.com](https://www.oracle.com/tools/downloads/sqlcl-downloads.html) | Línea de comandos |
+| **Power BI Desktop** | Última | [powerbi.microsoft.com](https://powerbi.microsoft.com/downloads/) | Visualización |
+| **Oracle Instant Client** | 21c | [oracle.com](https://www.oracle.com/database/technologies/instant-client.html) | Conexión Power BI |
+
+## 1.2 Conocimientos Previos
+
+- SQL básico (SELECT, INSERT, JOIN)
+- Conceptos de Data Warehouse
+- Uso básico de Power BI
+
+## 1.3 Archivos del Proyecto
+
+```
+📁 Proyecto_OLAP/
+├── 📄 README.md                      ← Informe técnico
+├── 📁 docs/
+│   └── 📄 Guia_Instalacion.md        ← Esta guía
+└── 📁 sql/
+    ├── 📁 oltp/
+    │   ├── 📄 Tablas.sql             ← Paso 1: Crear tablas
+    │   └── 📄 Datos_Tablas.sql       ← Paso 2: Insertar datos
+    └── 📁 olap/
+        ├── 📄 TablaDatosDim.sql      ← Paso 3: Crear dimensiones
+        ├── 📄 ETL.sql                ← Paso 4: Cargar datos OLAP
+        ├── 📄 VistasOLAP_PowerBI.sql ← Paso 5: Crear vistas
+        └── 📄 UsuarioOLAP.sql        ← Paso 6: Usuario lectura
+```
+
+---
+
+# 💾 PARTE 2: INSTALACIÓN DE LA BASE DE DATOS
+
+## 2.1 Crear Usuario en Oracle
+
+### Paso 1: Conectarse como Administrador
 
 ```sql
--- Conectarse a Oracle como administrador
+-- En SQL Developer o SQLcl, conectarse como SYSDBA
 sqlplus / as sysdba
 ```
 
-### 1.2 Crear el Usuario del Proyecto
+### Paso 2: Crear Usuario del Proyecto
 
 ```sql
--- Crear usuario para el proyecto OLAP
-CREATE USER alexis3 IDENTIFIED BY tu_password_seguro;
+-- ═══════════════════════════════════════════════════════
+-- CREAR USUARIO PARA EL PROYECTO
+-- ═══════════════════════════════════════════════════════
 
--- Otorgar permisos necesarios
+-- Crear el usuario
+CREATE USER alexis3 IDENTIFIED BY "MiPassword123";
+
+-- Otorgar permisos
 GRANT CONNECT, RESOURCE TO alexis3;
 GRANT CREATE SESSION TO alexis3;
 GRANT CREATE TABLE TO alexis3;
@@ -48,344 +83,663 @@ GRANT CREATE PROCEDURE TO alexis3;
 GRANT CREATE SEQUENCE TO alexis3;
 GRANT UNLIMITED TABLESPACE TO alexis3;
 
--- Confirmar
 COMMIT;
 ```
 
-### 1.3 Conectarse con el Nuevo Usuario
+### Paso 3: Conectarse con el Nuevo Usuario
 
 ```sql
-CONNECT alexis3/tu_password_seguro
+CONNECT alexis3/MiPassword123
 ```
 
 ---
 
-## 🗃️ PASO 2: CREAR ESQUEMA OLTP
+## 2.2 Ejecutar Scripts en Orden
 
-### 2.1 Ejecutar Script de Tablas
+### 📋 ORDEN OBLIGATORIO DE EJECUCIÓN
 
-Ejecutar el archivo `sql/oltp/Tablas.sql` que crea las 8 tablas transaccionales:
-
-```sql
--- Las tablas se crean en este orden por dependencias:
--- 1. Categoria
--- 2. Proveedor
--- 3. Empleado
--- 4. Cliente
--- 5. ModalidadPago
--- 6. Producto (depende de Categoria y Proveedor)
--- 7. Pedido (depende de Cliente, Empleado, ModalidadPago)
--- 8. DetallePedido (depende de Pedido y Producto)
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  PASO 1  │  sql/oltp/Tablas.sql         │  Crear 8 tablas OLTP │
+├──────────┼─────────────────────────────────────────────────────┤
+│  PASO 2  │  sql/oltp/Datos_Tablas.sql   │  Insertar datos      │
+├──────────┼─────────────────────────────────────────────────────┤
+│  PASO 3  │  sql/olap/TablaDatosDim.sql  │  Crear modelo OLAP   │
+├──────────┼─────────────────────────────────────────────────────┤
+│  PASO 4  │  sql/olap/ETL.sql            │  Cargar dimensiones  │
+├──────────┼─────────────────────────────────────────────────────┤
+│  PASO 5  │  sql/olap/VistasOLAP_PowerBI │  Crear vistas BI     │
+├──────────┼─────────────────────────────────────────────────────┤
+│  PASO 6  │  sql/olap/UsuarioOLAP.sql    │  Usuario lectura     │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
-**Tablas Creadas:**
+### Ejecutar cada Script
 
-| Tabla | Descripción |
-|-------|-------------|
-| `Categoria` | Categorías de productos (5 registros) |
-| `Proveedor` | Proveedores (10 registros) |
-| `Empleado` | Empleados/Vendedores (5 registros) |
-| `Cliente` | Clientes con datos completos (20 registros) |
-| `ModalidadPago` | Formas de pago con cuotas 0-12 (6 registros) |
-| `Producto` | Productos con IVA 0% y 15% (200 registros) |
-| `Pedido` | Encabezados de pedido (100,000 registros) |
-| `DetallePedido` | Líneas de detalle (~550,000 registros) |
-
-### 2.2 Cargar Datos de Prueba
-
-Ejecutar el archivo `sql/oltp/Datos_Tablas.sql`:
-
-```sql
--- Este script inserta:
--- • 5 Categorías (Electrónica, Ropa, Hogar, Deportes, Alimentos)
--- • 10 Proveedores
--- • 5 Empleados
--- • 20 Clientes (con nombre, email, teléfono, dirección)
--- • 6 Modalidades de pago (Efectivo, Transferencia, Tarjeta 3/6/12 cuotas)
--- • 200 Productos con nombres reales
--- • 100,000 Pedidos con fechas 2020-2025
--- • ~550,000 líneas de DetallePedido
-```
-
-**⚠️ IMPORTANTE:** La generación de 100,000 pedidos puede tomar varios minutos.
+En SQL Developer:
+1. Abrir el archivo `.sql`
+2. Conectarse con usuario `alexis3`
+3. Presionar **F5** o clic en **Ejecutar Script**
+4. Esperar a que termine
+5. Verificar que no haya errores
 
 ---
 
-## 📊 PASO 3: CREAR ESQUEMA OLAP
+## 2.3 Verificar Instalación Correcta
 
-### 3.1 Ejecutar Script de Dimensiones y Hechos
-
-Ejecutar el archivo `sql/olap/TablaDatosDim.sql`:
+### Verificar Tablas OLTP
 
 ```sql
--- Crea el modelo estrella:
--- Dimensiones:
--- • DimTiempo (calendario 2020-2025)
--- • DimUbicacion (ciudades)
--- • DimCategoria
--- • DimProveedor
--- • DimCliente
--- • DimEmpleado
--- • DimModalidadPago
--- • DimProducto (desnormalizada)
-
--- Tabla de Hechos:
--- • FactVentas
-```
-
-### 3.2 Ejecutar Proceso ETL
-
-Ejecutar el archivo `sql/olap/ETL.sql`:
-
-```sql
--- El ETL realiza:
--- 1. Genera DimTiempo (2,192 días)
--- 2. Carga DimUbicacion desde Cliente
--- 3. Carga dimensiones desde tablas OLTP
--- 4. Carga FactVentas con cálculos de Subtotal, IVA y Total
-```
-
-**Verificar carga exitosa:**
-
-```sql
--- Verificar conteos
-SELECT 'DimTiempo' as Tabla, COUNT(*) as Registros FROM DimTiempo
-UNION ALL SELECT 'DimProducto', COUNT(*) FROM DimProducto
-UNION ALL SELECT 'DimCliente', COUNT(*) FROM DimCliente
-UNION ALL SELECT 'FactVentas', COUNT(*) FROM FactVentas;
+-- Debe mostrar 8 tablas
+SELECT table_name, num_rows 
+FROM user_tables 
+WHERE table_name IN ('CATEGORIA','PROVEEDOR','EMPLEADO','CLIENTE',
+                     'MODALIDADPAGO','PRODUCTO','PEDIDO','DETALLEPEDIDO')
+ORDER BY table_name;
 ```
 
 **Resultado esperado:**
-- DimTiempo: 2,192
-- DimProducto: 200
-- DimCliente: 20
-- FactVentas: ~550,000
 
----
+| TABLE_NAME | NUM_ROWS |
+|------------|----------|
+| CATEGORIA | 5 |
+| CLIENTE | 20 |
+| DETALLEPEDIDO | ~550,000 |
+| EMPLEADO | 5 |
+| MODALIDADPAGO | 6 |
+| PEDIDO | 100,000 |
+| PRODUCTO | 200 |
+| PROVEEDOR | 10 |
 
-## 👤 PASO 4: CREAR USUARIO DE SOLO LECTURA
-
-### 4.1 Ejecutar Script de Usuario OLAP
-
-Ejecutar el archivo `sql/olap/UsuarioOLAP.sql`:
-
-```sql
--- Crear usuario de solo lectura para Power BI
-CREATE USER usuario_olap IDENTIFIED BY OL@P_R3ad0nly2025;
-
-GRANT CONNECT TO usuario_olap;
-GRANT SELECT ON alexis3.DimTiempo TO usuario_olap;
-GRANT SELECT ON alexis3.DimUbicacion TO usuario_olap;
-GRANT SELECT ON alexis3.DimCategoria TO usuario_olap;
-GRANT SELECT ON alexis3.DimProveedor TO usuario_olap;
-GRANT SELECT ON alexis3.DimCliente TO usuario_olap;
-GRANT SELECT ON alexis3.DimEmpleado TO usuario_olap;
-GRANT SELECT ON alexis3.DimModalidadPago TO usuario_olap;
-GRANT SELECT ON alexis3.DimProducto TO usuario_olap;
-GRANT SELECT ON alexis3.FactVentas TO usuario_olap;
--- Permisos para vistas
-```
-
----
-
-## 📈 PASO 5: CREAR VISTAS PARA POWER BI
-
-### 5.1 Ejecutar Script de Vistas
-
-Ejecutar el archivo `sql/olap/VistasOLAP_PowerBI.sql`:
+### Verificar Tablas OLAP
 
 ```sql
--- Vistas creadas:
--- • vw_VentasCompletas - Vista principal con todas las dimensiones
--- • vw_VentasProductoProveedor - Hecho (a)
--- • vw_VentasModalidadPago - Hecho (b)
--- • vw_ProductoMasVendido - Hecho (e)
--- • vw_Dashboard_KPIs - Métricas ejecutivas
+-- Debe mostrar 9 tablas OLAP
+SELECT table_name, num_rows 
+FROM user_tables 
+WHERE table_name LIKE 'DIM%' OR table_name = 'FACTVENTAS'
+ORDER BY table_name;
+```
+
+**Resultado esperado:**
+
+| TABLE_NAME | NUM_ROWS |
+|------------|----------|
+| DIMCATEGORIA | 5 |
+| DIMCLIENTE | 20 |
+| DIMEMPLEADO | 5 |
+| DIMMODALIDADPAGO | 6 |
+| DIMPRODUCTO | 200 |
+| DIMPROVEEDOR | 10 |
+| DIMTIEMPO | 2,192 |
+| DIMUBICACION | 4 |
+| FACTVENTAS | ~550,000 |
+
+---
+
+# 🎯 PARTE 3: CÓMO USAR EL SISTEMA OLAP
+
+## 3.1 ¿Qué es OLAP?
+
+**OLAP** (Online Analytical Processing) permite analizar grandes volúmenes de datos desde múltiples perspectivas llamadas **dimensiones**.
+
+```
+                    ┌─────────────┐
+                    │  ¿CUÁNTO?   │  ← HECHOS (métricas)
+                    │  Cantidad   │     - Cantidad vendida
+                    │  Total $    │     - Monto total
+                    │  IVA        │     - IVA cobrado
+                    └──────┬──────┘
+                           │
+    ┌──────────────────────┼──────────────────────┐
+    │                      │                      │
+    ▼                      ▼                      ▼
+┌─────────┐          ┌─────────┐          ┌─────────┐
+│ ¿CUÁNDO?│          │  ¿QUÉ?  │          │ ¿DÓNDE? │
+│ Tiempo  │          │Producto │          │Ubicación│
+└─────────┘          └─────────┘          └─────────┘
+  - Año                - Nombre             - Ciudad
+  - Mes                - Categoría          - País
+  - Día                - Precio
+```
+
+## 3.2 El Modelo Estrella
+
+Nuestro sistema usa un **Modelo Estrella** con:
+
+- **1 Tabla de Hechos:** `FactVentas` (centro)
+- **8 Dimensiones:** Tablas que rodean los hechos
+
+```
+         DimTiempo          DimProducto         DimCliente
+              │                  │                  │
+              └──────────────────┼──────────────────┘
+                                 │
+    DimProveedor ────────── FactVentas ────────── DimEmpleado
+                                 │
+              ┌──────────────────┼──────────────────┐
+              │                  │                  │
+         DimCategoria    DimModalidadPago      DimUbicacion
+```
+
+## 3.3 Las 8 Dimensiones Explicadas
+
+### 📅 DimTiempo (Dimensión Temporal)
+
+```sql
+-- Estructura:
+TiempoKey       -- Clave única (formato: YYYYMMDD)
+Fecha           -- Fecha completa
+Anio            -- Año (2020-2025)
+Trimestre       -- Trimestre (1-4)
+Mes             -- Número de mes (1-12)
+NombreMes       -- Nombre del mes
+Dia             -- Día del mes
+DiaSemana       -- Día de la semana
+NombreDia       -- Nombre del día
+```
+
+**Uso:** Analizar ventas por período (año, mes, día)
+
+### 📦 DimProducto (Dimensión de Productos)
+
+```sql
+-- Estructura:
+ProductoKey         -- Clave única
+CodigoProducto      -- Código original
+NombreProducto      -- Nombre del producto
+Descripcion         -- Descripción detallada
+PrecioUnitario      -- Precio de venta
+PorcentajeIVA       -- 0% o 15%
+NombreCategoria     -- Categoría (desnormalizado)
+NombreProveedor     -- Proveedor (desnormalizado)
+```
+
+**Uso:** Analizar ventas por producto, categoría o proveedor
+
+### 👤 DimCliente (Dimensión de Clientes)
+
+```sql
+-- Estructura:
+ClienteKey          -- Clave única
+CodigoCliente       -- Código original
+NombreCompleto      -- Nombre del cliente
+Email               -- Correo electrónico
+Telefono            -- Teléfono
+Direccion           -- Dirección
+Ciudad              -- Ciudad
+Pais                -- País
+```
+
+**Uso:** Analizar ventas por cliente o segmento
+
+### 🏭 DimProveedor (Dimensión de Proveedores)
+
+```sql
+-- Estructura:
+ProveedorKey        -- Clave única
+CodigoProveedor     -- Código original
+NombreProveedor     -- Nombre de la empresa
+Contacto            -- Persona de contacto
+Telefono            -- Teléfono
+Email               -- Correo electrónico
+Ciudad              -- Ciudad del proveedor
+```
+
+**Uso:** Analizar ventas por proveedor
+
+### 👔 DimEmpleado (Dimensión de Empleados)
+
+```sql
+-- Estructura:
+EmpleadoKey         -- Clave única
+CodigoEmpleado      -- Código original
+NombreCompleto      -- Nombre del empleado
+Cargo               -- Cargo/Puesto
+FechaContratacion   -- Fecha de ingreso
+```
+
+**Uso:** Analizar ventas por vendedor/empleado
+
+### 🏷️ DimCategoria (Dimensión de Categorías)
+
+```sql
+-- Estructura:
+CategoriaKey        -- Clave única
+NombreCategoria     -- Nombre (Electrónica, Ropa, etc.)
+Descripcion         -- Descripción de la categoría
+```
+
+**Uso:** Analizar ventas por tipo de producto
+
+### 💳 DimModalidadPago (Dimensión de Pagos)
+
+```sql
+-- Estructura:
+ModalidadPagoKey    -- Clave única
+TipoPago            -- Efectivo, Transferencia, Tarjeta
+NumeroCuotas        -- 0, 3, 6, 12 cuotas
+Descripcion         -- Descripción completa
+```
+
+**Uso:** Analizar preferencias de pago
+
+### 📍 DimUbicacion (Dimensión Geográfica)
+
+```sql
+-- Estructura:
+UbicacionKey        -- Clave única
+Ciudad              -- Ciudad
+Pais                -- País
+```
+
+**Uso:** Analizar ventas por región
+
+## 3.4 La Tabla de Hechos: FactVentas
+
+```sql
+-- Estructura:
+VentaKey            -- Clave única
+TiempoKey           -- FK → DimTiempo
+ProductoKey         -- FK → DimProducto
+ClienteKey          -- FK → DimCliente
+ProveedorKey        -- FK → DimProveedor
+EmpleadoKey         -- FK → DimEmpleado
+CategoriaKey        -- FK → DimCategoria
+ModalidadPagoKey    -- FK → DimModalidadPago
+UbicacionKey        -- FK → DimUbicacion
+
+-- MÉTRICAS (lo que se mide):
+Cantidad            -- Unidades vendidas
+Subtotal            -- Monto sin IVA
+MontoIVA            -- IVA cobrado
+Total               -- Monto total
+PedidoID            -- Referencia al pedido original
 ```
 
 ---
 
-## 🔌 PASO 6: CONECTAR POWER BI A ORACLE
+# 📊 PARTE 4: CONEXIÓN CON POWER BI
 
-### 6.1 Instalar Oracle Instant Client
+## 4.1 Instalar Oracle Instant Client
 
-1. Descargar Oracle Instant Client desde: https://www.oracle.com/database/technologies/instant-client.html
-2. Seleccionar versión 21c para Windows 64-bit
-3. Descargar paquete "Basic" o "Basic Light"
-4. Extraer en `C:\oracle\instantclient_21_X`
-5. Agregar al PATH del sistema
+### Paso 1: Descargar
 
-### 6.2 Configurar TNSNAMES (Opcional)
+1. Ir a: https://www.oracle.com/database/technologies/instant-client.html
+2. Seleccionar **Windows 64-bit**
+3. Descargar **Basic Package** (instantclient-basic-windows.x64-21.X.zip)
 
-Crear archivo `tnsnames.ora` en la carpeta de Instant Client:
+### Paso 2: Extraer
+
+1. Crear carpeta: `C:\oracle\instantclient_21`
+2. Extraer el ZIP en esa carpeta
+
+### Paso 3: Configurar PATH
+
+1. Abrir **Variables de entorno del sistema**
+2. Editar la variable **Path**
+3. Agregar: `C:\oracle\instantclient_21`
+4. Aceptar y cerrar
+5. **Reiniciar Power BI**
+
+## 4.2 Conectar Power BI a Oracle
+
+### Paso 1: Abrir Power BI Desktop
+
+### Paso 2: Obtener Datos
 
 ```
-MI_ORACLE =
-  (DESCRIPTION =
-    (ADDRESS = (PROTOCOL = TCP)(HOST = tu_servidor)(PORT = 1521))
-    (CONNECT_DATA =
-      (SERVICE_NAME = tu_servicio)
-    )
-  )
+Inicio → Obtener datos → Base de datos → Base de datos de Oracle
 ```
 
-### 6.3 Conectar desde Power BI
+### Paso 3: Configurar Conexión
 
-1. Abrir **Power BI Desktop**
-2. Ir a **Inicio → Obtener datos → Base de datos → Base de datos de Oracle**
-3. En "Servidor" ingresar: `tu_servidor:1521/servicio` o usar el nombre TNS
-4. Seleccionar **Modo de conectividad: Import**
-5. Ingresar credenciales:
-   - Usuario: `usuario_olap`
-   - Contraseña: `OL@P_R3ad0nly2025`
-6. Seleccionar las tablas/vistas a importar:
-   - ✅ `ALEXIS3.FACTVENTAS`
-   - ✅ `ALEXIS3.DIMTIEMPO`
-   - ✅ `ALEXIS3.DIMPRODUCTO`
-   - ✅ `ALEXIS3.DIMCLIENTE`
-   - ✅ `ALEXIS3.DIMPROVEEDOR`
-   - ✅ `ALEXIS3.DIMCATEGORIA`
-   - ✅ `ALEXIS3.DIMMODALIDADPAGO`
-   - ✅ `ALEXIS3.DIMEMPLEADO`
-   - ✅ `ALEXIS3.DIMUBICACION`
-7. Clic en **Cargar**
+| Campo | Valor |
+|-------|-------|
+| **Servidor** | `localhost:1521/XEPDB1` (o tu servidor) |
+| **Modo** | Import (recomendado) |
 
-### 6.4 Configurar Relaciones en Power BI
+### Paso 4: Ingresar Credenciales
 
-Power BI detectará automáticamente las relaciones. Verificar:
+| Campo | Valor |
+|-------|-------|
+| **Usuario** | `alexis3` |
+| **Contraseña** | `MiPassword123` |
 
-| Tabla Origen | Campo | Tabla Destino | Campo |
-|--------------|-------|---------------|-------|
-| FactVentas | TiempoKey | DimTiempo | TiempoKey |
-| FactVentas | ProductoKey | DimProducto | ProductoKey |
-| FactVentas | ClienteKey | DimCliente | ClienteKey |
-| FactVentas | ProveedorKey | DimProveedor | ProveedorKey |
-| FactVentas | CategoriaKey | DimCategoria | CategoriaKey |
-| FactVentas | EmpleadoKey | DimEmpleado | EmpleadoKey |
-| FactVentas | ModalidadPagoKey | DimModalidadPago | ModalidadPagoKey |
-| FactVentas | UbicacionKey | DimUbicacion | UbicacionKey |
+### Paso 5: Seleccionar Tablas
 
----
+Marcar las siguientes tablas:
 
-## 📊 PASO 7: CREAR VISUALIZACIONES
+- ✅ `ALEXIS3.FACTVENTAS`
+- ✅ `ALEXIS3.DIMTIEMPO`
+- ✅ `ALEXIS3.DIMPRODUCTO`
+- ✅ `ALEXIS3.DIMCLIENTE`
+- ✅ `ALEXIS3.DIMPROVEEDOR`
+- ✅ `ALEXIS3.DIMCATEGORIA`
+- ✅ `ALEXIS3.DIMMODALIDADPAGO`
+- ✅ `ALEXIS3.DIMEMPLEADO`
+- ✅ `ALEXIS3.DIMUBICACION`
 
-### 7.1 Medidas DAX Sugeridas
+### Paso 6: Cargar
+
+Clic en **Cargar** y esperar a que se importen los datos.
+
+## 4.3 Verificar Relaciones
+
+Power BI debería detectar automáticamente las relaciones. Verificar en:
+
+```
+Modelo → Ver relaciones
+```
+
+Deben existir 8 relaciones desde `FactVentas` hacia cada dimensión.
+
+## 4.4 Crear Medidas DAX
+
+### Medidas Básicas
 
 ```dax
--- Total Ventas
-Total Ventas = SUM(FactVentas[Total])
+-- Total de Ventas
+Total Ventas = SUM(FACTVENTAS[TOTAL])
 
 -- Cantidad Total
-Cantidad Total = SUM(FactVentas[Cantidad])
+Cantidad Total = SUM(FACTVENTAS[CANTIDAD])
+
+-- Número de Pedidos
+Numero Pedidos = DISTINCTCOUNT(FACTVENTAS[PEDIDOID])
 
 -- Ticket Promedio
-Ticket Promedio = DIVIDE([Total Ventas], DISTINCTCOUNT(FactVentas[PedidoID]))
-
--- Ventas con IVA
-Ventas IVA 15% = 
-    CALCULATE([Total Ventas], DimProducto[PorcentajeIVA] = 15)
-
--- Ventas sin IVA
-Ventas IVA 0% = 
-    CALCULATE([Total Ventas], DimProducto[PorcentajeIVA] = 0)
+Ticket Promedio = DIVIDE([Total Ventas], [Numero Pedidos])
 ```
 
-### 7.2 Visualizaciones Recomendadas
+### Medidas de IVA
 
-| Tipo | Uso | Campos |
-|------|-----|--------|
-| **Tarjeta** | KPIs | Total Ventas, Cantidad, Ticket Promedio |
-| **Gráfico de Barras** | Top Productos | Producto, Total Ventas |
-| **Gráfico de Líneas** | Tendencia | Fecha, Total Ventas |
-| **Gráfico Circular** | Distribución | Modalidad Pago, Total Ventas |
-| **Matriz** | Análisis Cruzado | Categoría, Año, Total Ventas |
-| **Mapa** | Geográfico | Ciudad, Total Ventas |
+```dax
+-- Ventas con IVA 15%
+Ventas IVA 15 = 
+    CALCULATE(
+        [Total Ventas], 
+        DIMPRODUCTO[PORCENTAJEIVA] = 15
+    )
+
+-- Ventas con IVA 0%
+Ventas IVA 0 = 
+    CALCULATE(
+        [Total Ventas], 
+        DIMPRODUCTO[PORCENTAJEIVA] = 0
+    )
+
+-- Total IVA Cobrado
+Total IVA = SUM(FACTVENTAS[MONTOIVA])
+```
+
+## 4.5 Crear Visualizaciones
+
+### Dashboard Sugerido
+
+| Visualización | Campos | Uso |
+|---------------|--------|-----|
+| **Tarjeta** | Total Ventas | KPI principal |
+| **Tarjeta** | Numero Pedidos | KPI pedidos |
+| **Tarjeta** | Ticket Promedio | KPI ticket |
+| **Gráfico Barras** | Categoria + Total Ventas | Ventas por categoría |
+| **Gráfico Líneas** | Fecha + Total Ventas | Tendencia temporal |
+| **Gráfico Circular** | TipoPago + Total Ventas | Distribución pagos |
+| **Tabla** | Producto + Cantidad + Total | Detalle productos |
 
 ---
 
-## ✅ VERIFICACIÓN FINAL
+# 🔍 PARTE 5: CONSULTAS OLAP DE EJEMPLO
 
-### Ejecutar Consultas de Verificación
+## 5.1 Hecho (a): Ventas por Proveedor, Tiempo y Ubicación
 
 ```sql
--- Verificar volumen de datos
+-- ═══════════════════════════════════════════════════════════════
+-- CONSULTA OLAP: Productos por Proveedor, Tiempo y Ubicación
+-- Dimensiones: Proveedor, Tiempo, Ubicación, Producto, Categoría (5)
+-- ═══════════════════════════════════════════════════════════════
+
 SELECT 
-    'OLTP - Pedidos' as Tabla, COUNT(*) as Registros FROM Pedido
-UNION ALL
-SELECT 'OLTP - DetallePedido', COUNT(*) FROM DetallePedido
-UNION ALL
-SELECT 'OLAP - FactVentas', COUNT(*) FROM FactVentas
-UNION ALL
-SELECT 'OLAP - DimProducto', COUNT(*) FROM DimProducto;
-
--- Verificar productos por IVA
-SELECT PorcentajeIVA, COUNT(*) as Productos
-FROM Producto
-GROUP BY PorcentajeIVA;
-
--- Verificar modalidades de pago usadas
-SELECT m.Nombre, COUNT(p.PedidoID) as Pedidos
-FROM Pedido p
-JOIN ModalidadPago m ON p.ModalidadPagoID = m.ModalidadPagoID
-GROUP BY m.Nombre;
-
--- Verificar top productos
-SELECT NombreProducto, SUM(Total) as VentaTotal
+    dprov.NombreProveedor           AS Proveedor,
+    dt.Anio                         AS Año,
+    dt.NombreMes                    AS Mes,
+    du.Ciudad                       AS Ciudad,
+    dprod.NombreProducto            AS Producto,
+    dc.NombreCategoria              AS Categoria,
+    SUM(f.Cantidad)                 AS UnidadesVendidas,
+    SUM(f.Total)                    AS VentaTotal,
+    COUNT(DISTINCT f.PedidoID)      AS NumeroPedidos
 FROM FactVentas f
-JOIN DimProducto p ON f.ProductoKey = p.ProductoKey
-GROUP BY NombreProducto
-ORDER BY 2 DESC
-FETCH FIRST 10 ROWS ONLY;
+    JOIN DimProveedor dprov ON dprov.ProveedorKey = f.ProveedorKey
+    JOIN DimTiempo dt ON dt.TiempoKey = f.TiempoKey
+    JOIN DimUbicacion du ON du.UbicacionKey = f.UbicacionKey
+    JOIN DimProducto dprod ON dprod.ProductoKey = f.ProductoKey
+    JOIN DimCategoria dc ON dc.CategoriaKey = f.CategoriaKey
+GROUP BY 
+    dprov.NombreProveedor, 
+    dt.Anio, 
+    dt.NombreMes, 
+    du.Ciudad,
+    dprod.NombreProducto, 
+    dc.NombreCategoria
+ORDER BY VentaTotal DESC
+FETCH FIRST 20 ROWS ONLY;
+```
+
+## 5.2 Hecho (b): Modalidad de Pago por Tiempo y Región
+
+```sql
+-- ═══════════════════════════════════════════════════════════════
+-- CONSULTA OLAP: Modalidad de Pago por Tiempo y Región
+-- Dimensiones: ModalidadPago, Tiempo, Ubicación, Cliente (4)
+-- ═══════════════════════════════════════════════════════════════
+
+SELECT 
+    dm.TipoPago                     AS FormaPago,
+    dm.NumeroCuotas                 AS Cuotas,
+    dt.Anio                         AS Año,
+    dt.Trimestre                    AS Trimestre,
+    du.Ciudad                       AS Ciudad,
+    COUNT(*)                        AS NumeroTransacciones,
+    SUM(f.Total)                    AS MontoTotal,
+    ROUND(SUM(f.Total) * 100 / 
+          SUM(SUM(f.Total)) OVER(), 2) AS PorcentajeTotal
+FROM FactVentas f
+    JOIN DimModalidadPago dm ON dm.ModalidadPagoKey = f.ModalidadPagoKey
+    JOIN DimTiempo dt ON dt.TiempoKey = f.TiempoKey
+    JOIN DimUbicacion du ON du.UbicacionKey = f.UbicacionKey
+    JOIN DimCliente dc ON dc.ClienteKey = f.ClienteKey
+GROUP BY 
+    dm.TipoPago, 
+    dm.NumeroCuotas, 
+    dt.Anio, 
+    dt.Trimestre, 
+    du.Ciudad
+ORDER BY MontoTotal DESC;
+```
+
+## 5.3 Hecho (e): Top Productos por Categoría
+
+```sql
+-- ═══════════════════════════════════════════════════════════════
+-- CONSULTA OLAP: Producto Más Vendido por Categoría
+-- Dimensiones: Categoría, Tiempo, Ubicación, ModalidadPago, Producto (5)
+-- ═══════════════════════════════════════════════════════════════
+
+WITH RankingProductos AS (
+    SELECT 
+        dc.NombreCategoria              AS Categoria,
+        dprod.NombreProducto            AS Producto,
+        dprod.PorcentajeIVA             AS IVA,
+        SUM(f.Cantidad)                 AS CantidadVendida,
+        SUM(f.Total)                    AS VentaTotal,
+        RANK() OVER (
+            PARTITION BY dc.NombreCategoria 
+            ORDER BY SUM(f.Total) DESC
+        ) AS Ranking
+    FROM FactVentas f
+        JOIN DimCategoria dc ON dc.CategoriaKey = f.CategoriaKey
+        JOIN DimProducto dprod ON dprod.ProductoKey = f.ProductoKey
+    GROUP BY 
+        dc.NombreCategoria, 
+        dprod.NombreProducto,
+        dprod.PorcentajeIVA
+)
+SELECT * FROM RankingProductos 
+WHERE Ranking <= 5
+ORDER BY Categoria, Ranking;
+```
+
+## 5.4 Consulta de KPIs Generales
+
+```sql
+-- ═══════════════════════════════════════════════════════════════
+-- DASHBOARD: KPIs Generales del Negocio
+-- ═══════════════════════════════════════════════════════════════
+
+SELECT 
+    COUNT(DISTINCT f.PedidoID)      AS TotalPedidos,
+    SUM(f.Cantidad)                 AS TotalUnidades,
+    SUM(f.Subtotal)                 AS Subtotal,
+    SUM(f.MontoIVA)                 AS TotalIVA,
+    SUM(f.Total)                    AS VentasTotales,
+    ROUND(AVG(f.Total), 2)          AS TicketPromedio,
+    COUNT(DISTINCT f.ClienteKey)    AS ClientesUnicos,
+    COUNT(DISTINCT f.ProductoKey)   AS ProductosVendidos
+FROM FactVentas f;
+```
+
+## 5.5 Análisis de IVA
+
+```sql
+-- ═══════════════════════════════════════════════════════════════
+-- ANÁLISIS: Distribución de Ventas por IVA
+-- ═══════════════════════════════════════════════════════════════
+
+SELECT 
+    dprod.PorcentajeIVA             AS TipoIVA,
+    COUNT(DISTINCT dprod.ProductoKey) AS NumProductos,
+    SUM(f.Cantidad)                 AS UnidadesVendidas,
+    SUM(f.Subtotal)                 AS Subtotal,
+    SUM(f.MontoIVA)                 AS IVACobrado,
+    SUM(f.Total)                    AS VentaTotal,
+    ROUND(SUM(f.Total) * 100 / 
+          SUM(SUM(f.Total)) OVER(), 2) AS Porcentaje
+FROM FactVentas f
+    JOIN DimProducto dprod ON dprod.ProductoKey = f.ProductoKey
+GROUP BY dprod.PorcentajeIVA
+ORDER BY TipoIVA DESC;
 ```
 
 ---
 
-## 🔧 SOLUCIÓN DE PROBLEMAS
+# 🔧 PARTE 6: SOLUCIÓN DE PROBLEMAS
 
-### Error: "ORA-01017: invalid username/password"
-- Verificar credenciales
-- Confirmar que el usuario fue creado correctamente
+## 6.1 Errores Comunes en Oracle
 
-### Error: Power BI no encuentra Oracle
-- Instalar Oracle Instant Client
-- Agregar ruta al PATH del sistema
-- Reiniciar Power BI
+### Error: ORA-01017 (Usuario/Contraseña inválidos)
 
-### Error: "ORA-00942: table or view does not exist"
-- Verificar permisos del usuario
-- Confirmar que las tablas fueron creadas con el usuario correcto
+```sql
+-- Verificar que el usuario existe
+SELECT username FROM all_users WHERE username = 'ALEXIS3';
 
-### ETL muy lento
-- Ejecutar en horarios de baja carga
-- Considerar hacer COMMIT cada 10,000 registros
+-- Resetear contraseña
+ALTER USER alexis3 IDENTIFIED BY "NuevaPassword123";
+```
+
+### Error: ORA-00942 (Tabla no existe)
+
+```sql
+-- Verificar tablas del usuario
+SELECT table_name FROM user_tables ORDER BY table_name;
+
+-- Si ejecutaste con otro usuario, dar permisos:
+GRANT SELECT ON alexis3.FactVentas TO tu_usuario;
+```
+
+### Error: ORA-01653 (Sin espacio)
+
+```sql
+-- Verificar espacio disponible
+SELECT tablespace_name, bytes/1024/1024 MB 
+FROM dba_free_space;
+
+-- Agregar más espacio al tablespace
+ALTER DATABASE DATAFILE '/path/to/file.dbf' RESIZE 2G;
+```
+
+## 6.2 Errores Comunes en Power BI
+
+### Error: No se encuentra el controlador Oracle
+
+**Solución:**
+1. Descargar Oracle Instant Client
+2. Extraer en `C:\oracle\instantclient_21`
+3. Agregar al PATH del sistema
+4. Reiniciar Power BI
+
+### Error: Timeout de conexión
+
+**Solución:**
+1. Verificar que Oracle esté corriendo
+2. Verificar firewall (puerto 1521)
+3. Probar conexión con SQL Developer primero
+
+### Error: Las relaciones no se detectan
+
+**Solución:**
+1. Ir a **Modelo** en Power BI
+2. Crear relaciones manualmente:
+   - FactVentas[TiempoKey] → DimTiempo[TiempoKey]
+   - FactVentas[ProductoKey] → DimProducto[ProductoKey]
+   - (repetir para cada dimensión)
+
+## 6.3 Rendimiento Lento
+
+### En Oracle
+
+```sql
+-- Actualizar estadísticas
+EXEC DBMS_STATS.GATHER_SCHEMA_STATS('ALEXIS3');
+
+-- Crear índices adicionales
+CREATE INDEX idx_fact_tiempo ON FactVentas(TiempoKey);
+CREATE INDEX idx_fact_producto ON FactVentas(ProductoKey);
+```
+
+### En Power BI
+
+1. Usar modo **Import** en lugar de DirectQuery
+2. Reducir columnas importadas
+3. Crear agregaciones
 
 ---
 
-## 📞 INFORMACIÓN DE CONEXIÓN
+# 📞 INFORMACIÓN DE REFERENCIA
 
-| Parámetro | Valor |
-|-----------|-------|
-| **Servidor** | [tu_servidor]:1521/[servicio] |
-| **Usuario OLTP** | alexis3 |
-| **Usuario OLAP** | usuario_olap |
-| **Password OLAP** | OL@P_R3ad0nly2025 |
+## Credenciales por Defecto
 
----
+| Usuario | Contraseña | Uso |
+|---------|------------|-----|
+| `alexis3` | (tu password) | Usuario principal |
+| `usuario_olap` | OL@P_R3ad0nly2025 | Solo lectura (Power BI) |
 
-## 📅 ORDEN DE EJECUCIÓN RESUMIDO
+## Volumen de Datos
 
-```
-1. sql/oltp/Tablas.sql          → Crear tablas OLTP
-2. sql/oltp/Datos_Tablas.sql    → Insertar datos de prueba
-3. sql/olap/TablaDatosDim.sql   → Crear tablas OLAP
-4. sql/olap/ETL.sql             → Ejecutar proceso ETL
-5. sql/olap/VistasOLAP_PowerBI.sql → Crear vistas
-6. sql/olap/UsuarioOLAP.sql     → Crear usuario lectura
-7. Conectar Power BI           → Crear reportes
-```
+| Tabla | Registros |
+|-------|-----------|
+| Pedidos OLTP | 100,000 |
+| Detalle Pedidos | ~550,000 |
+| FactVentas | ~550,000 |
+| Productos | 200 |
+| Clientes | 20 |
+
+## Contacto
+
+Para dudas sobre el proyecto, revisar el informe técnico en `README.md`.
 
 ---
 
 **Guía de Instalación - Proyecto OLAP**  
-**Plataforma:** Oracle Database 21c + Power BI  
-**Última actualización:** Noviembre 2025
+**Oracle Database 21c + Power BI**  
+**Versión:** 1.0 | **Fecha:** Noviembre 2025
