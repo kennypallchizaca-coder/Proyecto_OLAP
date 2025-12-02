@@ -1,21 +1,11 @@
-# 📊 PROYECTO OLAP - SISTEMA DE ANÁLISIS DE VENTAS
+# 📊 INFORME TÉCNICO: SISTEMA OLAP - DATAWAREHOUSE
 
-## Sistema de Pedidos con Modelo Dimensional (Data Warehouse)
+## Sistema de Análisis de Ventas con Modelo Dimensional
 
 **Materia:** Gestión de Bases de Datos  
 **Docente:** Germán Parra  
 **Fecha:** Diciembre 2025  
 **Plataforma:** Oracle Database 21c + Power BI  
-
----
-
-## 📑 DOCUMENTACIÓN COMPLETA
-
-| Documento | Descripción | Ubicación |
-|-----------|-------------|-----------|
-| **README.md** | Documentación general del proyecto | Este archivo |
-| **Informe_OLAP.md** | Informe técnico detallado (requisito 8) | `docs/Informe_OLAP.md` |
-| **Guia_Instalacion.md** | Guía paso a paso de instalación | `docs/Guia_Instalacion.md` |
 
 ---
 
@@ -877,9 +867,8 @@ Total IVA = SUM(FACTVENTAS[MONTOIVA])
 
 ```
 Proyecto_OLAP/
-├── README.md                         ← Documentación general
+├── README.md                         ← Este informe técnico completo
 ├── docs/
-│   ├── Informe_OLAP.md               ← Informe técnico (requisito 8)
 │   └── Guia_Instalacion.md           ← Guía de instalación
 └── sql/
     └── oracle/
@@ -892,6 +881,22 @@ Proyecto_OLAP/
             ├── UsuarioOLAP.sql       ← Usuario solo lectura
             └── VistasOLAP_PowerBI.sql ← Vistas para Power BI
 ```
+
+---
+
+# 📚 REFERENCIAS BIBLIOGRÁFICAS
+
+1. **Kimball, R., & Ross, M.** (2013). *The Data Warehouse Toolkit: The Definitive Guide to Dimensional Modeling* (3rd ed.). Wiley.
+
+2. **Inmon, W. H.** (2005). *Building the Data Warehouse* (4th ed.). Wiley.
+
+3. **Oracle Corporation.** (2024). *Oracle Database Data Warehousing Guide, 21c*. https://docs.oracle.com/en/database/oracle/oracle-database/21/dwhsg/
+
+4. **Oracle Corporation.** (2024). *Oracle Database PL/SQL Language Reference*. https://docs.oracle.com/en/database/oracle/oracle-database/21/lnpls/
+
+5. **Microsoft.** (2024). *Power BI Documentation*. https://docs.microsoft.com/en-us/power-bi/
+
+6. **Rainardi, V.** (2008). *Building a Data Warehouse: With Examples in SQL Server*. Apress.
 
 ---
 
