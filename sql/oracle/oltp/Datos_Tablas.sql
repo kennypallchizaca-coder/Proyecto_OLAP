@@ -38,16 +38,16 @@ BEGIN DBMS_OUTPUT.PUT_LINE('[1/7] 5 categorias insertadas.'); END;
 -- 2. PROVEEDORES (10 requeridos)
 -- ============================================================================
 
-INSERT INTO PROVEEDOR (CODIGO, NOMBRE, NOMBRECONTACTO, TELEFONO, EMAIL, CIUDAD, PAIS) VALUES ('PROV01', 'La Fabril S.A.', 'Contacto Comercial', '0991112233', 'ventas@lafabril.com', 'Guayaquil', 'Ecuador');
-INSERT INTO PROVEEDOR (CODIGO, NOMBRE, NOMBRECONTACTO, TELEFONO, EMAIL, CIUDAD, PAIS) VALUES ('PROV02', 'PRONACA S.A.', 'Mesa de Negocios', '0992345566', 'negocios@pronaca.com', 'Quito', 'Ecuador');
-INSERT INTO PROVEEDOR (CODIGO, NOMBRE, NOMBRECONTACTO, TELEFONO, EMAIL, CIUDAD, PAIS) VALUES ('PROV03', 'Tonicorp S.A.', 'Canal Moderno', '0993456677', 'comercial@tonicorp.com', 'Guayaquil', 'Ecuador');
-INSERT INTO PROVEEDOR (CODIGO, NOMBRE, NOMBRECONTACTO, TELEFONO, EMAIL, CIUDAD, PAIS) VALUES ('PROV04', 'Moderna Alimentos S.A.', 'Cuentas Clave', '0994567788', 'clientes@moderna.com.ec', 'Quito', 'Ecuador');
-INSERT INTO PROVEEDOR (CODIGO, NOMBRE, NOMBRECONTACTO, TELEFONO, EMAIL, CIUDAD, PAIS) VALUES ('PROV05', 'Nestle Ecuador S.A.', 'Atencion Retail', '0995678899', 'retail@ec.nestle.com', 'Quito', 'Ecuador');
-INSERT INTO PROVEEDOR (CODIGO, NOMBRE, NOMBRECONTACTO, TELEFONO, EMAIL, CIUDAD, PAIS) VALUES ('PROV06', 'Tesalia CBC Cia. Ltda.', 'Equipo Supermercados', '0996789900', 'ventas@tesaliacbc.com', 'Quito', 'Ecuador');
-INSERT INTO PROVEEDOR (CODIGO, NOMBRE, NOMBRECONTACTO, TELEFONO, EMAIL, CIUDAD, PAIS) VALUES ('PROV07', 'La Universal S.A.', 'Key Account', '0997890011', 'contacto@launiversal.com.ec', 'Guayaquil', 'Ecuador');
-INSERT INTO PROVEEDOR (CODIGO, NOMBRE, NOMBRECONTACTO, TELEFONO, EMAIL, CIUDAD, PAIS) VALUES ('PROV08', 'Cerveceria Nacional CN S.A.', 'Canal Moderno', '0998901122', 'servicio@cn.com.ec', 'Guayaquil', 'Ecuador');
-INSERT INTO PROVEEDOR (CODIGO, NOMBRE, NOMBRECONTACTO, TELEFONO, EMAIL, CIUDAD, PAIS) VALUES ('PROV09', 'Kimberly-Clark Ecuador S.A.', 'Trade Marketing', '0999012233', 'clientes@kcc.com', 'Guayaquil', 'Ecuador');
-INSERT INTO PROVEEDOR (CODIGO, NOMBRE, NOMBRECONTACTO, TELEFONO, EMAIL, CIUDAD, PAIS) VALUES ('PROV10', 'Industrias Lacteas Toni S.A.', 'Atencion Comercial', '0990123344', 'servicio@toni.com.ec', 'Guayaquil', 'Ecuador');
+INSERT INTO PROVEEDOR (CODIGO, NOMBRE, NOMBRECONTACTO, TELEFONO, EMAIL, DIRECCION, CIUDAD, PAIS) VALUES ('PROV01', 'La Fabril S.A.', 'Contacto Comercial', '0991112233', 'ventas@lafabril.com', 'Km 5.5 Via Daule', 'Guayaquil', 'Ecuador');
+INSERT INTO PROVEEDOR (CODIGO, NOMBRE, NOMBRECONTACTO, TELEFONO, EMAIL, DIRECCION, CIUDAD, PAIS) VALUES ('PROV02', 'PRONACA S.A.', 'Mesa de Negocios', '0992345566', 'negocios@pronaca.com', 'Av. Eloy Alfaro N74-464 y De los Eucaliptos', 'Quito', 'Ecuador');
+INSERT INTO PROVEEDOR (CODIGO, NOMBRE, NOMBRECONTACTO, TELEFONO, EMAIL, DIRECCION, CIUDAD, PAIS) VALUES ('PROV03', 'Tonicorp S.A.', 'Canal Moderno', '0993456677', 'comercial@tonicorp.com', 'Km 10 Via Daule', 'Guayaquil', 'Ecuador');
+INSERT INTO PROVEEDOR (CODIGO, NOMBRE, NOMBRECONTACTO, TELEFONO, EMAIL, DIRECCION, CIUDAD, PAIS) VALUES ('PROV04', 'Moderna Alimentos S.A.', 'Cuentas Clave', '0994567788', 'clientes@moderna.com.ec', 'Panamericana Norte Km 17', 'Quito', 'Ecuador');
+INSERT INTO PROVEEDOR (CODIGO, NOMBRE, NOMBRECONTACTO, TELEFONO, EMAIL, DIRECCION, CIUDAD, PAIS) VALUES ('PROV05', 'Nestle Ecuador S.A.', 'Atencion Retail', '0995678899', 'retail@ec.nestle.com', 'Av. Gonzalez Suarez 31-108 y Corunia', 'Quito', 'Ecuador');
+INSERT INTO PROVEEDOR (CODIGO, NOMBRE, NOMBRECONTACTO, TELEFONO, EMAIL, DIRECCION, CIUDAD, PAIS) VALUES ('PROV06', 'Tesalia CBC Cia. Ltda.', 'Equipo Supermercados', '0996789900', 'ventas@tesaliacbc.com', 'Parque Industrial Machachi Lote 4', 'Quito', 'Ecuador');
+INSERT INTO PROVEEDOR (CODIGO, NOMBRE, NOMBRECONTACTO, TELEFONO, EMAIL, DIRECCION, CIUDAD, PAIS) VALUES ('PROV07', 'La Universal S.A.', 'Key Account', '0997890011', 'contacto@launiversal.com.ec', 'Av. 25 de Julio y Av. Machala', 'Guayaquil', 'Ecuador');
+INSERT INTO PROVEEDOR (CODIGO, NOMBRE, NOMBRECONTACTO, TELEFONO, EMAIL, DIRECCION, CIUDAD, PAIS) VALUES ('PROV08', 'Cerveceria Nacional CN S.A.', 'Canal Moderno', '0998901122', 'servicio@cn.com.ec', 'Km 16.5 Via Daule', 'Guayaquil', 'Ecuador');
+INSERT INTO PROVEEDOR (CODIGO, NOMBRE, NOMBRECONTACTO, TELEFONO, EMAIL, DIRECCION, CIUDAD, PAIS) VALUES ('PROV09', 'Kimberly-Clark Ecuador S.A.', 'Trade Marketing', '0999012233', 'clientes@kcc.com', 'Parque Industrial Inmaconsa Km 12', 'Guayaquil', 'Ecuador');
+INSERT INTO PROVEEDOR (CODIGO, NOMBRE, NOMBRECONTACTO, TELEFONO, EMAIL, DIRECCION, CIUDAD, PAIS) VALUES ('PROV10', 'Industrias Lacteas Toni S.A.', 'Atencion Comercial', '0990123344', 'servicio@toni.com.ec', 'Km 6.5 Via Daule', 'Guayaquil', 'Ecuador');
 COMMIT;
 
 BEGIN DBMS_OUTPUT.PUT_LINE('[2/7] 10 proveedores insertados.'); END;
@@ -71,26 +71,26 @@ BEGIN DBMS_OUTPUT.PUT_LINE('[3/7] 5 empleados insertados.'); END;
 -- 4. CLIENTES (20 requeridos)
 -- ============================================================================
 
-INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, CIUDAD, PAIS) VALUES ('CLI01', 'Juan Carlos Rodriguez', 'Cedula', '1712345678', 'jcrodriguez@email.com', '0991111111', 'Quito', 'Ecuador');
-INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, CIUDAD, PAIS) VALUES ('CLI02', 'Maria Elena Suarez', 'Cedula', '1723456789', 'mesuarez@email.com', '0992222222', 'Quito', 'Ecuador');
-INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, CIUDAD, PAIS) VALUES ('CLI03', 'Pedro Antonio Morales', 'Cedula', '0912345678', 'pamorales@email.com', '0993333333', 'Guayaquil', 'Ecuador');
-INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, CIUDAD, PAIS) VALUES ('CLI04', 'Ana Lucia Fernandez', 'Cedula', '0923456789', 'alfernandez@email.com', '0994444444', 'Guayaquil', 'Ecuador');
-INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, CIUDAD, PAIS) VALUES ('CLI05', 'Carlos Eduardo Vega', 'Cedula', '0112345678', 'cevega@email.com', '0995555555', 'Cuenca', 'Ecuador');
-INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, CIUDAD, PAIS) VALUES ('CLI06', 'Diana Patricia Castro', 'Cedula', '0123456789', 'dpcastro@email.com', '0996666666', 'Cuenca', 'Ecuador');
-INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, CIUDAD, PAIS) VALUES ('CLI07', 'Roberto Luis Mendez', 'Cedula', '1312345678', 'rlmendez@email.com', '0997777777', 'Manta', 'Ecuador');
-INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, CIUDAD, PAIS) VALUES ('CLI08', 'Sandra Beatriz Lopez', 'Cedula', '1323456789', 'sblopez@email.com', '0998888888', 'Manta', 'Ecuador');
-INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, CIUDAD, PAIS) VALUES ('CLI09', 'Miguel Angel Torres', 'Cedula', '1812345678', 'matorres@email.com', '0999999999', 'Loja', 'Ecuador');
-INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, CIUDAD, PAIS) VALUES ('CLI10', 'Laura Isabel Herrera', 'Cedula', '1823456789', 'liherrera@email.com', '0990000001', 'Loja', 'Ecuador');
-INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, CIUDAD, PAIS) VALUES ('CLI11', 'Francisco Javier Ruiz', 'RUC', '1791234567001', 'fjruiz@empresa.com', '0990000002', 'Quito', 'Ecuador');
-INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, CIUDAD, PAIS) VALUES ('CLI12', 'Elena Margarita Paz', 'Cedula', '1734567890', 'empaz@email.com', '0990000003', 'Quito', 'Ecuador');
-INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, CIUDAD, PAIS) VALUES ('CLI13', 'Oscar Mauricio Silva', 'Cedula', '0934567890', 'omsilva@email.com', '0990000004', 'Guayaquil', 'Ecuador');
-INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, CIUDAD, PAIS) VALUES ('CLI14', 'Claudia Andrea Reyes', 'Cedula', '0945678901', 'careyes@email.com', '0990000005', 'Guayaquil', 'Ecuador');
-INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, CIUDAD, PAIS) VALUES ('CLI15', 'Raul Ernesto Medina', 'RUC', '0191234567001', 'remedina@empresa.com', '0990000006', 'Cuenca', 'Ecuador');
-INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, CIUDAD, PAIS) VALUES ('CLI16', 'Teresa Eugenia Vargas', 'Cedula', '0156789012', 'tevargas@email.com', '0990000007', 'Cuenca', 'Ecuador');
-INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, CIUDAD, PAIS) VALUES ('CLI17', 'Hector Fabian Rojas', 'Cedula', '1345678901', 'hfrojas@email.com', '0990000008', 'Manta', 'Ecuador');
-INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, CIUDAD, PAIS) VALUES ('CLI18', 'Gloria Esperanza Nunez', 'Cedula', '1356789012', 'genunez@email.com', '0990000009', 'Manta', 'Ecuador');
-INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, CIUDAD, PAIS) VALUES ('CLI19', 'Jorge Armando Pena', 'RUC', '1891234567001', 'japena@empresa.com', '0990000010', 'Loja', 'Ecuador');
-INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, CIUDAD, PAIS) VALUES ('CLI20', 'Beatriz Carolina Soto', 'Cedula', '1867890123', 'bcsoto@email.com', '0990000011', 'Loja', 'Ecuador');
+INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, DIRECCION, CIUDAD, PAIS) VALUES ('CLI01', 'Juan Carlos Rodriguez', 'Cedula', '1712345678', 'jcrodriguez@email.com', '0991111111', 'Av. Republica E7-123 y Almagro', 'Quito', 'Ecuador');
+INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, DIRECCION, CIUDAD, PAIS) VALUES ('CLI02', 'Maria Elena Suarez', 'Cedula', '1723456789', 'mesuarez@email.com', '0992222222', 'Calle Amazonas N24-56 y Colon', 'Quito', 'Ecuador');
+INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, DIRECCION, CIUDAD, PAIS) VALUES ('CLI03', 'Pedro Antonio Morales', 'Cedula', '0912345678', 'pamorales@email.com', '0993333333', 'Av. 9 de Octubre 1520 y Boyaca', 'Guayaquil', 'Ecuador');
+INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, DIRECCION, CIUDAD, PAIS) VALUES ('CLI04', 'Ana Lucia Fernandez', 'Cedula', '0923456789', 'alfernandez@email.com', '0994444444', 'Malecon Simon Bolivar 800 y Junin', 'Guayaquil', 'Ecuador');
+INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, DIRECCION, CIUDAD, PAIS) VALUES ('CLI05', 'Carlos Eduardo Vega', 'Cedula', '0112345678', 'cevega@email.com', '0995555555', 'Av. Solano 4-25 y Remigio Crespo', 'Cuenca', 'Ecuador');
+INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, DIRECCION, CIUDAD, PAIS) VALUES ('CLI06', 'Diana Patricia Castro', 'Cedula', '0123456789', 'dpcastro@email.com', '0996666666', 'Calle Larga 8-50 y Benigno Malo', 'Cuenca', 'Ecuador');
+INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, DIRECCION, CIUDAD, PAIS) VALUES ('CLI07', 'Roberto Luis Mendez', 'Cedula', '1312345678', 'rlmendez@email.com', '0997777777', 'Av. Malecon de Manta 215', 'Manta', 'Ecuador');
+INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, DIRECCION, CIUDAD, PAIS) VALUES ('CLI08', 'Sandra Beatriz Lopez', 'Cedula', '1323456789', 'sblopez@email.com', '0998888888', 'Calle 15 y Av. 24 Centro', 'Manta', 'Ecuador');
+INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, DIRECCION, CIUDAD, PAIS) VALUES ('CLI09', 'Miguel Angel Torres', 'Cedula', '1812345678', 'matorres@email.com', '0999999999', 'Av. Universitaria y Mercadillo', 'Loja', 'Ecuador');
+INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, DIRECCION, CIUDAD, PAIS) VALUES ('CLI10', 'Laura Isabel Herrera', 'Cedula', '1823456789', 'liherrera@email.com', '0990000001', 'Calle Bolivar 10-45 y Bernardo Valdivieso', 'Loja', 'Ecuador');
+INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, DIRECCION, CIUDAD, PAIS) VALUES ('CLI11', 'Francisco Javier Ruiz', 'RUC', '1791234567001', 'fjruiz@empresa.com', '0990000002', 'Av. Naciones Unidas E10-45 y Amazonas', 'Quito', 'Ecuador');
+INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, DIRECCION, CIUDAD, PAIS) VALUES ('CLI12', 'Elena Margarita Paz', 'Cedula', '1734567890', 'empaz@email.com', '0990000003', 'Calle Veintimilla E8-90 y 6 de Diciembre', 'Quito', 'Ecuador');
+INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, DIRECCION, CIUDAD, PAIS) VALUES ('CLI13', 'Oscar Mauricio Silva', 'Cedula', '0934567890', 'omsilva@email.com', '0990000004', 'Av. Francisco de Orellana Norte Mz 111', 'Guayaquil', 'Ecuador');
+INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, DIRECCION, CIUDAD, PAIS) VALUES ('CLI14', 'Claudia Andrea Reyes', 'Cedula', '0945678901', 'careyes@email.com', '0990000005', 'Ciudadela Kennedy Norte Mz 45 Villa 12', 'Guayaquil', 'Ecuador');
+INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, DIRECCION, CIUDAD, PAIS) VALUES ('CLI15', 'Raul Ernesto Medina', 'RUC', '0191234567001', 'remedina@empresa.com', '0990000006', 'Av. Ordoniez Lasso 5-89 y Del Estadio', 'Cuenca', 'Ecuador');
+INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, DIRECCION, CIUDAD, PAIS) VALUES ('CLI16', 'Teresa Eugenia Vargas', 'Cedula', '0156789012', 'tevargas@email.com', '0990000007', 'Calle Gran Colombia 15-20 y Tarqui', 'Cuenca', 'Ecuador');
+INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, DIRECCION, CIUDAD, PAIS) VALUES ('CLI17', 'Hector Fabian Rojas', 'Cedula', '1345678901', 'hfrojas@email.com', '0990000008', 'Av. 4 de Noviembre y Calle 108', 'Manta', 'Ecuador');
+INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, DIRECCION, CIUDAD, PAIS) VALUES ('CLI18', 'Gloria Esperanza Nunez', 'Cedula', '1356789012', 'genunez@email.com', '0990000009', 'Barrio Tarqui Calle 120 y Av. 115', 'Manta', 'Ecuador');
+INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, DIRECCION, CIUDAD, PAIS) VALUES ('CLI19', 'Jorge Armando Pena', 'RUC', '1891234567001', 'japena@empresa.com', '0990000010', 'Av. Manuel Aguirre 12-34 y Rocafuerte', 'Loja', 'Ecuador');
+INSERT INTO CLIENTE (CODIGO, NOMBRECOMPLETO, TIPODOCUMENTO, NUMERODOCUMENTO, EMAIL, TELEFONO, DIRECCION, CIUDAD, PAIS) VALUES ('CLI20', 'Beatriz Carolina Soto', 'Cedula', '1867890123', 'bcsoto@email.com', '0990000011', 'Calle 18 de Noviembre 08-56 y Colon', 'Loja', 'Ecuador');
 COMMIT;
 
 BEGIN DBMS_OUTPUT.PUT_LINE('[4/7] 20 clientes insertados.'); END;
@@ -124,12 +124,16 @@ DECLARE
     v_nombres_limpieza t_nombres;
     v_nombres_cuidado t_nombres;
     
+    TYPE t_descripciones IS TABLE OF VARCHAR2(200) INDEX BY PLS_INTEGER;
+    v_desc_categoria t_descripciones;
+    
     v_categoria NUMBER;
     v_proveedor NUMBER;
     v_precio NUMBER(18,2);
     v_iva NUMBER(5,2);
     v_codigo VARCHAR2(30);
     v_nombre VARCHAR2(200);
+    v_descripcion VARCHAR2(500);
     v_idx NUMBER;
 BEGIN
     -- Nombres Despensa (40)
@@ -342,6 +346,13 @@ BEGIN
     v_nombres_cuidado(39) := 'Removedor de Esmalte Vogue 120ml';
     v_nombres_cuidado(40) := 'Esmalte de Unas Valmy Rojo 10ml';
     
+    -- Descripciones por categoria
+    v_desc_categoria(1) := 'Producto de despensa y abarrotes de alta calidad para el hogar ecuatoriano';
+    v_desc_categoria(2) := 'Producto lacteo o refrigerado fresco, ideal para consumo diario';
+    v_desc_categoria(3) := 'Bebida o snack refrescante para toda la familia';
+    v_desc_categoria(4) := 'Producto de limpieza eficaz para mantener tu hogar impecable';
+    v_desc_categoria(5) := 'Producto de cuidado personal para tu bienestar y el de tu familia';
+    
     -- Insertar 200 productos
     FOR i IN 1..200 LOOP
         -- Categoria (40 productos por categoria)
@@ -375,8 +386,11 @@ BEGIN
             v_nombre := v_nombre || ' v' || TO_CHAR(TRUNC(i / 40) + 1);
         END IF;
         
-        INSERT INTO PRODUCTO (CODIGO, NOMBRE, CATEGORIAID, PROVEEDORID, PRECIOUNITARIO, PORCENTAJEIVA, STOCK)
-        VALUES (v_codigo, v_nombre, v_categoria, v_proveedor, v_precio, v_iva, 1000);
+        -- Generar descripcion con nombre del producto
+        v_descripcion := v_nombre || '. ' || v_desc_categoria(v_categoria);
+        
+        INSERT INTO PRODUCTO (CODIGO, NOMBRE, DESCRIPCION, CATEGORIAID, PROVEEDORID, PRECIOUNITARIO, PORCENTAJEIVA, STOCK)
+        VALUES (v_codigo, v_nombre, v_descripcion, v_categoria, v_proveedor, v_precio, v_iva, 1000);
     END LOOP;
     
     COMMIT;
