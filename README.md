@@ -1,10 +1,21 @@
-# 📊 INFORME TÉCNICO - PROYECTO OLAP
+# 📊 PROYECTO OLAP - SISTEMA DE ANÁLISIS DE VENTAS
 
-## Sistema de Pedidos con Análisis Dimensional
+## Sistema de Pedidos con Modelo Dimensional (Data Warehouse)
 
-**Materia:** Base de Datos  
-**Fecha:** Noviembre 2025  
+**Materia:** Gestión de Bases de Datos  
+**Docente:** Germán Parra  
+**Fecha:** Diciembre 2025  
 **Plataforma:** Oracle Database 21c + Power BI  
+
+---
+
+## 📑 DOCUMENTACIÓN COMPLETA
+
+| Documento | Descripción | Ubicación |
+|-----------|-------------|-----------|
+| **README.md** | Documentación general del proyecto | Este archivo |
+| **Informe_OLAP.md** | Informe técnico detallado (requisito 8) | `docs/Informe_OLAP.md` |
+| **Guia_Instalacion.md** | Guía paso a paso de instalación | `docs/Guia_Instalacion.md` |
 
 ---
 
@@ -866,18 +877,20 @@ Total IVA = SUM(FACTVENTAS[MONTOIVA])
 
 ```
 Proyecto_OLAP/
-├── README.md                     ← Este informe técnico
+├── README.md                         ← Documentación general
 ├── docs/
-│   └── Guia_Instalacion.md       ← Guía paso a paso
+│   ├── Informe_OLAP.md               ← Informe técnico (requisito 8)
+│   └── Guia_Instalacion.md           ← Guía de instalación
 └── sql/
-    ├── oltp/
-    │   ├── Tablas.sql            ← Crear tablas OLTP
-    │   └── Datos_Tablas.sql      ← Insertar datos de prueba
-    └── olap/
-        ├── TablaDatosDim.sql     ← Crear modelo estrella
-        ├── ETL.sql               ← Proceso ETL
-        ├── UsuarioOLAP.sql       ← Usuario solo lectura
-        └── VistasOLAP_PowerBI.sql ← Vistas para Power BI
+    └── oracle/
+        ├── oltp/
+        │   ├── Tablas.sql            ← Crear tablas OLTP
+        │   └── Datos_Tablas.sql      ← Insertar datos de prueba
+        └── olap/
+            ├── TablaDatosDim.sql     ← Crear modelo estrella
+            ├── ETL.sql               ← Proceso ETL
+            ├── UsuarioOLAP.sql       ← Usuario solo lectura
+            └── VistasOLAP_PowerBI.sql ← Vistas para Power BI
 ```
 
 ---
@@ -898,6 +911,6 @@ Proyecto_OLAP/
 
 ---
 
-**Proyecto OLAP - Sistema de Pedidos**  
+**Proyecto OLAP - Sistema de Análisis de Ventas**  
 **Oracle Database 21c + Power BI**  
-**Noviembre 2025**
+**Diciembre 2025**
