@@ -15,10 +15,10 @@ WHENEVER SQLERROR CONTINUE;
 
 BEGIN
     DBMS_OUTPUT.PUT_LINE('');
-    DBMS_OUTPUT.PUT_LINE('╔══════════════════════════════════════════════════════════════════════════╗');
-    DBMS_OUTPUT.PUT_LINE('║           PROYECTO OLAP - EJECUCION COMPLETA                             ║');
-    DBMS_OUTPUT.PUT_LINE('║           Fecha: ' || TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') || '                                  ║');
-    DBMS_OUTPUT.PUT_LINE('╚══════════════════════════════════════════════════════════════════════════╝');
+    DBMS_OUTPUT.PUT_LINE('========================================================================');
+    DBMS_OUTPUT.PUT_LINE('           PROYECTO OLAP - EJECUCION COMPLETA                          ');
+    DBMS_OUTPUT.PUT_LINE('           Fecha: ' || TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') || '                                  ');
+    DBMS_OUTPUT.PUT_LINE('========================================================================');
     DBMS_OUTPUT.PUT_LINE('');
 END;
 /
@@ -26,42 +26,42 @@ END;
 -- ============================================================================
 -- PASO 1: CREAR TABLAS OLTP
 -- ============================================================================
-BEGIN DBMS_OUTPUT.PUT_LINE(''); DBMS_OUTPUT.PUT_LINE('═══ PASO 1/6: Creando tablas OLTP... ═══'); END;
+BEGIN DBMS_OUTPUT.PUT_LINE(''); DBMS_OUTPUT.PUT_LINE('=== PASO 1/6: Creando tablas OLTP... ==='); END;
 /
-@oltp/Tablas.sql
+@"c:\Users\kenny\OneDrive\Documents\PROYECTO-BS\Proyecto_OLAP\sql\oracle\oltp\Tablas.sql"
 
 -- ============================================================================
 -- PASO 2: INSERTAR DATOS DE PRUEBA
 -- ============================================================================
-BEGIN DBMS_OUTPUT.PUT_LINE(''); DBMS_OUTPUT.PUT_LINE('═══ PASO 2/6: Insertando datos de prueba (10-15 min)... ═══'); END;
+BEGIN DBMS_OUTPUT.PUT_LINE(''); DBMS_OUTPUT.PUT_LINE('=== PASO 2/6: Insertando datos de prueba (10-15 min)... ==='); END;
 /
-@oltp/Datos_Tablas.sql
+@"c:\Users\kenny\OneDrive\Documents\PROYECTO-BS\Proyecto_OLAP\sql\oracle\oltp\Datos_Tablas.sql"
 
 -- ============================================================================
 -- PASO 3: CREAR MODELO ESTRELLA OLAP
 -- ============================================================================
-BEGIN DBMS_OUTPUT.PUT_LINE(''); DBMS_OUTPUT.PUT_LINE('═══ PASO 3/6: Creando modelo estrella OLAP... ═══'); END;
+BEGIN DBMS_OUTPUT.PUT_LINE(''); DBMS_OUTPUT.PUT_LINE('=== PASO 3/6: Creando modelo estrella OLAP... ==='); END;
 /
-@olap/TablaDatosDim.sql
+@"c:\Users\kenny\OneDrive\Documents\PROYECTO-BS\Proyecto_OLAP\sql\oracle\olap\TablaDatosDim.sql"
 
 -- ============================================================================
 -- PASO 4: EJECUTAR ETL
 -- ============================================================================
-BEGIN DBMS_OUTPUT.PUT_LINE(''); DBMS_OUTPUT.PUT_LINE('═══ PASO 4/6: Ejecutando ETL (5-10 min)... ═══'); END;
+BEGIN DBMS_OUTPUT.PUT_LINE(''); DBMS_OUTPUT.PUT_LINE('=== PASO 4/6: Ejecutando ETL (5-10 min)... ==='); END;
 /
-@olap/ETL.sql
+@"c:\Users\kenny\OneDrive\Documents\PROYECTO-BS\Proyecto_OLAP\sql\oracle\olap\ETL.sql"
 
 -- ============================================================================
 -- PASO 5: CREAR VISTAS PARA POWER BI
 -- ============================================================================
-BEGIN DBMS_OUTPUT.PUT_LINE(''); DBMS_OUTPUT.PUT_LINE('═══ PASO 5/6: Creando vistas Power BI... ═══'); END;
+BEGIN DBMS_OUTPUT.PUT_LINE(''); DBMS_OUTPUT.PUT_LINE('=== PASO 5/6: Creando vistas Power BI... ==='); END;
 /
-@olap/VistasOLAP_PowerBI.sql
+@"c:\Users\kenny\OneDrive\Documents\PROYECTO-BS\Proyecto_OLAP\sql\oracle\olap\VistasOLAP_PowerBI.sql"
 
 -- ============================================================================
 -- PASO 6: CREAR USUARIO OLAP (Requiere permisos DBA)
 -- ============================================================================
-BEGIN DBMS_OUTPUT.PUT_LINE(''); DBMS_OUTPUT.PUT_LINE('═══ PASO 6/6: Creando usuario OLAP... ═══'); END;
+BEGIN DBMS_OUTPUT.PUT_LINE(''); DBMS_OUTPUT.PUT_LINE('=== PASO 6/6: Creando usuario OLAP... ==='); END;
 /
 
 -- Intentar crear usuario (puede fallar si no hay permisos DBA)
@@ -129,44 +129,44 @@ SET FEEDBACK ON;
 
 BEGIN
     DBMS_OUTPUT.PUT_LINE('');
-    DBMS_OUTPUT.PUT_LINE('╔══════════════════════════════════════════════════════════════════════════╗');
-    DBMS_OUTPUT.PUT_LINE('║                    VERIFICACION FINAL                                    ║');
-    DBMS_OUTPUT.PUT_LINE('╚══════════════════════════════════════════════════════════════════════════╝');
+    DBMS_OUTPUT.PUT_LINE('========================================================================');
+    DBMS_OUTPUT.PUT_LINE('                    VERIFICACION FINAL                                 ');
+    DBMS_OUTPUT.PUT_LINE('========================================================================');
     DBMS_OUTPUT.PUT_LINE('');
 END;
 /
 
--- Contar registros OLTP
-SELECT 'TABLAS OLTP' AS TIPO, 'CATEGORIA' AS TABLA, COUNT(*) AS REGISTROS FROM CATEGORIA
-UNION ALL SELECT 'TABLAS OLTP', 'PROVEEDOR', COUNT(*) FROM PROVEEDOR
-UNION ALL SELECT 'TABLAS OLTP', 'EMPLEADO', COUNT(*) FROM EMPLEADO
-UNION ALL SELECT 'TABLAS OLTP', 'CLIENTE', COUNT(*) FROM CLIENTE
-UNION ALL SELECT 'TABLAS OLTP', 'MODALIDAD_PAGO', COUNT(*) FROM MODALIDAD_PAGO
-UNION ALL SELECT 'TABLAS OLTP', 'PRODUCTO', COUNT(*) FROM PRODUCTO
-UNION ALL SELECT 'TABLAS OLTP', 'PEDIDO', COUNT(*) FROM PEDIDO
-UNION ALL SELECT 'TABLAS OLTP', 'DETALLE_PEDIDO', COUNT(*) FROM DETALLE_PEDIDO
-UNION ALL SELECT 'TABLAS OLAP', 'DIMTIEMPO', COUNT(*) FROM DIMTIEMPO
-UNION ALL SELECT 'TABLAS OLAP', 'DIMUBICACION', COUNT(*) FROM DIMUBICACION
-UNION ALL SELECT 'TABLAS OLAP', 'DIMCATEGORIA', COUNT(*) FROM DIMCATEGORIA
-UNION ALL SELECT 'TABLAS OLAP', 'DIMPROVEEDOR', COUNT(*) FROM DIMPROVEEDOR
-UNION ALL SELECT 'TABLAS OLAP', 'DIMCLIENTE', COUNT(*) FROM DIMCLIENTE
-UNION ALL SELECT 'TABLAS OLAP', 'DIMEMPLEADO', COUNT(*) FROM DIMEMPLEADO
-UNION ALL SELECT 'TABLAS OLAP', 'DIMMODALIDADPAGO', COUNT(*) FROM DIMMODALIDADPAGO
-UNION ALL SELECT 'TABLAS OLAP', 'DIMPRODUCTO', COUNT(*) FROM DIMPRODUCTO
-UNION ALL SELECT 'TABLAS OLAP', 'FACTVENTAS', COUNT(*) FROM FACTVENTAS
-ORDER BY TIPO, TABLA;
+-- Contar registros
+SELECT 'CATEGORIA' AS TABLA, COUNT(*) AS REGISTROS FROM CATEGORIA
+UNION ALL SELECT 'PROVEEDOR', COUNT(*) FROM PROVEEDOR
+UNION ALL SELECT 'EMPLEADO', COUNT(*) FROM EMPLEADO
+UNION ALL SELECT 'CLIENTE', COUNT(*) FROM CLIENTE
+UNION ALL SELECT 'MODALIDAD_PAGO', COUNT(*) FROM MODALIDAD_PAGO
+UNION ALL SELECT 'PRODUCTO', COUNT(*) FROM PRODUCTO
+UNION ALL SELECT 'PEDIDO', COUNT(*) FROM PEDIDO
+UNION ALL SELECT 'DETALLE_PEDIDO', COUNT(*) FROM DETALLE_PEDIDO
+UNION ALL SELECT 'DIMTIEMPO', COUNT(*) FROM DIMTIEMPO
+UNION ALL SELECT 'DIMUBICACION', COUNT(*) FROM DIMUBICACION
+UNION ALL SELECT 'DIMCATEGORIA', COUNT(*) FROM DIMCATEGORIA
+UNION ALL SELECT 'DIMPROVEEDOR', COUNT(*) FROM DIMPROVEEDOR
+UNION ALL SELECT 'DIMCLIENTE', COUNT(*) FROM DIMCLIENTE
+UNION ALL SELECT 'DIMEMPLEADO', COUNT(*) FROM DIMEMPLEADO
+UNION ALL SELECT 'DIMMODALIDADPAGO', COUNT(*) FROM DIMMODALIDADPAGO
+UNION ALL SELECT 'DIMPRODUCTO', COUNT(*) FROM DIMPRODUCTO
+UNION ALL SELECT 'FACTVENTAS', COUNT(*) FROM FACTVENTAS
+ORDER BY 1;
 
 BEGIN
     DBMS_OUTPUT.PUT_LINE('');
-    DBMS_OUTPUT.PUT_LINE('╔══════════════════════════════════════════════════════════════════════════╗');
-    DBMS_OUTPUT.PUT_LINE('║              EJECUCION COMPLETADA EXITOSAMENTE                           ║');
-    DBMS_OUTPUT.PUT_LINE('║              Fecha: ' || TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') || '                                 ║');
-    DBMS_OUTPUT.PUT_LINE('╠══════════════════════════════════════════════════════════════════════════╣');
-    DBMS_OUTPUT.PUT_LINE('║  Conexion Power BI:                                                      ║');
-    DBMS_OUTPUT.PUT_LINE('║  - Servidor: localhost:1521/XEPDB1                                       ║');
-    DBMS_OUTPUT.PUT_LINE('║  - Usuario: USUARIO_OLAP                                                 ║');
-    DBMS_OUTPUT.PUT_LINE('║  - Password: OLAPReadOnly2025                                            ║');
-    DBMS_OUTPUT.PUT_LINE('╚══════════════════════════════════════════════════════════════════════════╝');
+    DBMS_OUTPUT.PUT_LINE('========================================================================');
+    DBMS_OUTPUT.PUT_LINE('              EJECUCION COMPLETADA EXITOSAMENTE                        ');
+    DBMS_OUTPUT.PUT_LINE('              Fecha: ' || TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS') || '                                ');
+    DBMS_OUTPUT.PUT_LINE('------------------------------------------------------------------------');
+    DBMS_OUTPUT.PUT_LINE('  Conexion Power BI:                                                   ');
+    DBMS_OUTPUT.PUT_LINE('  - Servidor: localhost:1521/XEPDB1                                    ');
+    DBMS_OUTPUT.PUT_LINE('  - Usuario: USUARIO_OLAP                                              ');
+    DBMS_OUTPUT.PUT_LINE('  - Password: OLAPReadOnly2025                                         ');
+    DBMS_OUTPUT.PUT_LINE('========================================================================');
 END;
 /
 
