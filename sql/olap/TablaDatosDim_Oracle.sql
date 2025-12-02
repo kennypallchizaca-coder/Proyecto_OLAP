@@ -1,0 +1,321 @@
+-- ============================================================================
+-- PROYECTO OLAP - SISTEMA DE PEDIDOS
+-- ============================================================================
+-- Archivo: TablaDatosDim_Oracle.sql
+-- Descripcion: Esquema OLAP con modelo ESTRELLA (ORACLE)
+-- Base de Datos: Oracle Database 21c
+-- Fecha: Diciembre 2025
+-- ============================================================================
+
+SET SERVEROUTPUT ON SIZE UNLIMITED;
+
+-- ============================================================================
+-- LIMPIEZA DE TABLAS OLAP EXISTENTES
+-- ============================================================================
+
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE FACTVENTAS CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE DIMPRODUCTO CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE DIMCATEGORIA CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE DIMPROVEEDOR CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE DIMCLIENTE CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE DIMEMPLEADO CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE DIMMODALIDADPAGO CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE DIMUBICACION CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE DIMTIEMPO CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
+/
+
+-- Eliminar secuencias
+BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE SEQ_DIMUBICACION'; EXCEPTION WHEN OTHERS THEN NULL; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE SEQ_DIMCATEGORIA'; EXCEPTION WHEN OTHERS THEN NULL; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE SEQ_DIMPROVEEDOR'; EXCEPTION WHEN OTHERS THEN NULL; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE SEQ_DIMCLIENTE'; EXCEPTION WHEN OTHERS THEN NULL; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE SEQ_DIMEMPLEADO'; EXCEPTION WHEN OTHERS THEN NULL; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE SEQ_DIMMODALIDADPAGO'; EXCEPTION WHEN OTHERS THEN NULL; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE SEQ_DIMPRODUCTO'; EXCEPTION WHEN OTHERS THEN NULL; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE SEQ_FACTVENTAS'; EXCEPTION WHEN OTHERS THEN NULL; END;
+/
+
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('============================================================================');
+    DBMS_OUTPUT.PUT_LINE('CREANDO ESQUEMA OLAP - MODELO ESTRELLA (ORACLE)');
+    DBMS_OUTPUT.PUT_LINE('============================================================================');
+END;
+/
+
+-- ============================================================================
+-- CREAR SECUENCIAS
+-- ============================================================================
+
+CREATE SEQUENCE SEQ_DIMUBICACION START WITH 1 INCREMENT BY 1 NOCACHE;
+CREATE SEQUENCE SEQ_DIMCATEGORIA START WITH 1 INCREMENT BY 1 NOCACHE;
+CREATE SEQUENCE SEQ_DIMPROVEEDOR START WITH 1 INCREMENT BY 1 NOCACHE;
+CREATE SEQUENCE SEQ_DIMCLIENTE START WITH 1 INCREMENT BY 1 NOCACHE;
+CREATE SEQUENCE SEQ_DIMEMPLEADO START WITH 1 INCREMENT BY 1 NOCACHE;
+CREATE SEQUENCE SEQ_DIMMODALIDADPAGO START WITH 1 INCREMENT BY 1 NOCACHE;
+CREATE SEQUENCE SEQ_DIMPRODUCTO START WITH 1 INCREMENT BY 1 NOCACHE;
+CREATE SEQUENCE SEQ_FACTVENTAS START WITH 1 INCREMENT BY 1 NOCACHE;
+
+-- ============================================================================
+-- DIMENSION: DimTiempo
+-- ============================================================================
+
+BEGIN DBMS_OUTPUT.PUT_LINE('[1/9] Creando DimTiempo...'); END;
+/
+
+CREATE TABLE DIMTIEMPO (
+    TIEMPOKEY           NUMBER(10) PRIMARY KEY,           -- Formato YYYYMMDD
+    FECHA               DATE NOT NULL UNIQUE,
+    ANIO                NUMBER(4) NOT NULL,
+    SEMESTRE            NUMBER(1) NOT NULL,
+    TRIMESTRE           NUMBER(1) NOT NULL,
+    MES                 NUMBER(2) NOT NULL,
+    SEMANA              NUMBER(2) NOT NULL,
+    DIADELMES           NUMBER(2) NOT NULL,
+    DIASEMANA           NUMBER(1) NOT NULL,
+    DIADELANIO          NUMBER(3) NOT NULL,
+    NOMBREANIO          VARCHAR2(10) NOT NULL,
+    NOMBRESEMESTRE      VARCHAR2(20) NOT NULL,
+    NOMBRETRIMESTRE     VARCHAR2(10) NOT NULL,
+    NOMBREMES           VARCHAR2(20) NOT NULL,
+    NOMBREMESCORTO      VARCHAR2(5) NOT NULL,
+    NOMBREDIA           VARCHAR2(20) NOT NULL,
+    NOMBREDIACORTO      VARCHAR2(5) NOT NULL,
+    ESFINDESEMANA       NUMBER(1) NOT NULL,
+    ESDIALABORAL        NUMBER(1) NOT NULL,
+    ANIOMES             VARCHAR2(10) NOT NULL,
+    ANIOTRIMESTRE       VARCHAR2(10) NOT NULL
+);
+
+CREATE INDEX IX_DIMTIEMPO_FECHA ON DIMTIEMPO(FECHA);
+CREATE INDEX IX_DIMTIEMPO_ANIOMES ON DIMTIEMPO(ANIO, MES);
+
+-- ============================================================================
+-- DIMENSION: DimUbicacion
+-- ============================================================================
+
+BEGIN DBMS_OUTPUT.PUT_LINE('[2/9] Creando DimUbicacion...'); END;
+/
+
+CREATE TABLE DIMUBICACION (
+    UBICACIONKEY        NUMBER(10) DEFAULT SEQ_DIMUBICACION.NEXTVAL PRIMARY KEY,
+    PAIS                VARCHAR2(100) NOT NULL,
+    CIUDAD              VARCHAR2(100) NOT NULL,
+    REGION              VARCHAR2(100),
+    
+    CONSTRAINT UK_DIMUBICACION UNIQUE (PAIS, CIUDAD)
+);
+
+-- ============================================================================
+-- DIMENSION: DimCategoria
+-- ============================================================================
+
+BEGIN DBMS_OUTPUT.PUT_LINE('[3/9] Creando DimCategoria...'); END;
+/
+
+CREATE TABLE DIMCATEGORIA (
+    CATEGORIAKEY        NUMBER(10) DEFAULT SEQ_DIMCATEGORIA.NEXTVAL PRIMARY KEY,
+    CATEGORIAID_OLTP    NUMBER(10) NOT NULL,
+    CODIGO              VARCHAR2(10) NOT NULL,
+    NOMBRE              VARCHAR2(100) NOT NULL,
+    DESCRIPCION         VARCHAR2(500)
+);
+
+-- ============================================================================
+-- DIMENSION: DimProveedor
+-- ============================================================================
+
+BEGIN DBMS_OUTPUT.PUT_LINE('[4/9] Creando DimProveedor...'); END;
+/
+
+CREATE TABLE DIMPROVEEDOR (
+    PROVEEDORKEY        NUMBER(10) DEFAULT SEQ_DIMPROVEEDOR.NEXTVAL PRIMARY KEY,
+    PROVEEDORID_OLTP    NUMBER(10) NOT NULL,
+    CODIGO              VARCHAR2(20) NOT NULL,
+    NOMBRE              VARCHAR2(200) NOT NULL,
+    NOMBRECONTACTO      VARCHAR2(150),
+    CIUDAD              VARCHAR2(100) NOT NULL,
+    PAIS                VARCHAR2(100) NOT NULL,
+    UBICACIONKEY        NUMBER(10)
+);
+
+-- ============================================================================
+-- DIMENSION: DimCliente
+-- ============================================================================
+
+BEGIN DBMS_OUTPUT.PUT_LINE('[5/9] Creando DimCliente...'); END;
+/
+
+CREATE TABLE DIMCLIENTE (
+    CLIENTEKEY          NUMBER(10) DEFAULT SEQ_DIMCLIENTE.NEXTVAL PRIMARY KEY,
+    CLIENTEID_OLTP      NUMBER(10) NOT NULL,
+    CODIGO              VARCHAR2(20) NOT NULL,
+    NOMBRECOMPLETO      VARCHAR2(200) NOT NULL,
+    TIPODOCUMENTO       VARCHAR2(20) NOT NULL,
+    EMAIL               VARCHAR2(150),
+    CIUDAD              VARCHAR2(100) NOT NULL,
+    PAIS                VARCHAR2(100) NOT NULL,
+    UBICACIONKEY        NUMBER(10)
+);
+
+-- ============================================================================
+-- DIMENSION: DimEmpleado
+-- ============================================================================
+
+BEGIN DBMS_OUTPUT.PUT_LINE('[6/9] Creando DimEmpleado...'); END;
+/
+
+CREATE TABLE DIMEMPLEADO (
+    EMPLEADOKEY         NUMBER(10) DEFAULT SEQ_DIMEMPLEADO.NEXTVAL PRIMARY KEY,
+    EMPLEADOID_OLTP     NUMBER(10) NOT NULL,
+    CODIGO              VARCHAR2(20) NOT NULL,
+    NOMBRECOMPLETO      VARCHAR2(200) NOT NULL,
+    CARGO               VARCHAR2(100) NOT NULL
+);
+
+-- ============================================================================
+-- DIMENSION: DimModalidadPago
+-- ============================================================================
+
+BEGIN DBMS_OUTPUT.PUT_LINE('[7/9] Creando DimModalidadPago...'); END;
+/
+
+CREATE TABLE DIMMODALIDADPAGO (
+    MODALIDADKEY        NUMBER(10) DEFAULT SEQ_DIMMODALIDADPAGO.NEXTVAL PRIMARY KEY,
+    MODALIDADID_OLTP    NUMBER(10) NOT NULL,
+    CODIGO              VARCHAR2(20) NOT NULL,
+    DESCRIPCION         VARCHAR2(100) NOT NULL,
+    TIPOPAGO            VARCHAR2(50) NOT NULL,
+    CUOTAS              NUMBER(5) NOT NULL,
+    TASAINTERES         NUMBER(5,2) NOT NULL,
+    ESTARJETA           NUMBER(1) NOT NULL,
+    DESCRIPCIONCOMPLETA VARCHAR2(150) NOT NULL
+);
+
+-- ============================================================================
+-- DIMENSION: DimProducto (desnormalizada)
+-- ============================================================================
+
+BEGIN DBMS_OUTPUT.PUT_LINE('[8/9] Creando DimProducto...'); END;
+/
+
+CREATE TABLE DIMPRODUCTO (
+    PRODUCTOKEY         NUMBER(10) DEFAULT SEQ_DIMPRODUCTO.NEXTVAL PRIMARY KEY,
+    PRODUCTOID_OLTP     NUMBER(10) NOT NULL,
+    CODIGO              VARCHAR2(30) NOT NULL,
+    NOMBRE              VARCHAR2(200) NOT NULL,
+    CATEGORIAKEY        NUMBER(10) NOT NULL,
+    NOMBRECATEGORIA     VARCHAR2(100) NOT NULL,
+    PROVEEDORKEY        NUMBER(10) NOT NULL,
+    NOMBREPROVEEDOR     VARCHAR2(200) NOT NULL,
+    PRECIOUNITARIO      NUMBER(18,2) NOT NULL,
+    PORCENTAJEIVA       NUMBER(5,2) NOT NULL,
+    TIENEIVA            NUMBER(1) NOT NULL,
+    TIPOIVA             VARCHAR2(20) NOT NULL
+);
+
+-- ============================================================================
+-- TABLA DE HECHOS: FactVentas
+-- ============================================================================
+
+BEGIN DBMS_OUTPUT.PUT_LINE('[9/9] Creando FactVentas...'); END;
+/
+
+CREATE TABLE FACTVENTAS (
+    FACTVENTAID             NUMBER(19) DEFAULT SEQ_FACTVENTAS.NEXTVAL PRIMARY KEY,
+    
+    -- Claves foraneas a dimensiones
+    TIEMPOKEY               NUMBER(10) NOT NULL,
+    PRODUCTOKEY             NUMBER(10) NOT NULL,
+    CATEGORIAKEY            NUMBER(10) NOT NULL,
+    CLIENTEKEY              NUMBER(10) NOT NULL,
+    PROVEEDORKEY            NUMBER(10) NOT NULL,
+    EMPLEADOKEY             NUMBER(10) NOT NULL,
+    MODALIDADKEY            NUMBER(10) NOT NULL,
+    UBICACIONCLIENTEKEY     NUMBER(10) NOT NULL,
+    UBICACIONPROVEEDORKEY   NUMBER(10),
+    
+    -- Claves degeneradas
+    PEDIDOID_OLTP           NUMBER(10) NOT NULL,
+    DETALLEID_OLTP          NUMBER(10) NOT NULL,
+    
+    -- Medidas
+    CANTIDAD                NUMBER(10) NOT NULL,
+    PRECIOUNITARIO          NUMBER(18,2) NOT NULL,
+    PORCENTAJEIVA           NUMBER(5,2) NOT NULL,
+    MONTOSUBTOTAL           NUMBER(18,2) NOT NULL,
+    MONTOIVA                NUMBER(18,2) NOT NULL,
+    MONTOTOTAL              NUMBER(18,2) NOT NULL,
+    
+    -- Foreign Keys
+    CONSTRAINT FK_FACT_TIEMPO FOREIGN KEY (TIEMPOKEY) REFERENCES DIMTIEMPO(TIEMPOKEY),
+    CONSTRAINT FK_FACT_PRODUCTO FOREIGN KEY (PRODUCTOKEY) REFERENCES DIMPRODUCTO(PRODUCTOKEY),
+    CONSTRAINT FK_FACT_CATEGORIA FOREIGN KEY (CATEGORIAKEY) REFERENCES DIMCATEGORIA(CATEGORIAKEY),
+    CONSTRAINT FK_FACT_CLIENTE FOREIGN KEY (CLIENTEKEY) REFERENCES DIMCLIENTE(CLIENTEKEY),
+    CONSTRAINT FK_FACT_PROVEEDOR FOREIGN KEY (PROVEEDORKEY) REFERENCES DIMPROVEEDOR(PROVEEDORKEY),
+    CONSTRAINT FK_FACT_EMPLEADO FOREIGN KEY (EMPLEADOKEY) REFERENCES DIMEMPLEADO(EMPLEADOKEY),
+    CONSTRAINT FK_FACT_MODALIDAD FOREIGN KEY (MODALIDADKEY) REFERENCES DIMMODALIDADPAGO(MODALIDADKEY),
+    CONSTRAINT FK_FACT_UBICCLIENTE FOREIGN KEY (UBICACIONCLIENTEKEY) REFERENCES DIMUBICACION(UBICACIONKEY)
+);
+
+-- Indices para consultas OLAP
+CREATE INDEX IX_FACT_TIEMPO ON FACTVENTAS(TIEMPOKEY);
+CREATE INDEX IX_FACT_PRODUCTO ON FACTVENTAS(PRODUCTOKEY);
+CREATE INDEX IX_FACT_CATEGORIA ON FACTVENTAS(CATEGORIAKEY);
+CREATE INDEX IX_FACT_CLIENTE ON FACTVENTAS(CLIENTEKEY);
+CREATE INDEX IX_FACT_PROVEEDOR ON FACTVENTAS(PROVEEDORKEY);
+CREATE INDEX IX_FACT_EMPLEADO ON FACTVENTAS(EMPLEADOKEY);
+CREATE INDEX IX_FACT_MODALIDAD ON FACTVENTAS(MODALIDADKEY);
+CREATE INDEX IX_FACT_UBICCLIENTE ON FACTVENTAS(UBICACIONCLIENTEKEY);
+
+-- ============================================================================
+-- VERIFICACION
+-- ============================================================================
+
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('');
+    DBMS_OUTPUT.PUT_LINE('============================================================================');
+    DBMS_OUTPUT.PUT_LINE('ESQUEMA OLAP CREADO EXITOSAMENTE');
+    DBMS_OUTPUT.PUT_LINE('============================================================================');
+    DBMS_OUTPUT.PUT_LINE('');
+    DBMS_OUTPUT.PUT_LINE('Estructura del Modelo Estrella:');
+    DBMS_OUTPUT.PUT_LINE('');
+    DBMS_OUTPUT.PUT_LINE('                         DimTiempo');
+    DBMS_OUTPUT.PUT_LINE('                             |');
+    DBMS_OUTPUT.PUT_LINE('    DimProducto ----+       |       +---- DimCliente');
+    DBMS_OUTPUT.PUT_LINE('                    |       |       |');
+    DBMS_OUTPUT.PUT_LINE('    DimCategoria ---+-- FactVentas -+--- DimEmpleado');
+    DBMS_OUTPUT.PUT_LINE('                    |       |       |');
+    DBMS_OUTPUT.PUT_LINE('    DimProveedor ---+       |       +---- DimModalidadPago');
+    DBMS_OUTPUT.PUT_LINE('                             |');
+    DBMS_OUTPUT.PUT_LINE('                       DimUbicacion');
+    DBMS_OUTPUT.PUT_LINE('');
+END;
+/
+
+SELECT 
+    TABLE_NAME AS TABLA,
+    CASE 
+        WHEN TABLE_NAME LIKE 'DIM%' THEN 'Dimension'
+        WHEN TABLE_NAME LIKE 'FACT%' THEN 'Hechos'
+        ELSE 'Otra'
+    END AS TIPO_TABLA
+FROM USER_TABLES
+WHERE TABLE_NAME LIKE 'DIM%' OR TABLE_NAME LIKE 'FACT%'
+ORDER BY TIPO_TABLA DESC, TABLE_NAME;
+
+COMMIT;
