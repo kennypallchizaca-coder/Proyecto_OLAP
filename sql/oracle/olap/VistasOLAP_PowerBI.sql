@@ -1,13 +1,15 @@
 -- ============================================================================
 -- PROYECTO OLAP - SISTEMA DE PEDIDOS
 -- ============================================================================
--- Archivo: VistasOLAP_PowerBI_Oracle.sql
+-- Archivo: VistasOLAP_PowerBI.sql
 -- Descripcion: Vistas optimizadas para conexion con Power BI (ORACLE)
 -- Base de Datos: Oracle Database 21c
 -- Fecha: Diciembre 2025
 -- ============================================================================
 
-SET SERVEROUTPUT ON;
+SET SERVEROUTPUT ON SIZE UNLIMITED;
+SET LINESIZE 200;
+SET PAGESIZE 100;
 
 -- ============================================================================
 -- ELIMINAR VISTAS EXISTENTES
@@ -327,20 +329,20 @@ BEGIN DBMS_OUTPUT.PUT_LINE('Vista VW_CALENDARIO creada.'); END;
 -- VERIFICACION
 -- ============================================================================
 
-SELECT '============================================================================' AS INFO FROM DUAL;
-SELECT 'VISTAS OLAP PARA POWER BI - RESUMEN' AS INFO FROM DUAL;
-SELECT '============================================================================' AS INFO FROM DUAL;
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('============================================================================');
+    DBMS_OUTPUT.PUT_LINE('VISTAS OLAP PARA POWER BI - RESUMEN');
+    DBMS_OUTPUT.PUT_LINE('============================================================================');
+END;
+/
 
-SELECT 
-    VIEW_NAME AS VISTA,
-    CREATED AS FECHA_CREACION
-FROM USER_OBJECTS
-WHERE OBJECT_TYPE = 'VIEW'
-AND VIEW_NAME LIKE 'VW_%'
-ORDER BY VIEW_NAME;
+SELECT VIEW_NAME AS VISTA FROM USER_VIEWS WHERE VIEW_NAME LIKE 'VW_%' ORDER BY VIEW_NAME;
 
-SELECT '============================================================================' AS INFO FROM DUAL;
-SELECT 'VISTAS CREADAS EXITOSAMENTE' AS INFO FROM DUAL;
-SELECT '============================================================================' AS INFO FROM DUAL;
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('============================================================================');
+    DBMS_OUTPUT.PUT_LINE('VISTAS CREADAS EXITOSAMENTE');
+    DBMS_OUTPUT.PUT_LINE('============================================================================');
+END;
+/
 
 COMMIT;

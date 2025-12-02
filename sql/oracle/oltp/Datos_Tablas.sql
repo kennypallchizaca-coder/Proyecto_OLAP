@@ -1,13 +1,15 @@
 -- ============================================================================
 -- PROYECTO OLAP - SISTEMA DE PEDIDOS
 -- ============================================================================
--- Archivo: Datos_Tablas_Oracle.sql
+-- Archivo: Datos_Tablas.sql
 -- Descripcion: Insercion masiva de datos de prueba (ORACLE)
 -- Base de Datos: Oracle Database 21c
 -- Fecha: Diciembre 2025
 -- ============================================================================
 
 SET SERVEROUTPUT ON SIZE UNLIMITED;
+SET LINESIZE 200;
+SET PAGESIZE 100;
 
 DECLARE
     v_msg VARCHAR2(100);
@@ -497,9 +499,12 @@ END;
 -- VERIFICACION FINAL
 -- ============================================================================
 
-SELECT '============================================================================' AS INFO FROM DUAL;
-SELECT 'RESUMEN DE DATOS INSERTADOS' AS INFO FROM DUAL;
-SELECT '============================================================================' AS INFO FROM DUAL;
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('============================================================================');
+    DBMS_OUTPUT.PUT_LINE('RESUMEN DE DATOS INSERTADOS');
+    DBMS_OUTPUT.PUT_LINE('============================================================================');
+END;
+/
 
 SELECT 'CATEGORIA' AS TABLA, COUNT(*) AS REGISTROS FROM CATEGORIA
 UNION ALL SELECT 'PROVEEDOR', COUNT(*) FROM PROVEEDOR
@@ -508,27 +513,23 @@ UNION ALL SELECT 'CLIENTE', COUNT(*) FROM CLIENTE
 UNION ALL SELECT 'MODALIDAD_PAGO', COUNT(*) FROM MODALIDAD_PAGO
 UNION ALL SELECT 'PRODUCTO', COUNT(*) FROM PRODUCTO
 UNION ALL SELECT 'PEDIDO', COUNT(*) FROM PEDIDO
-UNION ALL SELECT 'DETALLE_PEDIDO', COUNT(*) FROM DETALLE_PEDIDO
-ORDER BY TABLA;
+UNION ALL SELECT 'DETALLE_PEDIDO', COUNT(*) FROM DETALLE_PEDIDO;
 
-SELECT 'Distribucion de Productos por IVA:' AS INFO FROM DUAL;
+BEGIN DBMS_OUTPUT.PUT_LINE('Distribucion de Productos por IVA:'); END;
+/
 
-SELECT 
-    CASE WHEN PORCENTAJEIVA = 15 THEN 'IVA 15%' ELSE 'IVA 0%' END AS TIPOIVA,
-    COUNT(*) AS CANTIDAD
-FROM PRODUCTO
-GROUP BY PORCENTAJEIVA;
+SELECT CASE WHEN PORCENTAJEIVA = 15 THEN 'IVA 15%' ELSE 'IVA 0%' END AS TIPOIVA, COUNT(*) AS CANTIDAD FROM PRODUCTO GROUP BY PORCENTAJEIVA;
 
-SELECT 'Rango de Fechas de Pedidos:' AS INFO FROM DUAL;
+BEGIN DBMS_OUTPUT.PUT_LINE('Rango de Fechas de Pedidos:'); END;
+/
 
-SELECT 
-    MIN(FECHA) AS FECHA_MINIMA, 
-    MAX(FECHA) AS FECHA_MAXIMA,
-    COUNT(DISTINCT EXTRACT(YEAR FROM FECHA)) AS ANIOS_DIFERENTES
-FROM PEDIDO;
+SELECT MIN(FECHA) AS FECHA_MIN, MAX(FECHA) AS FECHA_MAX FROM PEDIDO;
 
-SELECT '============================================================================' AS INFO FROM DUAL;
-SELECT 'CARGA DE DATOS COMPLETADA EXITOSAMENTE' AS INFO FROM DUAL;
-SELECT '============================================================================' AS INFO FROM DUAL;
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('============================================================================');
+    DBMS_OUTPUT.PUT_LINE('CARGA DE DATOS COMPLETADA EXITOSAMENTE');
+    DBMS_OUTPUT.PUT_LINE('============================================================================');
+END;
+/
 
 COMMIT;

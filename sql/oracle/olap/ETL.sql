@@ -1,13 +1,15 @@
 -- ============================================================================
 -- PROYECTO OLAP - SISTEMA DE PEDIDOS
 -- ============================================================================
--- Archivo: ETL_Oracle.sql
+-- Archivo: ETL.sql
 -- Descripcion: Proceso ETL (Extraccion, Transformacion y Carga) - ORACLE
 -- Base de Datos: Oracle Database 21c
 -- Fecha: Diciembre 2025
 -- ============================================================================
 
 SET SERVEROUTPUT ON SIZE UNLIMITED;
+SET LINESIZE 200;
+SET PAGESIZE 100;
 
 BEGIN
     DBMS_OUTPUT.PUT_LINE('============================================================================');
@@ -343,9 +345,12 @@ BEGIN SELECT COUNT(*) INTO v_count FROM FACTVENTAS; DBMS_OUTPUT.PUT_LINE('   Fac
 BEGIN DBMS_OUTPUT.PUT_LINE('[FASE 6/6] Verificacion final...'); END;
 /
 
-SELECT '============================================================================' AS INFO FROM DUAL;
-SELECT 'RESUMEN DEL PROCESO ETL' AS INFO FROM DUAL;
-SELECT '============================================================================' AS INFO FROM DUAL;
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('============================================================================');
+    DBMS_OUTPUT.PUT_LINE('RESUMEN DEL PROCESO ETL');
+    DBMS_OUTPUT.PUT_LINE('============================================================================');
+END;
+/
 
 SELECT 'DIMTIEMPO' AS TABLA, COUNT(*) AS REGISTROS FROM DIMTIEMPO
 UNION ALL SELECT 'DIMUBICACION', COUNT(*) FROM DIMUBICACION
@@ -355,30 +360,19 @@ UNION ALL SELECT 'DIMCLIENTE', COUNT(*) FROM DIMCLIENTE
 UNION ALL SELECT 'DIMEMPLEADO', COUNT(*) FROM DIMEMPLEADO
 UNION ALL SELECT 'DIMMODALIDADPAGO', COUNT(*) FROM DIMMODALIDADPAGO
 UNION ALL SELECT 'DIMPRODUCTO', COUNT(*) FROM DIMPRODUCTO
-UNION ALL SELECT 'FACTVENTAS', COUNT(*) FROM FACTVENTAS
-ORDER BY TABLA;
+UNION ALL SELECT 'FACTVENTAS', COUNT(*) FROM FACTVENTAS;
 
-SELECT 'Estadisticas de Ventas:' AS INFO FROM DUAL;
+BEGIN DBMS_OUTPUT.PUT_LINE('Estadisticas de Ventas:'); END;
+/
 
-SELECT 
-    COUNT(DISTINCT PEDIDOID_OLTP) AS TOTAL_PEDIDOS,
-    COUNT(*) AS TOTAL_LINEAS,
-    SUM(CANTIDAD) AS UNIDADES_TOTALES,
-    TO_CHAR(SUM(MONTOSUBTOTAL), '$999,999,999.99') AS SUBTOTAL,
-    TO_CHAR(SUM(MONTOIVA), '$999,999,999.99') AS IVA,
-    TO_CHAR(SUM(MONTOTOTAL), '$999,999,999.99') AS TOTAL
-FROM FACTVENTAS;
+SELECT COUNT(DISTINCT PEDIDOID_OLTP) AS PEDIDOS, COUNT(*) AS LINEAS, SUM(CANTIDAD) AS UNIDADES FROM FACTVENTAS;
 
-SELECT 'Ventas por Anio:' AS INFO FROM DUAL;
+BEGIN DBMS_OUTPUT.PUT_LINE('Ventas por Anio:'); END;
+/
 
-SELECT 
-    dt.ANIO,
-    COUNT(DISTINCT f.PEDIDOID_OLTP) AS PEDIDOS,
-    TO_CHAR(SUM(f.MONTOTOTAL), '$999,999,999.99') AS VENTAS
-FROM FACTVENTAS f
-JOIN DIMTIEMPO dt ON f.TIEMPOKEY = dt.TIEMPOKEY
-GROUP BY dt.ANIO
-ORDER BY dt.ANIO;
+SELECT dt.ANIO, COUNT(DISTINCT f.PEDIDOID_OLTP) AS PEDIDOS, SUM(f.MONTOTOTAL) AS VENTAS
+FROM FACTVENTAS f JOIN DIMTIEMPO dt ON f.TIEMPOKEY = dt.TIEMPOKEY
+GROUP BY dt.ANIO ORDER BY dt.ANIO;
 
 BEGIN
     DBMS_OUTPUT.PUT_LINE('');
