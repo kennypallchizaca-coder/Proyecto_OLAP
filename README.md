@@ -920,3 +920,32 @@ Proyecto_OLAP/
 **Proyecto OLAP - Sistema de Análisis de Ventas**  
 **Oracle Database 21c + Power BI**  
 **Diciembre 2025**
+
+
+## Anexos
+
+![alt text](capturas/image.png)
+![alt text](capturas/image-2.png)
+![alt text](capturas/image-3.png)
+![alt text](capturas/image-4.png)
+![alt text](capturas/image-4.png)
+![alt text](capturas/image-5.png)
+![alt text](capturas/image-6.png)
+![alt text](capturas/image-7.png)
+![alt text](capturas/image-8.png)
+![alt text](capturas/image-9.png)
+![alt text](capturas/image-10.png)
+![alt text](capturas/image-11.png)
+![alt text](capturas/image-12.png)
+![alt text](capturas/image-13.png)
+![alt text](capturas/image-14.png)
+![alt text](capturas/image-15.png)
+![alt text](capturas/image-16.png)
+![alt text](capturas/image-17.png)
+![alt text](capturas/image-18.png)
+![alt text](capturas/image-19.png)
+![alt text](capturas/image-20.png)
+![alt text](capturas/image-21.png)
+![alt text](capturas/image-22.png)
+![alt text](capturas/image-23.png)
+![alt text](capturas/image-24.png)
