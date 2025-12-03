@@ -1,15 +1,16 @@
-# 📊 INFORME TÉCNICO: SISTEMA OLAP - DATAWAREHOUSE
+# INFORME TECNICO: SISTEMA OLAP - DATAWAREHOUSE
 
-## Sistema de Análisis de Ventas con Modelo Dimensional
+## Sistema de Analisis de Ventas con Modelo Dimensional
 
-**Materia:** Gestión de Bases de Datos  
-**Docente:** Germán Parra  
+**Carrera:** Computacion  
+**Materia:** Gestion de Bases de Datos  
+**Docente:** German Parra  
 **Fecha:** Diciembre 2025  
 **Plataforma:** Oracle Database 21c + Power BI  
 
 ---
 
-# 📑 ÍNDICE
+# INDICE
 
 1. [Introducción](#1-introducción)
 2. [Justificación del Modelo Estrella](#2-justificación-del-modelo-estrella)
@@ -44,27 +45,27 @@ El presente proyecto implementa un sistema **OLAP** (Online Analytical Processin
 
 ## 1.3 Alcance del Proyecto
 
-- ✅ **Esquema OLTP:** 8 tablas transaccionales con relaciones
-- ✅ **Esquema OLAP:** Modelo estrella con 8 dimensiones + 1 tabla de hechos
-- ✅ **Datos de prueba:** 100,000 pedidos con ~550,000 líneas de detalle
-- ✅ **ETL:** Proceso de extracción, transformación y carga
-- ✅ **Usuario OLAP:** Usuario de solo lectura para reportes
-- ✅ **Visualización:** Conexión con Power BI
+-  **Esquema OLTP:** 8 tablas transaccionales con relaciones
+-  **Esquema OLAP:** Modelo estrella con 8 dimensiones + 1 tabla de hechos
+-  **Datos de prueba:** 100,000 pedidos con ~550,000 líneas de detalle
+-  **ETL:** Proceso de extracción, transformación y carga
+-  **Usuario OLAP:** Usuario de solo lectura para reportes
+-  **Visualización:** Conexión con Power BI
 
 ## 1.4 Requisitos del Enunciado Cumplidos
 
 | # | Requerimiento | Estado | Evidencia |
 |---|---------------|--------|-----------|
-| 1.a | Modalidad de pago (efectivo, transferencia, tarjeta con cuotas 0-12) | ✅ | Tabla `ModalidadPago` con 6 tipos |
-| 1.b | IVA por producto (15% o 0%) | ✅ | Columna `PorcentajeIVA` en `Producto` |
-| 2 | Datos: 10 proveedores, 5 empleados, 20 clientes, 5 categorías, 200 productos, 100k pedidos | ✅ | Scripts `Datos_Tablas.sql` |
-| 3 | 3 hechos OLAP con 4+ dimensiones cada uno | ✅ | Sección 7 de este informe |
-| 4 | Herramienta OLAP configurada | ✅ | Oracle 21c + Power BI |
-| 5 | Procedimientos ETL | ✅ | Script `ETL.sql` |
-| 6 | Usuario de solo lectura OLAP | ✅ | Script `UsuarioOLAP.sql` |
-| 7 | Consultas con Power BI/Tableau | ✅ | Sección 9 de este informe |
-| 8 | Informe técnico | ✅ | Este documento |
-| 9 | Sustentación 15 minutos | ✅ | Preparada |
+| 1.a | Modalidad de pago (efectivo, transferencia, tarjeta con cuotas 0-12) | Cumplido | Tabla `ModalidadPago` con 6 tipos |
+| 1.b | IVA por producto (15% o 0%) | Cumplido | Columna `PorcentajeIVA` en `Producto` |
+| 2 | Datos: 10 proveedores, 5 empleados, 20 clientes, 5 categorías, 200 productos, 100k pedidos | Cumplido | Scripts `Datos_Tablas.sql` |
+| 3 | 3 hechos OLAP con 4+ dimensiones cada uno | Cumplido | Sección 7 de este informe |
+| 4 | Herramienta OLAP configurada | Cumplido | Oracle 21c + Power BI |
+| 5 | Procedimientos ETL | Cumplido | Script `ETL.sql` |
+| 6 | Usuario de solo lectura OLAP | Cumplido | Script `UsuarioOLAP.sql` |
+| 7 | Consultas con Power BI/Tableau | Cumplido | Sección 9 de este informe |
+| 8 | Informe técnico | Cumplido | Este documento |
+| 9 | Sustentación 15 minutos | Cumplido | Preparada |
 
 ---
 
@@ -105,7 +106,7 @@ El **Modelo Estrella** es una arquitectura de Data Warehouse donde:
 
 ## 2.2 Comparación: Estrella vs Copo de Nieve
 
-| Criterio | Modelo Estrella ⭐ | Modelo Copo de Nieve ❄️ |
+| Criterio | Modelo Estrella  | Modelo Copo de Nieve  |
 |----------|-------------------|-------------------------|
 | **Estructura** | Dimensiones desnormalizadas | Dimensiones normalizadas |
 | **Complejidad** | Baja | Alta |
@@ -352,7 +353,7 @@ CREATE TABLE FactVentas (
 
 ### Las 8 Dimensiones
 
-#### 📅 DimTiempo (Dimensión Temporal)
+####  DimTiempo (Dimensión Temporal)
 
 ```sql
 CREATE TABLE DimTiempo (
@@ -369,7 +370,7 @@ CREATE TABLE DimTiempo (
 -- Registros: 2,192 días (2020-2025)
 ```
 
-#### 📦 DimProducto (Productos Desnormalizados)
+####  DimProducto (Productos Desnormalizados)
 
 ```sql
 CREATE TABLE DimProducto (
@@ -385,7 +386,7 @@ CREATE TABLE DimProducto (
 -- Registros: 200 productos
 ```
 
-#### 👤 DimCliente
+####  DimCliente
 
 ```sql
 CREATE TABLE DimCliente (
@@ -401,7 +402,7 @@ CREATE TABLE DimCliente (
 -- Registros: 20 clientes
 ```
 
-#### 🏭 DimProveedor
+####  DimProveedor
 
 ```sql
 CREATE TABLE DimProveedor (
@@ -416,7 +417,7 @@ CREATE TABLE DimProveedor (
 -- Registros: 10 proveedores
 ```
 
-#### 👔 DimEmpleado
+#### DimEmpleado
 
 ```sql
 CREATE TABLE DimEmpleado (
@@ -429,7 +430,7 @@ CREATE TABLE DimEmpleado (
 -- Registros: 5 empleados
 ```
 
-#### 🏷️ DimCategoria
+####  DimCategoria
 
 ```sql
 CREATE TABLE DimCategoria (
@@ -440,7 +441,7 @@ CREATE TABLE DimCategoria (
 -- Registros: 5 categorías
 ```
 
-#### 💳 DimModalidadPago
+####  DimModalidadPago
 
 ```sql
 CREATE TABLE DimModalidadPago (
@@ -453,7 +454,7 @@ CREATE TABLE DimModalidadPago (
 -- Registros: 6 modalidades
 ```
 
-#### 📍 DimUbicacion
+####  DimUbicacion
 
 ```sql
 CREATE TABLE DimUbicacion (
@@ -713,11 +714,11 @@ ORDER BY Categoria, Ranking;
 
 | Hecho | Dimensión 1 | Dimensión 2 | Dimensión 3 | Dimensión 4 | Dimensión 5 | Total |
 |-------|-------------|-------------|-------------|-------------|-------------|-------|
-| **(a)** | Producto | Proveedor | Tiempo | Ubicación | Categoría | **5 ✅** |
-| **(b)** | ModalidadPago | Tiempo | Ubicación | Cliente | - | **4 ✅** |
-| **(e)** | Categoría | Tiempo | Ubicación | ModalidadPago | Producto | **5 ✅** |
+| **(a)** | Producto | Proveedor | Tiempo | Ubicación | Categoría | **5 ** |
+| **(b)** | ModalidadPago | Tiempo | Ubicación | Cliente | - | **4 ** |
+| **(e)** | Categoría | Tiempo | Ubicación | ModalidadPago | Producto | **5 ** |
 
-**✅ Los 3 hechos cumplen con el requisito de 4+ dimensiones**
+** Los 3 hechos cumplen con el requisito de 4+ dimensiones**
 
 ---
 
@@ -836,16 +837,16 @@ Total IVA = SUM(FACTVENTAS[MONTOIVA])
 
 | Requisito | Cumplimiento |
 |-----------|--------------|
-| ✅ Esquema OLTP con 8 tablas | Categoria, Proveedor, Empleado, Cliente, ModalidadPago, Producto, Pedido, DetallePedido |
-| ✅ Modalidad de pago con cuotas | 6 modalidades (Efectivo, Transferencia, Tarjeta 0/3/6/12 cuotas) |
-| ✅ IVA por producto | 100 productos con 15%, 100 productos con 0% |
-| ✅ Datos de prueba | 10 proveedores, 5 empleados, 20 clientes, 200 productos, 100k pedidos |
-| ✅ Modelo Estrella OLAP | 8 dimensiones + FactVentas (~550,000 registros) |
-| ✅ 3 Hechos con 4+ dimensiones | Hecho (a) 5 dims, Hecho (b) 4 dims, Hecho (e) 5 dims |
-| ✅ Proceso ETL | Script completo de carga |
-| ✅ Usuario solo lectura | usuario_olap con permisos SELECT |
-| ✅ Conexión Power BI | Configurada y funcional |
-| ✅ Informe técnico | Este documento |
+|  Esquema OLTP con 8 tablas | Categoria, Proveedor, Empleado, Cliente, ModalidadPago, Producto, Pedido, DetallePedido |
+|  Modalidad de pago con cuotas | 6 modalidades (Efectivo, Transferencia, Tarjeta 0/3/6/12 cuotas) |
+|  IVA por producto | 100 productos con 15%, 100 productos con 0% |
+|  Datos de prueba | 10 proveedores, 5 empleados, 20 clientes, 200 productos, 100k pedidos |
+|  Modelo Estrella OLAP | 8 dimensiones + FactVentas (~550,000 registros) |
+|  3 Hechos con 4+ dimensiones | Hecho (a) 5 dims, Hecho (b) 4 dims, Hecho (e) 5 dims |
+|  Proceso ETL | Script completo de carga |
+|  Usuario solo lectura | usuario_olap con permisos SELECT |
+|  Conexión Power BI | Configurada y funcional |
+|  Informe técnico | Este documento |
 
 ## 10.2 Lecciones Aprendidas
 
@@ -863,7 +864,7 @@ Total IVA = SUM(FACTVENTAS[MONTOIVA])
 
 ---
 
-# 📁 ESTRUCTURA DEL PROYECTO
+#  ESTRUCTURA DEL PROYECTO
 
 ```
 Proyecto_OLAP/
@@ -884,7 +885,7 @@ Proyecto_OLAP/
 
 ---
 
-# 📚 REFERENCIAS BIBLIOGRÁFICAS
+#  REFERENCIAS BIBLIOGRÁFICAS
 
 1. **Kimball, R., & Ross, M.** (2013). *The Data Warehouse Toolkit: The Definitive Guide to Dimensional Modeling* (3rd ed.). Wiley.
 
@@ -900,7 +901,7 @@ Proyecto_OLAP/
 
 ---
 
-# 📎 GLOSARIO
+#  GLOSARIO
 
 | Término | Definición |
 |---------|------------|
