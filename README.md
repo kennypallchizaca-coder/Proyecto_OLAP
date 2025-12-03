@@ -2,11 +2,11 @@
 
 ## Sistema de Analisis de Ventas con Modelo Dimensional
 
-**Carrera:** Computacion  
-**Materia:** Gestion de Bases de Datos  
-**Docente:** German Parra  
-**Fecha:** Diciembre 2025  
-**Plataforma:** Oracle Database 21c + Power BI  
+*Integrantes:* Alexis Guaman, Daniel Guanga, José Vanegas y Miguel Vanegas.  
+*Materia:* Base de Datos  
+*Fecha:* Noviembre 2025  
+*Plataforma:* Oracle Database 21c + Power BI  
+
 
 ---
 
