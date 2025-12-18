@@ -1,0 +1,106 @@
+--------------------------------------------------------
+-- Archivo creado  - miércoles-diciembre-17-2025   
+--------------------------------------------------------
+--------------------------------------------------------
+--  DDL for Table PRODUCTOS
+--------------------------------------------------------
+
+  CREATE TABLE "USUARIO02"."PRODUCTOS" 
+   (	"PRODUCTOID" NUMBER(*,0), 
+	"PROVEEDORES_PROVEEDORID" NUMBER(*,0), 
+	"DESCRIPCION" CHAR(50 BYTE), 
+	"PRECIOUNIT" NUMBER(*,0), 
+	"EXISTENCIA" NUMBER(*,0), 
+	"CATEGORIAS_CATEGORIAID" NUMBER(*,0)
+   ) SEGMENT CREATION IMMEDIATE 
+  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 
+ NOCOMPRESS LOGGING
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "USERS" ;
+REM INSERTING into USUARIO02.PRODUCTOS
+SET DEFINE OFF;
+Insert into USUARIO02.PRODUCTOS (PRODUCTOID,PROVEEDORES_PROVEEDORID,DESCRIPCION,PRECIOUNIT,EXISTENCIA,CATEGORIAS_CATEGORIAID) values ('1','1','Coca Cola 1L                                      ','2','100','1');
+Insert into USUARIO02.PRODUCTOS (PRODUCTOID,PROVEEDORES_PROVEEDORID,DESCRIPCION,PRECIOUNIT,EXISTENCIA,CATEGORIAS_CATEGORIAID) values ('2','2','Papitas Lays 50g                                  ','1','200','2');
+Insert into USUARIO02.PRODUCTOS (PRODUCTOID,PROVEEDORES_PROVEEDORID,DESCRIPCION,PRECIOUNIT,EXISTENCIA,CATEGORIAS_CATEGORIAID) values ('3','3','Leche Entera 1L                                   ','1','150','3');
+Insert into USUARIO02.PRODUCTOS (PRODUCTOID,PROVEEDORES_PROVEEDORID,DESCRIPCION,PRECIOUNIT,EXISTENCIA,CATEGORIAS_CATEGORIAID) values ('4','4','Queso Holandés 250g                              ','3','80','3');
+Insert into USUARIO02.PRODUCTOS (PRODUCTOID,PROVEEDORES_PROVEEDORID,DESCRIPCION,PRECIOUNIT,EXISTENCIA,CATEGORIAS_CATEGORIAID) values ('5','5','Carne de Res 1kg                                  ','6','50','4');
+Insert into USUARIO02.PRODUCTOS (PRODUCTOID,PROVEEDORES_PROVEEDORID,DESCRIPCION,PRECIOUNIT,EXISTENCIA,CATEGORIAS_CATEGORIAID) values ('6','6','Manzana Roja                                      ','1','300','5');
+Insert into USUARIO02.PRODUCTOS (PRODUCTOID,PROVEEDORES_PROVEEDORID,DESCRIPCION,PRECIOUNIT,EXISTENCIA,CATEGORIAS_CATEGORIAID) values ('7','7','Lechuga                                           ','0','250','6');
+Insert into USUARIO02.PRODUCTOS (PRODUCTOID,PROVEEDORES_PROVEEDORID,DESCRIPCION,PRECIOUNIT,EXISTENCIA,CATEGORIAS_CATEGORIAID) values ('8','8','Detergente Limpio 1L                              ','2','120','8');
+Insert into USUARIO02.PRODUCTOS (PRODUCTOID,PROVEEDORES_PROVEEDORID,DESCRIPCION,PRECIOUNIT,EXISTENCIA,CATEGORIAS_CATEGORIAID) values ('9','9','Pan Integral                                      ','1','100','10');
+Insert into USUARIO02.PRODUCTOS (PRODUCTOID,PROVEEDORES_PROVEEDORID,DESCRIPCION,PRECIOUNIT,EXISTENCIA,CATEGORIAS_CATEGORIAID) values ('10','10','Jabón de Tocador                                 ','1','180','9');
+--------------------------------------------------------
+--  DDL for Index PRODUCTOS_PK
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "USUARIO02"."PRODUCTOS_PK" ON "USUARIO02"."PRODUCTOS" ("PRODUCTOID") 
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  DDL for Trigger T
+--------------------------------------------------------
+
+  CREATE OR REPLACE EDITIONABLE TRIGGER "USUARIO02"."T" 
+	BEFORE
+		INSERT OR
+	  UPDATE OF preciounit, existencia OR
+		DELETE
+	ON productos
+BEGIN
+	CASE
+		WHEN INSERTING THEN
+			DBMS_OUTPUT.put_line('insertando');
+		WHEN UPDATING('preciounit') THEN
+			DBMS_OUTPUT.put_line('Actualizando precio');
+		WHEN UPDATING('existencia') THEN
+			DBMS_OUTPUT.put_line('Actualizando existencia');
+		WHEN DELETING THEN
+			DBMS_OUTPUT.put_line('eliminando');
+	END CASE;
+END;
+/
+ALTER TRIGGER "USUARIO02"."T" ENABLE;
+--------------------------------------------------------
+--  DDL for Trigger TRIG_DIFEXISTENCIA
+--------------------------------------------------------
+
+  CREATE OR REPLACE EDITIONABLE TRIGGER "USUARIO02"."TRIG_DIFEXISTENCIA" 
+    Before delete or insert or update on productos for each row
+     WHEN (new.productoid >0) declare
+    existenciaDif number;
+    begin 
+    existenciaDif := :new.existencia - :Old.existencia;
+    dbms_output.put_line('existencia anterior: ' || : Old.existencia);
+    dbms_output.put_line('nueva anterior: ' || : new.existencia);
+    dbms_output.put_line('diferencia de existencia:' || : existenciaDif);
+    end;
+/
+ALTER TRIGGER "USUARIO02"."TRIG_DIFEXISTENCIA" ENABLE;
+--------------------------------------------------------
+--  Constraints for Table PRODUCTOS
+--------------------------------------------------------
+
+  ALTER TABLE "USUARIO02"."PRODUCTOS" MODIFY ("PRODUCTOID" NOT NULL ENABLE);
+  ALTER TABLE "USUARIO02"."PRODUCTOS" MODIFY ("PROVEEDORES_PROVEEDORID" NOT NULL ENABLE);
+  ALTER TABLE "USUARIO02"."PRODUCTOS" MODIFY ("PRECIOUNIT" NOT NULL ENABLE);
+  ALTER TABLE "USUARIO02"."PRODUCTOS" MODIFY ("EXISTENCIA" NOT NULL ENABLE);
+  ALTER TABLE "USUARIO02"."PRODUCTOS" MODIFY ("CATEGORIAS_CATEGORIAID" NOT NULL ENABLE);
+  ALTER TABLE "USUARIO02"."PRODUCTOS" ADD CONSTRAINT "PRODUCTOS_PK" PRIMARY KEY ("PRODUCTOID")
+  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "USERS"  ENABLE;
+--------------------------------------------------------
+--  Ref Constraints for Table PRODUCTOS
+--------------------------------------------------------
+
+  ALTER TABLE "USUARIO02"."PRODUCTOS" ADD CONSTRAINT "PRODUCTOS_CATEGORIAS_FK" FOREIGN KEY ("CATEGORIAS_CATEGORIAID")
+	  REFERENCES "USUARIO02"."CATEGORIAS" ("CATEGORIAID") ENABLE;
+  ALTER TABLE "USUARIO02"."PRODUCTOS" ADD CONSTRAINT "PRODUCTOS_PROVEEDORES_FK" FOREIGN KEY ("PROVEEDORES_PROVEEDORID")
+	  REFERENCES "USUARIO02"."PROVEEDORES" ("PROVEEDORID") ENABLE;
