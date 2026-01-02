@@ -1,18 +1,5 @@
 # MANUAL DE PROCEDIMIENTO
 ## Práctica: Plan de Recuperación de Base de Datos
-
----
-
-| **CARRERA** | COMPUTACIÓN | **PRÁCTICA** | GESTIÓN DE RIESGOS |
-|-------------|-------------|--------------|-------------------|
-| **EQUIPO** | COMPUTADOR | | |
-| **Responsable/Equipo** | | **Accesorios** | COMPUTADOR / INTERNET |
-| **CÁTEDRA O MATERIA RELACIONADA** | GESTIÓN DE BASES DE DATOS | **REVISIÓN N°** | 1 |
-| **EDICIÓN** | 1 | **DOCENTE** | GERMÁN PARRA |
-| **NÚMERO DE ESTUDIANTES POR EQUIPO O PRÁCTICA** | 3 | **Fecha** | 17/12/2025 |
-
----
-
 ## Tema: Plan de Recuperación de Base de Datos
 
 **Realizado por:**
