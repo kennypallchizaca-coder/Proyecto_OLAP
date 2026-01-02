@@ -608,17 +608,24 @@ cd "C:\Users\kenny\OneDrive\Documents\PROYECTO-BS\Proyecto_OLAP\scripts"
 .\MENU.ps1
 ```
 
-**Opciones disponibles:**
+**Opciones y Scripts que Ejecuta:**
 
-| Opcion | Descripcion |
-|--------|-------------|
-| [1] | Configuracion Inicial (solo primera vez) |
-| [2] | Ejecutar Respaldo Completo (Level 0) |
-| [3] | Ejecutar Respaldo Incremental (Level 1) |
-| [4] | Validar Respaldos Existentes |
-| [5] | Ver Estado de la Base de Datos |
-| [6] | Monitorear Respaldos |
-| [0] | Salir |
+| Opcion | Descripcion | Script Ejecutado |
+|--------|-------------|------------------|
+| [1] | Configuracion Inicial | `INSTALAR.ps1` + `habilitar_archivelog.sql` + `configurar_rman.rman` |
+| [2] | Respaldo Completo (Level 0) | `respaldos\respaldo_completo_nivel0.rman` |
+| [3] | Respaldo Incremental (Level 1) | `respaldos\respaldo_incremental_nivel1.rman` |
+| [4] | Validar Respaldos | `respaldos\validar_respaldos.rman` |
+| [5] | Ver Estado BD | Consulta SQL directa |
+| [6] | Monitorear Respaldos | `monitoreo\monitorear_respaldos.sql` |
+| [0] | Salir | - |
+
+**Como Usar:**
+1. Ejecutar `.\MENU.ps1`
+2. Seleccionar opcion con numero (ej: `2`)
+3. Confirmar con `S` cuando pregunte
+4. El menu ejecuta el script automaticamente
+5. Presionar ENTER para volver al menu
 
 ### Windows Task Scheduler - Automatizacion
 

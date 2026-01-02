@@ -1,5 +1,26 @@
-# GUÍA COMPLETA DE EJECUCIÓN
-## Plan de Recuperación Oracle RMAN - Comisariato
+# GUIA COMPLETA DE EJECUCION
+## Plan de Recuperacion Oracle RMAN - Comisariato
+
+---
+
+# INDICE
+
+1. [Estado del Sistema](#estado-del-sistema)
+2. [Prerequisitos](#prerequisitos)
+3. [Metodo Rapido: Menu Interactivo](#metodo-rapido-menu-interactivo)
+4. [Seccion 1: Descripcion de Scripts](#seccion-1-descripcion-de-scripts)
+   - [1.1 Scripts de Configuracion](#11-scripts-de-configuracion)
+   - [1.2 Scripts de Respaldo](#12-scripts-de-respaldo)
+   - [1.3 Scripts de Monitoreo](#13-scripts-de-monitoreo)
+5. [Seccion 2: Instalacion Paso a Paso](#seccion-2-instalacion-paso-a-paso)
+   - [Paso 1: Instalacion Automatica](#paso-1-instalacion-automatica-5-minutos)
+   - [Paso 2: Habilitar ARCHIVELOG](#paso-2-habilitar-archivelog-10-minutos)
+   - [Paso 3: Configurar RMAN](#paso-3-configurar-rman-3-minutos)
+   - [Paso 4: Primer Backup Manual](#paso-4-primer-backup-manual-2-5-minutos)
+   - [Paso 5: Validar Backup](#paso-5-validar-backup-1-2-minutos)
+6. [Seccion 3: Verificacion Completa del Backup](#seccion-3-verificacion-completa-del-backup)
+7. [Seccion 4: Checklist de Verificacion](#seccion-4-checklist-de-verificacion)
+8. [Seccion 5: Solucion de Problemas](#seccion-5-solucion-de-problemas)
 
 ---
 
