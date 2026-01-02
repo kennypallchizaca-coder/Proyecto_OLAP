@@ -75,6 +75,18 @@ function Pause-Script {
 # Obtener ruta del proyecto
 $PROJECT_PATH = Split-Path -Parent $PSScriptRoot
 
+# Directorio de logs
+$LOG_DIR = "C:\oracle\backup\logs"
+if (-not (Test-Path $LOG_DIR)) {
+    New-Item -ItemType Directory -Path $LOG_DIR -Force | Out-Null
+}
+
+function Get-LogFile {
+    param([string]$Prefix)
+    $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
+    return "$LOG_DIR\${Prefix}_$timestamp.log"
+}
+
 # Menu Principal
 do {
     Show-Banner
@@ -121,9 +133,23 @@ do {
             
             $confirm = Read-Host "  Desea ejecutar ahora? (S/N)"
             if ($confirm -eq "S" -or $confirm -eq "s") {
+                $logFile = Get-LogFile -Prefix "RESPALDO_COMPLETO"
                 Write-Host ""
                 Write-Host "  Ejecutando respaldo completo..." -ForegroundColor Green
-                rman TARGET / cmdfile="$PROJECT_PATH\scripts\respaldos\respaldo_completo_nivel0.rman"
+                Write-Host "  Log: $logFile" -ForegroundColor Cyan
+                Write-Host ""
+                rman TARGET / cmdfile="$PROJECT_PATH\scripts\respaldos\respaldo_completo_nivel0.rman" log=$logFile
+                
+                if (Test-Path $logFile) {
+                    Write-Host ""
+                    Write-Host "  ✓ Log guardado en: $logFile" -ForegroundColor Green
+                    Write-Host ""
+                    $verLog = Read-Host "  Desea ver el log? (S/N)"
+                    if ($verLog -eq "S" -or $verLog -eq "s") {
+                        Write-Host ""
+                        Get-Content $logFile
+                    }
+                }
             }
             
             Pause-Script
@@ -143,9 +169,23 @@ do {
             
             $confirm = Read-Host "  Desea ejecutar ahora? (S/N)"
             if ($confirm -eq "S" -or $confirm -eq "s") {
+                $logFile = Get-LogFile -Prefix "RESPALDO_INCREMENTAL"
                 Write-Host ""
                 Write-Host "  Ejecutando respaldo incremental..." -ForegroundColor Green
-                rman TARGET / cmdfile="$PROJECT_PATH\scripts\respaldos\respaldo_incremental_nivel1.rman"
+                Write-Host "  Log: $logFile" -ForegroundColor Cyan
+                Write-Host ""
+                rman TARGET / cmdfile="$PROJECT_PATH\scripts\respaldos\respaldo_incremental_nivel1.rman" log=$logFile
+                
+                if (Test-Path $logFile) {
+                    Write-Host ""
+                    Write-Host "  ✓ Log guardado en: $logFile" -ForegroundColor Green
+                    Write-Host ""
+                    $verLog = Read-Host "  Desea ver el log? (S/N)"
+                    if ($verLog -eq "S" -or $verLog -eq "s") {
+                        Write-Host ""
+                        Get-Content $logFile
+                    }
+                }
             }
             
             Pause-Script
@@ -164,9 +204,23 @@ do {
             
             $confirm = Read-Host "  Desea ejecutar ahora? (S/N)"
             if ($confirm -eq "S" -or $confirm -eq "s") {
+                $logFile = Get-LogFile -Prefix "VALIDACION"
                 Write-Host ""
                 Write-Host "  Validando respaldos..." -ForegroundColor Green
-                rman TARGET / cmdfile="$PROJECT_PATH\scripts\respaldos\validar_respaldos.rman"
+                Write-Host "  Log: $logFile" -ForegroundColor Cyan
+                Write-Host ""
+                rman TARGET / cmdfile="$PROJECT_PATH\scripts\respaldos\validar_respaldos.rman" log=$logFile
+                
+                if (Test-Path $logFile) {
+                    Write-Host ""
+                    Write-Host "  ✓ Log guardado en: $logFile" -ForegroundColor Green
+                    Write-Host ""
+                    $verLog = Read-Host "  Desea ver el log? (S/N)"
+                    if ($verLog -eq "S" -or $verLog -eq "s") {
+                        Write-Host ""
+                        Get-Content $logFile
+                    }
+                }
             }
             
             Pause-Script
