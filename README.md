@@ -781,7 +781,3 @@ Proyecto_OLAP/
 
 ---
 
-**Estado del Proyecto:** Implementado y Validado  
-**Versión del Documento:** 1.0  
-**Última Actualización:** 2 de Enero de 2026  
-**Elaborado por:** Equipo de Administración de Bases de Datos
