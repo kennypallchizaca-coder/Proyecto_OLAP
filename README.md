@@ -836,7 +836,8 @@ Proyecto_OLAP/
 ## Anexo C: Documentación Complementaria
 
 | Documento | Ubicacion | Descripcion |
-|-----------|-----------|-------------|\n| Plan Tecnico Completo | README.md | Documento tecnico detallado |
+|-----------|-----------|-------------|
+| Plan Tecnico Completo | README.md | Documento tecnico detallado |
 | Guia de Ejecucion | docs/plan-recuperacion/GUIA_EJECUCION.md | Instrucciones paso a paso |
 | Comandos Rapidos | scripts/COMANDOS_RAPIDOS.md | Referencia rapida de comandos |
 
