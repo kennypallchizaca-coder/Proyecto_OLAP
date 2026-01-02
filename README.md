@@ -758,6 +758,43 @@ Proyecto_OLAP/
         └── VistasOLAP_PowerBI.sql
 ```
 
+## Anexo B: Descripción de Scripts
+
+### Scripts de Configuración (config/)
+
+| Script | Función |
+|--------|---------|
+| **enable_archivelog.sql** | Habilita el modo ARCHIVELOG en Oracle para permitir backups en caliente. Cierra la BD, la inicia en modo MOUNT, activa ARCHIVELOG y configura el destino de archive logs. Solo se ejecuta una vez. |
+| **rman_config.rman** | Configura las políticas de RMAN: retención de 7 días, compresión MEDIUM, autobackup de control files, paralelismo con 2 canales y formato de nombres de archivo. |
+
+### Scripts de Respaldo (backup/)
+
+| Script | Función |
+|--------|---------|
+| **backup_level0_full.rman** | Ejecuta backup completo Level 0 de toda la base de datos. Respalda todos los datafiles, control file y SPFILE. Elimina backups obsoletos y archive logs mayores a 7 días. |
+| **backup_level1_differential.rman** | Ejecuta backup incremental Level 1. Solo respalda los bloques modificados desde el último backup, reduciendo tiempo y espacio. Incluye backup de archive logs no respaldados. |
+| **validate_backups.rman** | Valida la integridad de los backups existentes. Ejecuta RESTORE VALIDATE para confirmar que los archivos no están corruptos y pueden usarse para recuperación. Lista todos los backups disponibles. |
+| **Run-FullBackup.ps1** | Script PowerShell que ejecuta el backup completo. Conecta a RMAN, ejecuta backup_level0_full.rman y genera un archivo de log con fecha y hora de ejecución. |
+
+### Scripts de Recuperación (recovery/)
+
+| Script | Función |
+|--------|---------|
+| **recovery_complete_database.rman** | Recupera la base de datos completa al último estado disponible. Ejecuta RESTORE DATABASE seguido de RECOVER DATABASE para aplicar todos los archive logs. |
+| **recovery_point_in_time.rman** | Recupera la base de datos a un punto específico en el tiempo. Usa SET UNTIL TIME para definir el momento exacto de recuperación. Requiere OPEN RESETLOGS al finalizar. |
+
+### Scripts de Monitoreo (monitoring/)
+
+| Script | Función |
+|--------|---------|
+| **monitor_backups.sql** | Consulta las vistas V$RMAN_BACKUP_JOB_DETAILS para mostrar el estado de los últimos 7 días de backups. Muestra fecha, tipo, estado, tamaño original y comprimido. |
+
+### Script Principal
+
+| Script | Función |
+|--------|---------|
+| **INSTALAR.ps1** | Script de instalación automática. Crea los directorios C:\oracle\backup\rman y C:\oracle\arch. Programa las tareas automáticas en Windows Task Scheduler (Full Backup domingos 2AM, Incremental lunes-sábado 2AM). |
+
 ## Anexo B: Documentación Complementaria
 
 | Documento | Ubicación | Descripción |
