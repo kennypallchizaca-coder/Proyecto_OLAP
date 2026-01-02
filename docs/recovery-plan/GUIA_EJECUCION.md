@@ -1004,6 +1004,8 @@ C-123456789-20260102-00
 │ └── DBID (identificador único de la base de datos)
 └── Prefijo "C" indica Control file
 
+```
+
 ---
 
 ## Documentación Relacionada
