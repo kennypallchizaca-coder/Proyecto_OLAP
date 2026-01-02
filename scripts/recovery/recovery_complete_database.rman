@@ -1,0 +1,33 @@
+# ========================================================================
+# SCRIPT: Recuperación Completa de Base de Datos
+# ========================================================================
+# Proyecto: Comisariato
+# Escenario: Pérdida total de datafiles
+# Objetivo: Restaurar base de datos al último momento posible
+# ========================================================================
+
+CONNECT TARGET /
+
+# PASO 1: Iniciar instancia en modo NOMOUNT (sin acceso a archivos)
+STARTUP NOMOUNT;
+
+# PASO 2: Restaurar control file desde backup
+RESTORE CONTROLFILE FROM AUTOBACKUP;
+
+# PASO 3: Montar base de datos (leer control file recuperado)
+ALTER DATABASE MOUNT;
+
+# PASO 4: Restaurar todos los datafiles
+RESTORE DATABASE;
+
+# PASO 5: Recuperar base de datos aplicando archive logs
+RECOVER DATABASE;
+
+# PASO 6: Abrir base de datos con RESETLOGS (nueva línea de tiempo)
+ALTER DATABASE OPEN RESETLOGS;
+
+# PASO 7: Validar recuperación
+SELECT name, open_mode, database_role FROM v$database;
+SELECT tablespace_name, status FROM dba_tablespaces;
+
+EXIT;

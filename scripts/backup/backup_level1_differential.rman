@@ -1,0 +1,55 @@
+# ========================================================================
+# SCRIPT: Respaldo Incremental Diferencial (Level 1)
+# ========================================================================
+# Proyecto: Comisariato - Proyecto_OLAP
+# Frecuencia: Diaria (Lunes a Sábado a las 02:00 AM)
+# Duración Estimada: 10 minutos
+# Propósito: Backup de cambios desde el último backup (Level 0 o Level 1)
+# ========================================================================
+
+CONNECT TARGET /
+
+RUN {
+    # Asignar canal
+    ALLOCATE CHANNEL ch1 DEVICE TYPE DISK FORMAT 'C:\oracle\backup\rman\COMISARIATO_INC_%d_%T_%s_%p';
+    
+    # Determinar día de la semana para TAG
+    SQL 'ALTER SESSION SET NLS_DATE_FORMAT=''YYYY-MM-DD HH24:MI:SS''';
+    SQL 'SELECT ''[INCREMENTAL BACKUP] Iniciando backup diferencial: '' || TO_CHAR(SYSDATE, ''DAY'') FROM DUAL';
+    
+    # Ejecutar backup incremental level 1 DIFERENCIAL
+    BACKUP 
+        INCREMENTAL LEVEL 1
+        AS COMPRESSED BACKUPSET
+        TAG 'COMISARIATO_INC'
+        DATABASE
+        PLUS ARCHIVELOG DELETE ALL INPUT;
+    
+    # Backup de control file
+    BACKUP 
+        AS COMPRESSED BACKUPSET
+        TAG 'COMISARIATO_CTRL_INC'
+        CURRENT CONTROLFILE;
+    
+    # Liberar canal
+    RELEASE CHANNEL ch1;
+    
+    # Registrar fin
+    SQL 'SELECT ''[INCREMENTAL BACKUP] Completado: '' || TO_CHAR(SYSDATE) FROM DUAL';
+}
+
+# Validar backup
+VALIDATE BACKUPSET TAG='COMISARIATO_INC';
+
+# Listar backups incrementales
+LIST BACKUP BY BACKUP INCREMENTAL TAG='COMISARIATO_INC';
+
+# Eliminar archivos obsoletos
+DELETE NOPROMPT OBSOLETE;
+DELETE NOPROMPT EXPIRED BACKUP;
+
+# Generar reporte de backups
+REPORT SCHEMA;
+REPORT NEED BACKUP;
+
+EXIT;

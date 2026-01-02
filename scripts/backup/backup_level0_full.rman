@@ -1,0 +1,54 @@
+# ========================================================================
+# SCRIPT: Respaldo Completo (Full Backup - Level 0)
+# ========================================================================
+# Proyecto: Comisariato - Proyecto_OLAP
+# Frecuencia: Semanal (Domingos a las 02:00 AM)
+# Duración Estimada: 45 minutos
+# Propósito: Backup base para respaldos incrementales de la semana
+# ========================================================================
+
+CONNECT TARGET /
+
+RUN {
+    # Asignar canales (paralelismo)
+    ALLOCATE CHANNEL ch1 DEVICE TYPE DISK FORMAT 'C:\oracle\backup\rman\COMISARIATO_FULL_%d_%T_%s_%p';
+    ALLOCATE CHANNEL ch2 DEVICE TYPE DISK FORMAT 'C:\oracle\backup\rman\COMISARIATO_FULL_%d_%T_%s_%p';
+    
+    # Registrar inicio
+    SQL "ALTER SESSION SET NLS_DATE_FORMAT=''DD-MON-YYYY HH24:MI:SS''";
+    SQL "SELECT ''[FULL BACKUP] Iniciando respaldo completo: '' || TO_CHAR(SYSDATE) FROM DUAL";
+    
+    # Ejecutar backup incremental level 0 (equivalente a full)
+    BACKUP 
+        INCREMENTAL LEVEL 0 
+        AS COMPRESSED BACKUPSET
+        TAG 'COMISARIATO_FULL_DOM'
+        DATABASE
+        PLUS ARCHIVELOG DELETE ALL INPUT;
+    
+    # Backup de control file y spfile
+    BACKUP 
+        AS COMPRESSED BACKUPSET
+        TAG 'COMISARIATO_CTRL_FULL'
+        CURRENT CONTROLFILE 
+        PLUS ARCHIVELOG DELETE ALL INPUT;
+    
+    BACKUP SPFILE 
+        TAG 'COMISARIATO_SPFILE_FULL'
+        FORMAT 'C:\oracle\backup\rman\COMISARIATO_SPFILE_%d_%T_%s_%p';
+    
+    # Liberar canales
+    RELEASE CHANNEL ch1;
+    RELEASE CHANNEL ch2;
+    
+    # Registrar fin
+    SQL "SELECT ''[FULL BACKUP] Completado exitosamente: '' || TO_CHAR(SYSDATE) FROM DUAL";
+}
+
+# Validar integridad del backup
+LIST BACKUP TAG 'COMISARIATO_FULL_DOM';
+
+# Eliminar backups obsoletos según retention policy
+DELETE NOPROMPT OBSOLETE;
+
+EXIT;

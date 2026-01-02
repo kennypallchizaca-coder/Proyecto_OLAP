@@ -1,0 +1,35 @@
+# ========================================================================
+# SCRIPT: Validación de Integridad de Backups
+# ========================================================================
+# Proyecto: Comisariato
+# Frecuencia: Diaria (después de cada backup)
+# Propósito: Verificar que los backups sean restaurables
+# ========================================================================
+
+CONNECT TARGET /
+
+# Validar database
+VALIDATE DATABASE;
+
+# Validar control file
+VALIDATE CURRENT CONTROLFILE;
+
+# Verificar bloques corruptos
+VALIDATE CHECK LOGICAL DATABASE;
+
+# Generar reporte de backups disponibles
+REPORT SCHEMA;
+LIST BACKUP SUMMARY;
+
+# Verificar recovery window compliance
+REPORT NEED BACKUP RECOVERY WINDOW OF 7 DAYS;
+
+# Crosscheck backups (marcar como expirados los que ya no existen en disco)
+CROSSCHECK BACKUP;
+CROSSCHECK ARCHIVELOG ALL;
+
+# Eliminar referencias a backups expirados
+DELETE NOPROMPT EXPIRED BACKUP;
+DELETE NOPROMPT EXPIRED ARCHIVELOG ALL;
+
+EXIT;

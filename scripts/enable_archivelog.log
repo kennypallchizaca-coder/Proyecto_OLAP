@@ -1,0 +1,173 @@
+SQL> 
+SQL> -- ========================================================================
+SQL> -- PASO 1: Verificar modo actual
+SQL> -- ========================================================================
+SQL> PROMPT ========================================
+========================================
+SQL> PROMPT VERIFICANDO MODO ACTUAL DE LA BASE DE DATOS
+VERIFICANDO MODO ACTUAL DE LA BASE DE DATOS
+SQL> PROMPT ========================================
+========================================
+SQL> 
+SQL> SELECT
+  2  	 name AS "Base de Datos",
+  3  	 log_mode AS "Modo Actual",
+  4  	 CASE
+  5  	     WHEN log_mode = 'NOARCHIVELOG' THEN 'REQUIERE CONFIGURACION'
+  6  	     WHEN log_mode = 'ARCHIVELOG' THEN 'YA CONFIGURADO'
+  7  	 END AS "Estado"
+  8  FROM v$database;
+
+Base de D Modo Actual  Estado                                                   
+--------- ------------ ----------------------                                   
+XE        NOARCHIVELOG REQUIERE CONFIGURACION                                   
+
+SQL> 
+SQL> -- ========================================================================
+SQL> -- PASO 2: Verificar ubicación de Archive Logs
+SQL> -- ========================================================================
+SQL> PROMPT ========================================
+========================================
+SQL> PROMPT UBICACION DE ARCHIVE LOGS
+UBICACION DE ARCHIVE LOGS
+SQL> PROMPT ========================================
+========================================
+SQL> 
+SQL> SHOW PARAMETER db_recovery_file_dest;
+
+NAME                                 TYPE        VALUE                          
+------------------------------------ ----------- ------------------------------ 
+db_recovery_file_dest                string                                     
+db_recovery_file_dest_size           big integer 0                              
+SQL> 
+SQL> -- ========================================================================
+SQL> -- PASO 3: Configurar destino de Archive Logs
+SQL> -- ========================================================================
+SQL> PROMPT ========================================
+========================================
+SQL> PROMPT CONFIGURANDO DESTINO DE ARCHIVE LOGS
+CONFIGURANDO DESTINO DE ARCHIVE LOGS
+SQL> PROMPT ========================================
+========================================
+SQL> 
+SQL> -- Crear directorio si no existe (Windows)
+SQL> -- En Linux cambiar a: /u01/arch/ORCL/
+SQL> HOST mkdir C:\oracle\arch 2>nul
+
+SQL> 
+SQL> -- Configurar parámetros de archivado
+SQL> ALTER SYSTEM SET log_archive_dest_1='LOCATION=C:\oracle\arch' SCOPE=BOTH;
+
+Sistema modificado.
+
+SQL> ALTER SYSTEM SET log_archive_format='COMISARIATO_arch_%t_%s_%r.arc' SCOPE=SPFILE;
+
+Sistema modificado.
+
+SQL> 
+SQL> -- ========================================================================
+SQL> -- PASO 4: Activar modo ARCHIVELOG
+SQL> -- ========================================================================
+SQL> PROMPT ========================================
+========================================
+SQL> PROMPT ACTIVANDO MODO ARCHIVELOG
+ACTIVANDO MODO ARCHIVELOG
+SQL> PROMPT ========================================
+========================================
+SQL> PROMPT ATENCION: Se requiere reiniciar la base de datos
+ATENCION: Se requiere reiniciar la base de datos
+SQL> PROMPT Esta es la UNICA vez que se detiene el servicio
+Esta es la UNICA vez que se detiene el servicio
+SQL> PROMPT Despues de esto, todos los backups seran EN CALIENTE
+Despues de esto, todos los backups seran EN CALIENTE
+SQL> PROMPT ========================================
+========================================
+SQL> 
+SQL> -- Cerrar base de datos
+SQL> SHUTDOWN IMMEDIATE;
+Base de datos cerrada.
+Base de datos desmontada.
+Instancia ORACLE cerrada.
+SQL> 
+SQL> -- Montar base de datos (sin abrir)
+SQL> STARTUP MOUNT;
+Instancia ORACLE iniciada.
+
+Total System Global Area 1610609432 bytes                                       
+Fixed Size                  9855768 bytes                                       
+Variable Size             989855744 bytes                                       
+Database Buffers          603979776 bytes                                       
+Redo Buffers                6918144 bytes                                       
+Base de datos montada.
+SQL> 
+SQL> -- Activar ARCHIVELOG
+SQL> ALTER DATABASE ARCHIVELOG;
+
+Base de datos modificada.
+
+SQL> 
+SQL> -- Abrir base de datos para operaciones normales
+SQL> ALTER DATABASE OPEN;
+
+Base de datos modificada.
+
+SQL> 
+SQL> -- ========================================================================
+SQL> -- PASO 5: Verificación final
+SQL> -- ========================================================================
+SQL> PROMPT ========================================
+========================================
+SQL> PROMPT VERIFICACION FINAL
+VERIFICACION FINAL
+SQL> PROMPT ========================================
+========================================
+SQL> 
+SQL> SELECT
+  2  	 name AS "Base de Datos",
+  3  	 log_mode AS "Modo Actual",
+  4  	 CASE
+  5  	     WHEN log_mode = 'ARCHIVELOG' THEN 'CONFIGURACION EXITOSA - BACKUPS EN CALIENTE HABILITADOS'
+  6  	     ELSE 'ERROR - CONTACTAR A DBA SENIOR'
+  7  	 END AS "Resultado"
+  8  FROM v$database;
+
+Base de D Modo Actual  Resultado                                                
+--------- ------------ -------------------------------------------------------  
+XE        ARCHIVELOG   CONFIGURACION EXITOSA - BACKUPS EN CALIENTE HABILITADOS  
+
+SQL> 
+SQL> -- Mostrar configuración de archivado
+SQL> SELECT dest_name, status, destination
+  2  FROM v$archive_dest
+  3  WHERE status = 'VALID';
+
+DEST_NAME                                                                       
+--------------------------------------------------------------------------------
+STATUS                                                                          
+---------                                                                       
+DESTINATION                                                                     
+--------------------------------------------------------------------------------
+LOG_ARCHIVE_DEST_1                                                              
+VALID                                                                           
+C:\oracle\arch                                                                  
+                                                                                
+
+SQL> 
+SQL> PROMPT ========================================
+========================================
+SQL> PROMPT CONFIGURACION COMPLETADA
+CONFIGURACION COMPLETADA
+SQL> PROMPT A partir de ahora, la base de datos:
+A partir de ahora, la base de datos:
+SQL> PROMPT [OK] Genera Archive Logs automaticamente
+[OK] Genera Archive Logs automaticamente
+SQL> PROMPT [OK] Permite backups en caliente con RMAN
+[OK] Permite backups en caliente con RMAN
+SQL> PROMPT [OK] Soporta recuperacion point-in-time
+[OK] Soporta recuperacion point-in-time
+SQL> PROMPT [OK] Cumple con requisitos de Alta Disponibilidad
+[OK] Cumple con requisitos de Alta Disponibilidad
+SQL> PROMPT ========================================
+========================================
+SQL> 
+SQL> SPOOL OFF
