@@ -597,9 +597,30 @@ ALTER TABLESPACE USERS ONLINE;
 
 ---
 
-## 2.7 Automatización de Tareas
+## 2.7 Menu Interactivo y Automatizacion de Tareas
 
-### Windows Task Scheduler - PowerShell
+### MENU.ps1 - Interfaz Visual (RECOMENDADO)
+
+Para facilitar la ejecucion de operaciones de backup sin memorizar comandos, se incluye un menu interactivo visual:
+
+```powershell
+cd "C:\Users\kenny\OneDrive\Documents\PROYECTO-BS\Proyecto_OLAP\scripts"
+.\MENU.ps1
+```
+
+**Opciones disponibles:**
+
+| Opcion | Descripcion |
+|--------|-------------|
+| [1] | Configuracion Inicial (solo primera vez) |
+| [2] | Ejecutar Respaldo Completo (Level 0) |
+| [3] | Ejecutar Respaldo Incremental (Level 1) |
+| [4] | Validar Respaldos Existentes |
+| [5] | Ver Estado de la Base de Datos |
+| [6] | Monitorear Respaldos |
+| [0] | Salir |
+
+### Windows Task Scheduler - Automatizacion
 
 **Script:** `INSTALAR.ps1`
 
@@ -610,14 +631,14 @@ New-Item -ItemType Directory -Force -Path "C:\oracle\arch"
 
 # Programar Full Backup (Domingos 2:00 AM)
 $actionFull = New-ScheduledTaskAction -Execute "rman" `
-    -Argument "TARGET / @C:\scripts\backup\backup_level0_full.rman"
+    -Argument "TARGET / @scripts\respaldos\respaldo_completo_nivel0.rman"
 $triggerFull = New-ScheduledTaskTrigger -Weekly -DaysOfWeek Sunday -At 2am
 Register-ScheduledTask -TaskName "RMAN_Backup_Full_Comisariato" `
     -Action $actionFull -Trigger $triggerFull -Description "Backup completo semanal"
 
-# Programar Incremental Backup (Lunes-Sábado 2:00 AM)
+# Programar Incremental Backup (Lunes-Sabado 2:00 AM)
 $actionIncr = New-ScheduledTaskAction -Execute "rman" `
-    -Argument "TARGET / @C:\scripts\backup\backup_level1_differential.rman"
+    -Argument "TARGET / @scripts\respaldos\respaldo_incremental_nivel1.rman"
 $triggerIncr = New-ScheduledTaskTrigger -Weekly `
     -DaysOfWeek Monday,Tuesday,Wednesday,Thursday,Friday,Saturday -At 2am
 Register-ScheduledTask -TaskName "RMAN_Backup_Incremental_Comisariato" `
@@ -770,6 +791,7 @@ Proyecto_OLAP/
 │
 ├── scripts/
 │   ├── INSTALAR.ps1
+│   ├── MENU.ps1                           ← Menu Interactivo Visual
 │   ├── configuracion/
 │   │   ├── habilitar_archivelog.sql
 │   │   └── configurar_rman.rman
@@ -827,11 +849,12 @@ Proyecto_OLAP/
 |--------|---------|
 | **monitor_backups.sql** | Consulta las vistas V$RMAN_BACKUP_JOB_DETAILS para mostrar el estado de los últimos 7 días de backups. Muestra fecha, tipo, estado, tamaño original y comprimido. |
 
-### Script Principal
+### Scripts Principales
 
-| Script | Función |
+| Script | Funcion |
 |--------|---------|
-| **INSTALAR.ps1** | Script de instalación automática. Crea los directorios C:\oracle\backup\rman y C:\oracle\arch. Programa las tareas automáticas en Windows Task Scheduler (Full Backup domingos 2AM, Incremental lunes-sábado 2AM). |
+| **INSTALAR.ps1** | Script de instalacion automatica. Crea los directorios C:\oracle\backup\rman y C:\oracle\arch. Programa las tareas automaticas en Windows Task Scheduler. |
+| **MENU.ps1** | Menu interactivo visual que permite ejecutar todas las operaciones de backup sin memorizar comandos. Incluye opciones para configuracion, respaldos, validacion y monitoreo. |
 
 ## Anexo C: Documentación Complementaria
 

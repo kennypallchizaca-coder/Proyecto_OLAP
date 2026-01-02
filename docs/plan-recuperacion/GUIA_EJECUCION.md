@@ -31,7 +31,54 @@ Antes de iniciar, verificar que se cuenta con:
 
 ---
 
-# SECCIÓN 1: DESCRIPCIÓN DE SCRIPTS
+# METODO RAPIDO: MENU INTERACTIVO
+
+> **RECOMENDADO:** Para una experiencia mas facil y visual, use el menu interactivo que permite ejecutar todas las operaciones sin memorizar comandos.
+
+## Ejecutar Menu Interactivo
+
+```powershell
+cd "C:\Users\kenny\OneDrive\Documents\PROYECTO-BS\Proyecto_OLAP\scripts"
+.\MENU.ps1
+```
+
+## Que hace cada Opcion del Menu
+
+El menu ejecuta automaticamente los scripts correspondientes:
+
+| Opcion | Descripcion | Script que Ejecuta |
+|--------|-------------|-------------------|
+| **[1]** | Configuracion Inicial | `INSTALAR.ps1` + `habilitar_archivelog.sql` + `configurar_rman.rman` |
+| **[2]** | Respaldo Completo (Level 0) | `respaldo_completo_nivel0.rman` |
+| **[3]** | Respaldo Incremental (Level 1) | `respaldo_incremental_nivel1.rman` |
+| **[4]** | Validar Respaldos | `validar_respaldos.rman` |
+| **[5]** | Ver Estado de BD | Consulta SQL a `v$database` |
+| **[6]** | Monitorear Respaldos | `monitorear_respaldos.sql` |
+| **[0]** | Salir | - |
+
+## Ventajas del Menu
+
+- **Interfaz visual** con colores y formato atractivo
+- **No requiere memorizar comandos** - solo selecciona un numero
+- **Confirmacion antes de ejecutar** - pregunta S/N antes de cada operacion
+- **Muestra el comando** que se va a ejecutar para que aprendas
+- **Centralizado** - todas las operaciones en un solo lugar
+
+## Ejemplo de Uso
+
+1. Ejecutar `.\MENU.ps1`
+2. Se muestra el menu con las opciones
+3. Escribir el numero de la opcion (ejemplo: `2` para backup completo)
+4. El menu pregunta: "Desea ejecutar ahora? (S/N)"
+5. Escribir `S` para ejecutar
+6. Se ejecuta el script automaticamente
+7. Al terminar, presionar ENTER para volver al menu
+
+> **NOTA:** Si prefiere ejecutar los comandos manualmente paso a paso, continue con las secciones siguientes de esta guia.
+
+---
+
+# SECCION 1: DESCRIPCION DE SCRIPTS
 
 ## 1.1 Scripts de Configuración
 
