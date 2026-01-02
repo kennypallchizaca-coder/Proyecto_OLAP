@@ -1,7 +1,7 @@
 -- ========================================================================
--- SCRIPT: Validación Post-Recuperación
+-- SCRIPT: Validacion Post-Recuperacion
 -- ========================================================================
--- Ejecutar después de cualquier recuperación para verificar integridad
+-- Ejecutar despues de cualquier recuperacion para verificar integridad
 -- ========================================================================
 
 SET SERVEROUTPUT ON
@@ -29,7 +29,7 @@ FROM dba_data_files
 GROUP BY tablespace_name, status
 ORDER BY tablespace_name;
 
--- 3. Contar registros en tablas críticas
+-- 3. Contar registros en tablas criticas
 PROMPT ========================================
 PROMPT CONTEO DE REGISTROS - TABLAS OLTP
 PROMPT ========================================
@@ -72,9 +72,9 @@ SELECT 'DIMUBICACION', COUNT(*) FROM DIMUBICACION
 UNION ALL
 SELECT 'FACTVENTAS', COUNT(*) FROM FACTVENTAS;
 
--- 4. Verificar última transacción recuperada
+-- 4. Verificar ultima transaccion recuperada
 SELECT 
-    'Último pedido recuperado: ' || MAX(NUMEROPEDIDO) AS "Status",
+    'Ultimo pedido recuperado: ' || MAX(NUMEROPEDIDO) AS "Status",
     MAX(FECHACREACION) AS "Fecha/Hora"
 FROM PEDIDO;
 
@@ -86,7 +86,7 @@ PROMPT ========================================
 DECLARE
     v_count NUMBER;
 BEGIN
-    -- Verificar que no haya pedidos huérfanos
+    -- Verificar que no haya pedidos huerfanos
     SELECT COUNT(*) INTO v_count
     FROM PEDIDO p
     WHERE NOT EXISTS (SELECT 1 FROM CLIENTE c WHERE c.CLIENTEID = p.CLIENTEID);
@@ -110,7 +110,7 @@ BEGIN
 END;
 /
 
--- 6. Verificar objetos inválidos
+-- 6. Verificar objetos invalidos
 SELECT 
     object_type,
     object_name,
@@ -119,7 +119,7 @@ FROM dba_objects
 WHERE status = 'INVALID'
 AND owner = USER;
 
--- Si hay objetos inválidos, recompilarlos
+-- Si hay objetos invalidos, recompilarlos
 BEGIN
     DBMS_UTILITY.COMPILE_SCHEMA(USER);
 END;

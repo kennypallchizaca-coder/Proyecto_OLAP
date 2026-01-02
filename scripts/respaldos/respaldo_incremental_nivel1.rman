@@ -2,9 +2,9 @@
 # SCRIPT: Respaldo Incremental Diferencial (Level 1)
 # ========================================================================
 # Proyecto: Comisariato - Proyecto_OLAP
-# Frecuencia: Diaria (Lunes a Sábado a las 02:00 AM)
-# Duración Estimada: 10 minutos
-# Propósito: Backup de cambios desde el último backup (Level 0 o Level 1)
+# Frecuencia: Diaria (Lunes a Sabado a las 02:00 AM)
+# Duracion Estimada: 10 minutos
+# Proposito: Backup de cambios desde el ultimo backup (Level 0 o Level 1)
 # ========================================================================
 
 CONNECT TARGET /
@@ -13,7 +13,7 @@ RUN {
     # Asignar canal
     ALLOCATE CHANNEL ch1 DEVICE TYPE DISK FORMAT 'C:\oracle\backup\rman\COMISARIATO_INC_%d_%T_%s_%p';
     
-    # Determinar día de la semana para TAG
+    # Determinar dia de la semana para TAG
     SQL 'ALTER SESSION SET NLS_DATE_FORMAT=''YYYY-MM-DD HH24:MI:SS''';
     SQL 'SELECT ''[INCREMENTAL BACKUP] Iniciando backup diferencial: '' || TO_CHAR(SYSDATE, ''DAY'') FROM DUAL';
     

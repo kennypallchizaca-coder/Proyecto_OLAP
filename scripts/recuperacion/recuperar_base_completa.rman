@@ -1,9 +1,9 @@
 # ========================================================================
-# SCRIPT: Recuperación Completa de Base de Datos
+# SCRIPT: Recuperacion Completa de Base de Datos
 # ========================================================================
 # Proyecto: Comisariato
-# Escenario: Pérdida total de datafiles
-# Objetivo: Restaurar base de datos al último momento posible
+# Escenario: Perdida total de datafiles
+# Objetivo: Restaurar base de datos al ultimo momento posible
 # ========================================================================
 
 CONNECT TARGET /
@@ -23,10 +23,10 @@ RESTORE DATABASE;
 # PASO 5: Recuperar base de datos aplicando archive logs
 RECOVER DATABASE;
 
-# PASO 6: Abrir base de datos con RESETLOGS (nueva línea de tiempo)
+# PASO 6: Abrir base de datos con RESETLOGS (nueva linea de tiempo)
 ALTER DATABASE OPEN RESETLOGS;
 
-# PASO 7: Validar recuperación
+# PASO 7: Validar recuperacion
 SELECT name, open_mode, database_role FROM v$database;
 SELECT tablespace_name, status FROM dba_tablespaces;
 

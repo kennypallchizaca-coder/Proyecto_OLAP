@@ -1,25 +1,25 @@
 # ========================================================================
-# SCRIPT: Configuración Inicial de RMAN
+# SCRIPT: Configuracion Inicial de RMAN
 # ========================================================================
-# Proyecto: Plan de Recuperación - Comisariato
-# Propósito: Configurar políticas y parámetros de RMAN
+# Proyecto: Plan de Recuperacion - Comisariato
+# Proposito: Configurar politicas y parametros de RMAN
 # Autor: DBA Senior
 # Fecha: Diciembre 2025
 # ========================================================================
 
 CONNECT TARGET /
 
-# Configurar ubicación de backups
+# Configurar ubicacion de backups
 CONFIGURE CONTROLFILE AUTOBACKUP ON;
 CONFIGURE CONTROLFILE AUTOBACKUP FORMAT FOR DEVICE TYPE DISK TO 'C:\oracle\backup\rman\COMISARIATO_CF_%F';
 
-# Configurar paralelismo (ajustar según CPUs disponibles)
+# Configurar paralelismo (ajustar segun CPUs disponibles)
 CONFIGURE DEVICE TYPE DISK PARALLELISM 2;
 
-# Configurar retention policy (7 días)
+# Configurar retention policy (7 dias)
 CONFIGURE RETENTION POLICY TO RECOVERY WINDOW OF 7 DAYS;
 
-# Habilitar compresión para ahorrar espacio
+# Habilitar compresion para ahorrar espacio
 CONFIGURE COMPRESSION ALGORITHM 'MEDIUM';
 
 # Optimizar backups
@@ -32,7 +32,7 @@ CONFIGURE EXCLUDE FOR TABLESPACE TEMP01;
 # Configurar formato de nombres de archivo
 CONFIGURE CHANNEL DEVICE TYPE DISK FORMAT 'C:\oracle\backup\rman\COMISARIATO_%U';
 
-# Mostrar configuración actual
+# Mostrar configuracion actual
 SHOW ALL;
 
 EXIT;

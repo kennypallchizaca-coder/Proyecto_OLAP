@@ -1,4 +1,4 @@
-# Script de Instalación Rápida - Plan de Recuperación Comisariato
+# Script de Instalacion Rapida - Plan de Recuperacion Comisariato
 # Ejecutar este script en PowerShell como Administrador
 
 Write-Host "========================================" -ForegroundColor Cyan
@@ -10,7 +10,7 @@ Write-Host ""
 # Variables
 $ORACLE_BACKUP_DIR = "C:\oracle\backup\rman"
 $ORACLE_ARCH_DIR = "C:\oracle\arch"
-# Auto-detectar ubicación del proyecto (directorio padre de scripts/)
+# Auto-detectar ubicacion del proyecto (directorio padre de scripts/)
 $PROJECT_PATH = Split-Path -Parent $PSScriptRoot
 
 # Paso 1: Crear directorios
@@ -31,7 +31,7 @@ Write-Host ""
 Write-Host "[3/5] Programando Full Backup (Domingos 2AM)..." -ForegroundColor Yellow
 $actionFull = New-ScheduledTaskAction `
     -Execute "rman" `
-    -Argument "TARGET / @`"$PROJECT_PATH\scripts\backup\backup_level0_full.rman`"" `
+    -Argument "TARGET / @`"$PROJECT_PATH\scripts\respaldos\respaldo_completo_nivel0.rman`"" `
     -WorkingDirectory $PROJECT_PATH
 
 $triggerFull = New-ScheduledTaskTrigger -Weekly -DaysOfWeek Sunday -At 2AM
@@ -54,11 +54,11 @@ Register-ScheduledTask `
 Write-Host "  [OK] Tarea Full Backup programada" -ForegroundColor Green
 Write-Host ""
 
-# Paso 4: Programar Incremental Backup (Lun-Sáb)
-Write-Host "[4/5] Programando Incremental Backup (Lun-Sáb 2AM)..." -ForegroundColor Yellow
+# Paso 4: Programar Incremental Backup (Lun-Sab)
+Write-Host "[4/5] Programando Incremental Backup (Lun-Sab 2AM)..." -ForegroundColor Yellow
 $actionInc = New-ScheduledTaskAction `
     -Execute "rman" `
-    -Argument "TARGET / @`"$PROJECT_PATH\scripts\backup\backup_level1_differential.rman`"" `
+    -Argument "TARGET / @`"$PROJECT_PATH\scripts\respaldos\respaldo_incremental_nivel1.rman`"" `
     -WorkingDirectory $PROJECT_PATH
 
 $triggerInc = New-ScheduledTaskTrigger `
@@ -84,8 +84,8 @@ Register-ScheduledTask `
 Write-Host "  [OK] Tarea Incremental Backup programada" -ForegroundColor Green
 Write-Host ""
 
-# Paso 5: Verificar instalación
-Write-Host "[5/5] Verificando instalación..." -ForegroundColor Yellow
+# Paso 5: Verificar instalacion
+Write-Host "[5/5] Verificando instalacion..." -ForegroundColor Yellow
 $tasks = Get-ScheduledTask | Where-Object {$_.TaskName -like "*RMAN*Comisariato*"}
 
 Write-Host ""
@@ -107,21 +107,21 @@ Write-Host "PROXIMOS PASOS:" -ForegroundColor Yellow
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "1. Habilitar ARCHIVELOG (una sola vez):" -ForegroundColor White
-Write-Host "   sqlplus / as sysdba @scripts\config\enable_archivelog.sql" -ForegroundColor Gray
+Write-Host "   sqlplus / as sysdba @scripts\configuracion\habilitar_archivelog.sql" -ForegroundColor Gray
 Write-Host ""
 Write-Host "2. Configurar RMAN (una sola vez):" -ForegroundColor White
-Write-Host "   rman TARGET / @scripts\config\rman_config.rman" -ForegroundColor Gray
+Write-Host "   rman TARGET / @scripts\configuracion\configurar_rman.rman" -ForegroundColor Gray
 Write-Host ""
 Write-Host "3. Ejecutar primer Full Backup manual:" -ForegroundColor White
-Write-Host "   rman TARGET / @scripts\backup\backup_level0_full.rman" -ForegroundColor Gray
+Write-Host "   rman TARGET / @scripts\respaldos\respaldo_completo_nivel0.rman" -ForegroundColor Gray
 Write-Host ""
 Write-Host "4. Validar el backup:" -ForegroundColor White
-Write-Host "   rman TARGET / @scripts\backup\validate_backups.rman" -ForegroundColor Gray
+Write-Host "   rman TARGET / @scripts\respaldos\validar_respaldos.rman" -ForegroundColor Gray
 Write-Host ""
 Write-Host "Para monitoreo diario:" -ForegroundColor White
-Write-Host "   sqlplus / as sysdba @scripts\monitoring\monitor_backups.sql" -ForegroundColor Gray
+Write-Host "   sqlplus / as sysdba @scripts\monitoreo\monitorear_respaldos.sql" -ForegroundColor Gray
 Write-Host ""
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host "Documentacion completa en:" -ForegroundColor White
-Write-Host "scripts\README_RECOVERY_PLAN.md" -ForegroundColor Gray
+Write-Host "docs\recovery-plan\README.md" -ForegroundColor Gray
 Write-Host "========================================" -ForegroundColor Cyan

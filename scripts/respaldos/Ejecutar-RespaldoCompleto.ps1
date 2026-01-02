@@ -42,10 +42,10 @@ EXIT;
 $tempFile = [System.IO.Path]::GetTempFileName() + ".rman"
 $rmanScript | Out-File -FilePath $tempFile -Encoding ASCII
 
-Write-Host "Executing RMAN backup..." -ForegroundColor Yellow
+Write-Host "Ejecutando respaldo RMAN..." -ForegroundColor Yellow
 Write-Host ""
 
-$logFile = "C:\Users\kenny\OneDrive\Documents\PROYECTO-BS\Proyecto_OLAP\scripts\backup\backup_full_$(Get-Date -Format 'yyyyMMdd_HHmmss').log"
+$logFile = "C:\Users\kenny\OneDrive\Documents\PROYECTO-BS\Proyecto_OLAP\scripts\respaldos\respaldo_completo_$(Get-Date -Format 'yyyyMMdd_HHmmss').log"
 
 & rman cmdfile=$tempFile log=$logFile
 
@@ -53,6 +53,6 @@ Remove-Item $tempFile
 
 Write-Host ""
 Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "Backup Complete!" -ForegroundColor Green  
-Write-Host "Log file: $logFile" -ForegroundColor Gray
+Write-Host "Respaldo Completado!" -ForegroundColor Green  
+Write-Host "Archivo de log: $logFile" -ForegroundColor Gray
 Write-Host "========================================" -ForegroundColor Cyan

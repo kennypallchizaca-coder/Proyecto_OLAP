@@ -1,9 +1,9 @@
 -- ========================================================================
 -- SCRIPT: Habilitar Modo ARCHIVELOG
 -- ========================================================================
--- Proyecto: Plan de Recuperación - Comisariato
+-- Proyecto: Plan de Recuperacion - Comisariato
 -- Base de Datos: Oracle 21c - Proyecto_OLAP
--- Propósito: Activar ARCHIVELOG para respaldos en caliente (Hot Backup)
+-- Proposito: Activar ARCHIVELOG para respaldos en caliente (Hot Backup)
 -- Autor: DBA Senior
 -- Fecha: Diciembre 2025
 -- ========================================================================
@@ -29,7 +29,7 @@ SELECT
 FROM v$database;
 
 -- ========================================================================
--- PASO 2: Verificar ubicación de Archive Logs
+-- PASO 2: Verificar ubicacion de Archive Logs
 -- ========================================================================
 PROMPT ========================================
 PROMPT UBICACION DE ARCHIVE LOGS
@@ -48,7 +48,7 @@ PROMPT ========================================
 -- En Linux cambiar a: /u01/arch/ORCL/
 HOST mkdir C:\oracle\arch 2>nul
 
--- Configurar parámetros de archivado
+-- Configurar parametros de archivado
 ALTER SYSTEM SET log_archive_dest_1='LOCATION=C:\oracle\arch' SCOPE=BOTH;
 ALTER SYSTEM SET log_archive_format='COMISARIATO_arch_%t_%s_%r.arc' SCOPE=SPFILE;
 
@@ -76,7 +76,7 @@ ALTER DATABASE ARCHIVELOG;
 ALTER DATABASE OPEN;
 
 -- ========================================================================
--- PASO 5: Verificación final
+-- PASO 5: Verificacion final
 -- ========================================================================
 PROMPT ========================================
 PROMPT VERIFICACION FINAL
@@ -91,7 +91,7 @@ SELECT
     END AS "Resultado"
 FROM v$database;
 
--- Mostrar configuración de archivado
+-- Mostrar configuracion de archivado
 SELECT dest_name, status, destination 
 FROM v$archive_dest 
 WHERE status = 'VALID';

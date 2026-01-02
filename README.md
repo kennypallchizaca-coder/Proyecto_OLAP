@@ -38,8 +38,9 @@
 5. [Referencias Bibliográficas](#referencias-bibliográficas)
 6. [Anexos](#anexos)
    - [Anexo A: Estructura de Archivos del Proyecto](#anexo-a-estructura-de-archivos-del-proyecto)
-   - [Anexo B: Descripción de Scripts](#anexo-b-descripción-de-scripts)
-   - [Anexo C: Documentación Complementaria](#anexo-c-documentación-complementaria)
+   - [Anexo B: Descripcion de Scripts](#anexo-b-descripcion-de-scripts)
+   - [Anexo C: Documentacion Complementaria](#anexo-c-documentacion-complementaria)
+   - [Anexo D: Evidencias de Prueba de Backup RMAN](#anexo-d-evidencias-de-prueba-de-backup-rman)
 
 ---
 
@@ -759,27 +760,31 @@ Proyecto_OLAP/
 │   ├── images/
 │   │   ├── rman_backup_strategy.png
 │   │   ├── database_architecture.png
-│   │   └── recovery_workflow.png
+│   │   ├── recovery_workflow.png
+│   │   ├── archivos_backup_rman.png
+│   │   ├── logs_respaldo.png
+│   │   └── video_prueba_backup.webp
 │   │
-│   └── recovery-plan/
-│       ├── Plan_Recuperacion_Base_Datos_Comisariato.md
+│   └── plan-recuperacion/
 │       └── GUIA_EJECUCION.md
 │
 ├── scripts/
 │   ├── INSTALAR.ps1
-│   ├── config/
-│   │   ├── enable_archivelog.sql
-│   │   └── rman_config.rman
-│   ├── backup/
-│   │   ├── backup_level0_full.rman
-│   │   ├── backup_level1_differential.rman
-│   │   ├── validate_backups.rman
-│   │   └── Run-FullBackup.ps1
-│   ├── recovery/
-│   │   ├── recovery_complete_database.rman
-│   │   └── recovery_point_in_time.rman
-│   └── monitoring/
-│       └── monitor_backups.sql
+│   ├── configuracion/
+│   │   ├── habilitar_archivelog.sql
+│   │   └── configurar_rman.rman
+│   ├── respaldos/
+│   │   ├── respaldo_completo_nivel0.rman
+│   │   ├── respaldo_incremental_nivel1.rman
+│   │   ├── validar_respaldos.rman
+│   │   └── Ejecutar-RespaldoCompleto.ps1
+│   ├── recuperacion/
+│   │   ├── recuperar_base_completa.rman
+│   │   ├── recuperar_punto_tiempo.rman
+│   │   └── validacion_post_recuperacion.sql
+│   └── monitoreo/
+│       ├── monitorear_respaldos.sql
+│       └── monitorear_archivelog.sql
 │
 └── sql/oracle/
     ├── oltp/
@@ -791,7 +796,7 @@ Proyecto_OLAP/
         └── VistasOLAP_PowerBI.sql
 ```
 
-## Anexo B: Descripción de Scripts
+## Anexo B: Descripcion de Scripts
 
 ### Scripts de Configuración (config/)
 
@@ -830,11 +835,53 @@ Proyecto_OLAP/
 
 ## Anexo C: Documentación Complementaria
 
-| Documento | Ubicación | Descripción |
-|-----------|-----------|-------------|
-| Plan Técnico Completo | docs/recovery-plan/Plan_Recuperacion_Base_Datos_Comisariato.md | Documento técnico detallado |
-| Guía de Ejecución | docs/recovery-plan/GUIA_EJECUCION.md | Instrucciones paso a paso |
-| Comandos Rápidos | scripts/COMANDOS_RAPIDOS.md | Referencia rápida de comandos |
+| Documento | Ubicacion | Descripcion |
+|-----------|-----------|-------------|\n| Plan Tecnico Completo | README.md | Documento tecnico detallado |
+| Guia de Ejecucion | docs/plan-recuperacion/GUIA_EJECUCION.md | Instrucciones paso a paso |
+| Comandos Rapidos | scripts/COMANDOS_RAPIDOS.md | Referencia rapida de comandos |
+
+## Anexo D: Evidencias de Prueba de Backup RMAN
+
+**Fecha de Prueba:** 02 de Enero de 2026  
+**Sistema:** Oracle RMAN 21c  
+**Resultado:** EXITOSO
+
+### D.1 Archivos de Backup Generados
+
+La siguiente captura muestra los archivos de backup generados en `C:\oracle\backup\rman\`:
+
+![Archivos de Backup RMAN](docs/images/archivos_backup_rman.png)
+
+**Archivos incluidos:**
+- `COMISARIATO_FULL_*` - Piezas de backup completo
+- `COMISARIATO_CTRL_*` - Backup del controlfile
+- `COMISARIATO_SPFILE_*` - Backup del SPFILE
+- `COMISARIATO_CF_*` - Autobackup del controlfile
+
+### D.2 Logs de Ejecucion
+
+La siguiente captura muestra el directorio de scripts con los logs de ejecucion:
+
+![Logs de Respaldo](docs/images/logs_respaldo.png)
+
+### D.3 Video del Proceso de Backup
+
+El siguiente video muestra la ejecucion completa del proceso de backup:
+
+![Video Prueba Backup RMAN](docs/images/video_prueba_backup.webp)
+
+### D.4 Verificacion del Estado
+
+| Componente | Estado |
+|------------|--------|
+| Base de Datos | ONLINE |
+| RMAN Configurado | SI |
+| ARCHIVELOG Activo | SI |
+| Backup Nivel 0 | EJECUTADO |
+| Controlfile | RESPALDADO |
+| SPFILE | RESPALDADO |
+| Log Generado | SI |
 
 ---
+
 

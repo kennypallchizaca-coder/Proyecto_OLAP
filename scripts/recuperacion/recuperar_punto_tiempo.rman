@@ -1,9 +1,9 @@
 # ========================================================================
-# SCRIPT: Recuperación Point-in-Time
+# SCRIPT: Recuperacion Point-in-Time
 # ========================================================================
-# Escenario: Recuperar base de datos a un momento específico
+# Escenario: Recuperar base de datos a un momento especifico
 # Ejemplo: Recuperar a 2025-12-30 10:00:00
-# MODIFICAR LA FECHA SEGÚN NECESIDAD
+# MODIFICAR LA FECHA SEGUN NECESIDAD
 # ========================================================================
 
 CONNECT TARGET /
@@ -15,7 +15,7 @@ RUN {
     # Iniciar en modo MOUNT
     STARTUP MOUNT;
     
-    # Especificar punto en el tiempo (MODIFICAR SEGÚN NECESIDAD)
+    # Especificar punto en el tiempo (MODIFICAR SEGUN NECESIDAD)
     SET UNTIL TIME "TO_DATE('2025-12-30 10:00:00', 'YYYY-MM-DD HH24:MI:SS')";
     
     # Restaurar datafiles
@@ -28,7 +28,7 @@ RUN {
     ALTER DATABASE OPEN RESETLOGS;
 }
 
-# Validar recuperación exitosa
+# Validar recuperacion exitosa
 SQL 'SELECT name, open_mode, log_mode FROM v$database';
 SQL 'SELECT tablespace_name, status FROM dba_tablespaces WHERE tablespace_name NOT IN (''TEMP'', ''TEMP01'')';
 

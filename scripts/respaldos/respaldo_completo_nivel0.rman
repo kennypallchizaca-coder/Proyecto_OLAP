@@ -3,8 +3,8 @@
 # ========================================================================
 # Proyecto: Comisariato - Proyecto_OLAP
 # Frecuencia: Semanal (Domingos a las 02:00 AM)
-# Duración Estimada: 45 minutos
-# Propósito: Backup base para respaldos incrementales de la semana
+# Duracion Estimada: 45 minutos
+# Proposito: Backup base para respaldos incrementales de la semana
 # ========================================================================
 
 CONNECT TARGET /
@@ -48,7 +48,7 @@ RUN {
 # Validar integridad del backup
 LIST BACKUP TAG 'COMISARIATO_FULL_DOM';
 
-# Eliminar backups obsoletos según retention policy
+# Eliminar backups obsoletos segun retention policy
 DELETE NOPROMPT OBSOLETE;
 
 EXIT;

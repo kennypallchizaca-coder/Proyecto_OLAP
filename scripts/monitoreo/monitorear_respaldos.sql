@@ -5,7 +5,7 @@
 SET LINESIZE 200
 SET PAGESIZE 100
 
--- Últimos backups realizados
+-- Ultimos backups realizados
 SELECT 
     TO_CHAR(start_time, 'YYYY-MM-DD HH24:MI') AS "Fecha/Hora",
     CASE 
@@ -14,8 +14,8 @@ SELECT
         ELSE 'OTRO'
     END AS "Tipo",
     status,
-    ROUND(elapsed_seconds/60, 2) AS "Duración (min)",
-    ROUND(output_bytes/1024/1024, 2) AS "Tamaño (MB)"
+    ROUND(elapsed_seconds/60, 2) AS "Duracion (min)",
+    ROUND(output_bytes/1024/1024, 2) AS "Tamano (MB)"
 FROM v$backup_set_details
 WHERE start_time > SYSDATE - 7
 ORDER BY start_time DESC;

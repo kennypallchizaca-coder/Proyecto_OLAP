@@ -1,9 +1,9 @@
 # ========================================================================
-# SCRIPT: Validación de Integridad de Backups
+# SCRIPT: Validacion de Integridad de Backups
 # ========================================================================
 # Proyecto: Comisariato
-# Frecuencia: Diaria (después de cada backup)
-# Propósito: Verificar que los backups sean restaurables
+# Frecuencia: Diaria (despues de cada backup)
+# Proposito: Verificar que los backups sean restaurables
 # ========================================================================
 
 CONNECT TARGET /

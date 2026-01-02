@@ -1,0 +1,68 @@
+
+Recovery Manager : Release 21.0.0.0.0 - Production on Vie Ene 2 14:08:50 2026
+Version 21.3.0.0.0
+
+Copyright (c) 1982, 2021, Oracle and/or its affiliates.  All rights reserved.
+
+conectado a la base de datos de destino: XE (DBID=3095699245)
+
+RMAN> # ========================================================================
+2> # SCRIPT: Respaldo Completo (Full Backup - Level 0)
+3> # ========================================================================
+4> # Proyecto: Comisariato - Proyecto_OLAP
+5> # Frecuencia: Semanal (Domingos a las 02:00 AM)
+6> # Duracion Estimada: 45 minutos
+7> # Proposito: Backup base para respaldos incrementales de la semana
+8> # ========================================================================
+9> 
+10> CONNECT TARGET *
+11> 
+12> RUN {
+13>     # Asignar canales (paralelismo)
+14>     ALLOCATE CHANNEL ch1 DEVICE TYPE DISK FORMAT 'C:\oracle\backup\rman\COMISARIATO_FULL_%d_%T_%s_%p';
+15>     ALLOCATE CHANNEL ch2 DEVICE TYPE DISK FORMAT 'C:\oracle\backup\rman\COMISARIATO_FULL_%d_%T_%s_%p';
+16>     
+17>     # Registrar inicio
+18>     SQL "ALTER SESSION SET NLS_DATE_FORMAT=''DD-MON-YYYY HH24:MI:SS''";
+19>     SQL "SELECT ''[FULL BACKUP] Iniciando respaldo completo: '' || TO_CHAR(SYSDATE) FROM DUAL";
+20>     
+21>     # Ejecutar backup incremental level 0 (equivalente a full)
+22>     BACKUP 
+23>         INCREMENTAL LEVEL 0 
+24>         AS COMPRESSED BACKUPSET
+25>         TAG 'COMISARIATO_FULL_DOM'
+26>         DATABASE
+27>         PLUS ARCHIVELOG DELETE ALL INPUT;
+28>     
+29>     # Backup de control file y spfile
+30>     BACKUP 
+31>         AS COMPRESSED BACKUPSET
+32>         TAG 'COMISARIATO_CTRL_FULL'
+33>         CURRENT CONTROLFILE 
+34>         PLUS ARCHIVELOG DELETE ALL INPUT;
+35>     
+36>     BACKUP SPFILE 
+37>         TAG 'COMISARIATO_SPFILE_FULL'
+38>         FORMAT 'C:\oracle\backup\rman\COMISARIATO_SPFILE_%d_%T_%s_%p';
+39>     
+40>     # Liberar canales
+41>     RELEASE CHANNEL ch1;
+42>     RELEASE CHANNEL ch2;
+43>     
+44>     # Registrar fin
+45>     SQL "SELECT ''[FULL BACKUP] Completado exitosamente: '' || TO_CHAR(SYSDATE) FROM DUAL";
+46> }
+47> 
+48> # Validar integridad del backup
+49> LIST BACKUP TAG 'COMISARIATO_FULL_DOM';
+50> 
+51> # Eliminar backups obsoletos segun retention policy
+52> DELETE NOPROMPT OBSOLETE;
+53> 
+54> EXIT;
+RMAN-00571: ===========================================================
+RMAN-00569: =============== ERROR MESSAGE STACK FOLLOWS ===============
+RMAN-00571: ===========================================================
+RMAN-06167: ya está conectado
+
+Recovery Manager terminado.
