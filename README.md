@@ -10,6 +10,39 @@
 
 ---
 
+# ÍNDICE
+
+1. [Objetivo](#objetivo)
+2. [Enunciado](#enunciado)
+3. [Desarrollo/Procedimiento](#desarrolloprocedimiento)
+
+**PARTE 1: Investigación de Oracle RMAN**
+- [1.1 Definición de Oracle RMAN](#11-definición-de-oracle-rman)
+- [1.2 Tipos de Respaldo](#12-tipos-de-respaldo)
+- [1.3 Respaldos Incrementales y Diferenciales](#13-respaldos-incrementales-y-diferenciales)
+- [1.4 Procedimientos de Recuperación con RMAN](#14-procedimientos-de-recuperación-con-rman)
+
+**PARTE 2: Plan de Recuperación - Comisariato Multiplaza**
+- [2.1 Descripción de la Empresa](#21-descripción-de-la-empresa)
+- [2.2 Sistemas Informáticos y Bases de Datos](#22-sistemas-informáticos-y-bases-de-datos)
+- [2.3 Análisis de Criticidad de Datos](#23-análisis-de-criticidad-de-datos)
+- [2.4 Estrategia de Respaldo Implementada](#24-estrategia-de-respaldo-implementada)
+- [2.5 Configuración de RMAN](#25-configuración-de-rman)
+- [2.6 Procedimientos de Recuperación](#26-procedimientos-de-recuperación)
+- [2.7 Automatización de Tareas](#27-automatización-de-tareas)
+- [2.8 Monitoreo de Backups](#28-monitoreo-de-backups)
+- [2.9 Matriz de Roles y Responsabilidades](#29-matriz-de-roles-y-responsabilidades)
+- [2.10 Resultados de Prueba](#210-resultados-de-prueba)
+
+4. [Conclusiones](#conclusiones)
+5. [Referencias Bibliográficas](#referencias-bibliográficas)
+6. [Anexos](#anexos)
+   - [Anexo A: Estructura de Archivos del Proyecto](#anexo-a-estructura-de-archivos-del-proyecto)
+   - [Anexo B: Descripción de Scripts](#anexo-b-descripción-de-scripts)
+   - [Anexo C: Documentación Complementaria](#anexo-c-documentación-complementaria)
+
+---
+
 ## Objetivo
 
 Aplicar los conceptos de respaldo y recuperación de bases de datos utilizando Oracle Recovery Manager (RMAN), desarrollando un plan de recuperación completo para una empresa de comisariato con múltiples sucursales que opera 24/7.
@@ -795,7 +828,7 @@ Proyecto_OLAP/
 |--------|---------|
 | **INSTALAR.ps1** | Script de instalación automática. Crea los directorios C:\oracle\backup\rman y C:\oracle\arch. Programa las tareas automáticas en Windows Task Scheduler (Full Backup domingos 2AM, Incremental lunes-sábado 2AM). |
 
-## Anexo B: Documentación Complementaria
+## Anexo C: Documentación Complementaria
 
 | Documento | Ubicación | Descripción |
 |-----------|-----------|-------------|
