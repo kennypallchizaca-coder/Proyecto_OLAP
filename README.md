@@ -1,4 +1,3 @@
-# MANUAL DE PROCEDIMIENTO
 ## Práctica: Plan de Recuperación de Base de Datos
 ## Tema: Plan de Recuperación de Base de Datos
 
@@ -431,7 +430,7 @@ RMAN> SHOW ALL;
 
 ### 2.5.3 Script de Backup Completo (Level 0)
 
-**Archivo:** `backup_level0_full.rman`
+**Archivo:** `respaldo_completo_nivel0.rman`
 
 ```bash
 RUN {
@@ -469,7 +468,7 @@ RUN {
 
 ### 2.5.4 Script de Backup Incremental (Level 1)
 
-**Archivo:** `backup_level1_differential.rman`
+**Archivo:** `respaldo_incremental_nivel1.rman`
 
 ```bash
 RUN {
@@ -494,7 +493,7 @@ RUN {
 
 ### 2.5.5 Script de Validación de Backups
 
-**Archivo:** `validate_backups.rman`
+**Archivo:** `validar_respaldos.rman`
 
 ```bash
 -- Validar que los backups se pueden restaurar
@@ -522,7 +521,7 @@ CROSSCHECK BACKUP;
 
 ### 2.6.1 Recuperación Completa de Base de Datos
 
-**Archivo:** `recovery_complete_database.rman`
+**Archivo:** `recuperar_base_completa.rman`
 
 ```bash
 -- Detener base de datos de forma abrupta
@@ -553,7 +552,7 @@ ALTER DATABASE OPEN;
 
 ### 2.6.2 Recuperación Point-in-Time
 
-**Archivo:** `recovery_point_in_time.rman`
+**Archivo:** `recuperar_punto_tiempo.rman`
 
 ```bash
 -- Detener base de datos
@@ -658,7 +657,7 @@ Register-ScheduledTask -TaskName "RMAN_Backup_Incremental_Comisariato" `
 
 ### Script de Monitoreo Diario
 
-**Archivo:** `monitor_backups.sql`
+**Archivo:** `monitorear_respaldos.sql`
 
 ```sql
 SET LINESIZE 200
@@ -827,34 +826,34 @@ Proyecto_OLAP/
 
 ## Anexo B: Descripcion de Scripts
 
-### Scripts de Configuración (config/)
+### Scripts de Configuración (configuracion/)
 
 | Script | Función |
 |--------|---------|
-| **enable_archivelog.sql** | Habilita el modo ARCHIVELOG en Oracle para permitir backups en caliente. Cierra la BD, la inicia en modo MOUNT, activa ARCHIVELOG y configura el destino de archive logs. Solo se ejecuta una vez. |
-| **rman_config.rman** | Configura las políticas de RMAN: retención de 7 días, compresión MEDIUM, autobackup de control files, paralelismo con 2 canales y formato de nombres de archivo. |
+| **habilitar_archivelog.sql** | Habilita el modo ARCHIVELOG en Oracle para permitir backups en caliente. Cierra la BD, la inicia en modo MOUNT, activa ARCHIVELOG y configura el destino de archive logs. Solo se ejecuta una vez. |
+| **configurar_rman.rman** | Configura las políticas de RMAN: retención de 7 días, compresión MEDIUM, autobackup de control files, paralelismo con 2 canales y formato de nombres de archivo. |
 
-### Scripts de Respaldo (backup/)
-
-| Script | Función |
-|--------|---------|
-| **backup_level0_full.rman** | Ejecuta backup completo Level 0 de toda la base de datos. Respalda todos los datafiles, control file y SPFILE. Elimina backups obsoletos y archive logs mayores a 7 días. |
-| **backup_level1_differential.rman** | Ejecuta backup incremental Level 1. Solo respalda los bloques modificados desde el último backup, reduciendo tiempo y espacio. Incluye backup de archive logs no respaldados. |
-| **validate_backups.rman** | Valida la integridad de los backups existentes. Ejecuta RESTORE VALIDATE para confirmar que los archivos no están corruptos y pueden usarse para recuperación. Lista todos los backups disponibles. |
-| **Run-FullBackup.ps1** | Script PowerShell que ejecuta el backup completo. Conecta a RMAN, ejecuta backup_level0_full.rman y genera un archivo de log con fecha y hora de ejecución. |
-
-### Scripts de Recuperación (recovery/)
+### Scripts de Respaldo (respaldos/)
 
 | Script | Función |
 |--------|---------|
-| **recovery_complete_database.rman** | Recupera la base de datos completa al último estado disponible. Ejecuta RESTORE DATABASE seguido de RECOVER DATABASE para aplicar todos los archive logs. |
-| **recovery_point_in_time.rman** | Recupera la base de datos a un punto específico en el tiempo. Usa SET UNTIL TIME para definir el momento exacto de recuperación. Requiere OPEN RESETLOGS al finalizar. |
+| **respaldo_completo_nivel0.rman** | Ejecuta backup completo Level 0 de toda la base de datos. Respalda todos los datafiles, control file y SPFILE. Elimina backups obsoletos y archive logs mayores a 7 días. |
+| **respaldo_incremental_nivel1.rman** | Ejecuta backup incremental Level 1. Solo respalda los bloques modificados desde el último backup, reduciendo tiempo y espacio. Incluye backup de archive logs no respaldados. |
+| **validar_respaldos.rman** | Valida la integridad de los backups existentes. Ejecuta RESTORE VALIDATE para confirmar que los archivos no están corruptos y pueden usarse para recuperación. Lista todos los backups disponibles. |
+| **Ejecutar-RespaldoCompleto.ps1** | Script PowerShell que ejecuta el backup completo. Conecta a RMAN, ejecuta respaldo_completo_nivel0.rman y genera un archivo de log con fecha y hora de ejecución. |
 
-### Scripts de Monitoreo (monitoring/)
+### Scripts de Recuperación (recuperacion/)
 
 | Script | Función |
 |--------|---------|
-| **monitor_backups.sql** | Consulta las vistas V$RMAN_BACKUP_JOB_DETAILS para mostrar el estado de los últimos 7 días de backups. Muestra fecha, tipo, estado, tamaño original y comprimido. |
+| **recuperar_base_completa.rman** | Recupera la base de datos completa al último estado disponible. Ejecuta RESTORE DATABASE seguido de RECOVER DATABASE para aplicar todos los archive logs. |
+| **recuperar_punto_tiempo.rman** | Recupera la base de datos a un punto específico en el tiempo. Usa SET UNTIL TIME para definir el momento exacto de recuperación. Requiere OPEN RESETLOGS al finalizar. |
+
+### Scripts de Monitoreo (monitoreo/)
+
+| Script | Función |
+|--------|---------|
+| **monitorear_respaldos.sql** | Consulta las vistas V$RMAN_BACKUP_JOB_DETAILS para mostrar el estado de los últimos 7 días de backups. Muestra fecha, tipo, estado, tamaño original y comprimido. |
 
 ### Scripts Principales
 
