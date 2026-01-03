@@ -16,23 +16,115 @@ $colors = @{
     Step    = "Magenta"
 }
 
+# Variable para controlar la animacion inicial
+$script:firstRun = $true
+
 function Show-Banner {
     Clear-Host
-    Write-Host ""
-    Write-Host "  ╔══════════════════════════════════════════════════════════╗" -ForegroundColor Cyan
-    Write-Host "  ║                                                          ║" -ForegroundColor Cyan
-    Write-Host "  ║   ██████╗  █████╗  ██████╗██╗  ██╗██╗   ██╗██████╗       ║" -ForegroundColor Cyan
-    Write-Host "  ║   ██╔══██╗██╔══██╗██╔════╝██║ ██╔╝██║   ██║██╔══██╗      ║" -ForegroundColor Cyan
-    Write-Host "  ║   ██████╔╝███████║██║     █████╔╝ ██║   ██║██████╔╝      ║" -ForegroundColor Cyan
-    Write-Host "  ║   ██╔══██╗██╔══██║██║     ██╔═██╗ ██║   ██║██╔═══╝       ║" -ForegroundColor Cyan
-    Write-Host "  ║   ██████╔╝██║  ██║╚██████╗██║  ██╗╚██████╔╝██║           ║" -ForegroundColor Cyan
-    Write-Host "  ║   ╚═════╝ ╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝           ║" -ForegroundColor Cyan
-    Write-Host "  ║                                                          ║" -ForegroundColor Cyan
-    Write-Host "  ║              SISTEMA DE RESPALDO RMAN                    ║" -ForegroundColor Yellow
-    Write-Host "  ║                   COMISARIATO                            ║" -ForegroundColor Yellow
-    Write-Host "  ║                                                          ║" -ForegroundColor Cyan
-    Write-Host "  ╚══════════════════════════════════════════════════════════╝" -ForegroundColor Cyan
-    Write-Host ""
+    
+    # Ocultar cursor para animacion limpia
+    [Console]::CursorVisible = $false
+    
+    # Definir banner con colores gradiente MORADO estilo Linux
+    $bannerLines = @(
+        @{ Text = ""; Color = "White" },
+        @{ Text = "  ╔══════════════════════════════════════════════════════════╗"; Color = "DarkMagenta" },
+        @{ Text = "  ║                                                          ║"; Color = "DarkMagenta" },
+        @{ Text = "  ║   ██████╗  █████╗  ██████╗██╗  ██╗██╗   ██╗██████╗       ║"; Color = "Magenta" },
+        @{ Text = "  ║   ██╔══██╗██╔══██╗██╔════╝██║ ██╔╝██║   ██║██╔══██╗      ║"; Color = "Magenta" },
+        @{ Text = "  ║   ██████╔╝███████║██║     █████╔╝ ██║   ██║██████╔╝      ║"; Color = "White" },
+        @{ Text = "  ║   ██╔══██╗██╔══██║██║     ██╔═██╗ ██║   ██║██╔═══╝       ║"; Color = "Magenta" },
+        @{ Text = "  ║   ██████╔╝██║  ██║╚██████╗██║  ██╗╚██████╔╝██║           ║"; Color = "Magenta" },
+        @{ Text = "  ║   ╚═════╝ ╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝           ║"; Color = "DarkMagenta" },
+        @{ Text = "  ║                                                          ║"; Color = "DarkMagenta" },
+        @{ Text = "  ║              SISTEMA DE RESPALDO RMAN                    ║"; Color = "Yellow" },
+        @{ Text = "  ║           COMISARIATO  BY LEXIS-TEAM                     ║"; Color = "Yellow" },
+        @{ Text = "  ║                                                          ║"; Color = "DarkMagenta" },
+        @{ Text = "  ╚══════════════════════════════════════════════════════════╝"; Color = "DarkMagenta" },
+        @{ Text = ""; Color = "White" }
+    )
+    
+    if ($script:firstRun) {
+        # PRIMERA VEZ: Animacion completa con typing + barra de carga
+        $script:firstRun = $false
+        
+        foreach ($line in $bannerLines) {
+            if ($line.Text -eq "") {
+                Write-Host ""
+                continue
+            }
+            
+            # Efecto de escritura caracter por caracter
+            $chars = $line.Text.ToCharArray()
+            foreach ($char in $chars) {
+                Write-Host $char -ForegroundColor $line.Color -NoNewline
+                if ($char -match '[█╔╗╚╝║═]') {
+                    Start-Sleep -Milliseconds 2
+                }
+            }
+            Write-Host ""
+            Start-Sleep -Milliseconds 30
+        }
+        
+        # Efecto de "carga" estilo Linux
+        Write-Host ""
+        $loadingText = "  [ Inicializando Sistema de Respaldo... ]"
+        foreach ($char in $loadingText.ToCharArray()) {
+            Write-Host $char -ForegroundColor Magenta -NoNewline
+            Start-Sleep -Milliseconds 15
+        }
+        
+        # Barra de progreso animada
+        Write-Host ""
+        Write-Host "  [" -ForegroundColor DarkGray -NoNewline
+        for ($i = 0; $i -lt 40; $i++) {
+            Write-Host "█" -ForegroundColor Magenta -NoNewline
+            Start-Sleep -Milliseconds 20
+        }
+        Write-Host "]" -ForegroundColor DarkGray
+        
+        Write-Host "  ✓ Sistema listo" -ForegroundColor Magenta
+        Start-Sleep -Milliseconds 500
+        Clear-Host
+        
+        # Mostrar banner final con efecto de brillo
+        foreach ($line in $bannerLines) {
+            Write-Host $line.Text -ForegroundColor $line.Color
+            Start-Sleep -Milliseconds 25
+        }
+        
+    } else {
+        # SIGUIENTES VECES: Animacion rapida de revelacion
+        foreach ($line in $bannerLines) {
+            if ($line.Text -eq "") {
+                Write-Host ""
+                continue
+            }
+            
+            # Efecto de "escaneo" - aparece de izquierda a derecha
+            $text = $line.Text
+            $len = $text.Length
+            
+            # Mostrar con efecto de barrido
+            for ($i = 0; $i -le $len; $i += 4) {
+                [Console]::SetCursorPosition(0, [Console]::CursorTop)
+                $visible = $text.Substring(0, [Math]::Min($i, $len))
+                $hidden = " " * ($len - $visible.Length)
+                Write-Host "$visible$hidden" -ForegroundColor $line.Color -NoNewline
+                Start-Sleep -Milliseconds 1
+            }
+            
+            # Mostrar linea completa
+            [Console]::SetCursorPosition(0, [Console]::CursorTop)
+            Write-Host $text -ForegroundColor $line.Color
+        }
+        
+        # Efecto de pulso al final (parpadeo sutil)
+        Start-Sleep -Milliseconds 100
+    }
+    
+    # Restaurar cursor
+    [Console]::CursorVisible = $true
 }
 
 function Show-Menu {
