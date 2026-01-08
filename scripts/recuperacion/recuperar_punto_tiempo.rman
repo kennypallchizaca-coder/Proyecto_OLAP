@@ -6,7 +6,6 @@
 # MODIFICAR LA FECHA SEGUN NECESIDAD
 # ========================================================================
 
-CONNECT TARGET /
 
 RUN {
     # Cerrar base de datos
@@ -16,7 +15,7 @@ RUN {
     STARTUP MOUNT;
     
     # Especificar punto en el tiempo (MODIFICAR SEGUN NECESIDAD)
-    SET UNTIL TIME "TO_DATE('2025-12-30 10:00:00', 'YYYY-MM-DD HH24:MI:SS')";
+    SET UNTIL TIME "TO_DATE('2026-01-07 21:17:09', 'YYYY-MM-DD HH24:MI:SS')";
     
     # Restaurar datafiles
     RESTORE DATABASE;
@@ -28,11 +27,8 @@ RUN {
     ALTER DATABASE OPEN RESETLOGS;
 }
 
+
 # Validar recuperacion exitosa
 SQL 'SELECT name, open_mode, log_mode FROM v$database';
-SQL 'SELECT tablespace_name, status FROM dba_tablespaces WHERE tablespace_name NOT IN (''TEMP'', ''TEMP01'')';
-
-# Validar datos de negocio (ajustar nombre de schema si es necesario)
-SQL 'SELECT COUNT(*) AS total_pedidos FROM PEDIDO';
 
 EXIT;

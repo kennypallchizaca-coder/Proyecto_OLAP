@@ -6,7 +6,6 @@
 # Proposito: Verificar que los backups sean restaurables
 # ========================================================================
 
-CONNECT TARGET /
 
 # Validar database
 VALIDATE DATABASE;

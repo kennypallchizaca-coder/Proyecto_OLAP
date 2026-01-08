@@ -6,7 +6,6 @@
 # Objetivo: Restaurar base de datos al ultimo momento posible
 # ========================================================================
 
-CONNECT TARGET /
 
 # PASO 1: Iniciar instancia en modo NOMOUNT (sin acceso a archivos)
 STARTUP NOMOUNT;

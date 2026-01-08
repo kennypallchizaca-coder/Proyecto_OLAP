@@ -617,7 +617,27 @@ cd "C:\Users\kenny\OneDrive\Documents\PROYECTO-BS\Proyecto_OLAP\scripts"
 | [4] | Validar Respaldos | `respaldos\validar_respaldos.rman` |
 | [5] | Ver Estado BD | Consulta SQL directa |
 | [6] | Monitorear Respaldos | `monitoreo\monitorear_respaldos.sql` |
+| [6] | Monitorear Respaldos | `monitoreo\monitorear_respaldos.sql` |
+| [7] | **RECUPERACIÓN (Submenú)** | `Show-RecoveryMenu` (Funciones de recuperación) |
 | [0] | Salir | - |
+
+### Mecanismo de Seguridad: Health Check Pre-Recuperación
+
+El sistema incluye un **Bloqueo de Seguridad Inteligente**. Antes de ejecutar cualquier recuperación destructiva, verifica el estado de la base de datos:
+
+1. **Estado HEALTHY (Sana):**  
+   - Si la BD está ONLINE y sin archivos corruptos, el sistema **BLOQUEA** la operación.
+   - Muestra alerta: "LA BASE DE DATOS ESTA FUNCIONANDO CORRECTAMENTE".
+   - Requiere confirmación explícita escribiendo **"SOBRESCRIBIR"** o **"PERDER DATOS"**.
+
+2. **Estado NEEDS_RECOVERY:**  
+   - Si detecta archivos faltantes, recomienda proceder con la recuperación.
+
+**Opciones del Submenú de Recuperación:**
+- **[1] Recuperación Completa:** Restaura desde el último backup exitoso.
+- **[2] Recuperación Point-in-Time:** Permite regresar a una fecha/hora específica (ideal para errores lógicos como borrado de tablas).
+- **[3] Validación Post-Recuperación:** Verifica integridad sin modificar datos.
+
 
 **Como Usar:**
 1. Ejecutar `.\MENU.ps1`
@@ -720,7 +740,9 @@ ORDER BY bytes DESC;
 
 ## 2.10 Resultados de Prueba
 
-**Fecha de última prueba:** 31 de Diciembre de 2025
+**Fecha de última prueba:** 7 de Enero de 2026
+
+### Prueba de Backup Completo (Nivel 0)
 
 | Métrica | Valor |
 |---------|-------|
@@ -728,7 +750,26 @@ ORDER BY bytes DESC;
 | Archivos generados | 11 |
 | Tiempo de ejecución | 1 minuto |
 | Algoritmo de compresión | MEDIUM |
-| Estado final | EXITOSO |
+| Estado final | EXITOSO ✅ |
+
+### Prueba de Recuperación Point-in-Time (PITR)
+
+**Fecha:** 7 de Enero de 2026  
+**Objetivo:** Verificar capacidad de recuperación a un punto específico en el tiempo
+
+| Métrica | Valor |
+|---------|-------|
+| Timestamp de recuperación | 2026-01-07 21:17:09 |
+| Registros de prueba insertados | 5 (IDs 999991-999995) |
+| Registros después de PITR | 0 (eliminados exitosamente) ✅ |
+| Tabla objetivo | ALEXIS3.DETALLE_PEDIDO |
+| Estado de BD post-recovery | READ WRITE ✅ |
+| Integridad de datos | VERIFICADA ✅ |
+| Script utilizado | recuperar_punto_tiempo.rman |
+| Validación ejecutada | validacion_post_recuperacion.sql |
+| Resultado final | **EXITOSO** ✅ |
+
+**Conclusión de la prueba PITR:** El sistema de recuperación Point-in-Time funciona correctamente. La base de datos se restauró al timestamp especificado (21:17:09), eliminando los 5 registros insertados posteriormente (21:17:XX), demostrando la capacidad del sistema de revertir errores lógicos y transacciones no deseadas.
 
 ### Archivos Generados
 
@@ -738,6 +779,13 @@ C:\oracle\backup\rman\
     COMISARIATO_CTRL_XE_*.bkp      (Control file)
     COMISARIATO_SPFILE_XE_*.bkp    (Archivo de parámetros)
     COMISARIATO_CF_*.bkp           (Control file autobackup)
+```
+
+```
+C:\oracle\backup\logs\
+    RESPALDO_COMPLETO_*.log         (Logs de backup nivel 0)
+    RECUPERACION_PITR_*.log         (Logs de recuperación PITR)
+    post_recovery_validation.log    (Validación post-recuperación)
 ```
 
 ---
@@ -848,6 +896,8 @@ Proyecto_OLAP/
 |--------|---------|
 | **recuperar_base_completa.rman** | Recupera la base de datos completa al último estado disponible. Ejecuta RESTORE DATABASE seguido de RECOVER DATABASE para aplicar todos los archive logs. |
 | **recuperar_punto_tiempo.rman** | Recupera la base de datos a un punto específico en el tiempo. Usa SET UNTIL TIME para definir el momento exacto de recuperación. Requiere OPEN RESETLOGS al finalizar. |
+| **verificar_estado.sql** | **(NUEVO)** Script de seguridad pre-recuperación. Diagnostica si la BD está sana (ONLINE) o si faltan archivos. Bloquea la recuperación accidental si la base de datos no lo necesita. |
+| **validacion_post_recuperacion.sql** | Script de validación post-desastre. Verifica la integridad de los datafiles, el estado de los tablespaces y realiza un conteo de registros clave para confirmar el éxito de la recuperación. |
 
 ### Scripts de Monitoreo (monitoreo/)
 

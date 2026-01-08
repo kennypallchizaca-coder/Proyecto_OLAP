@@ -115,6 +115,8 @@ function Show-Menu {
     Write-Host "  │                                                         │" -ForegroundColor White
     Write-Host "  │   [6] Monitorear Respaldos                              │" -ForegroundColor Cyan
     Write-Host "  │                                                         │" -ForegroundColor White
+    Write-Host "  │   [7] RECUPERACION (Submenu) ⚠                          │" -ForegroundColor Red
+    Write-Host "  │                                                         │" -ForegroundColor White
     Write-Host "  │   [0] Salir                                             │" -ForegroundColor Red
     Write-Host "  │                                                         │" -ForegroundColor White
     Write-Host "  └─────────────────────────────────────────────────────────┘" -ForegroundColor White
@@ -133,6 +135,258 @@ function Pause-Script {
     Write-Host ""
     Write-Host "  Presione ENTER para continuar..." -ForegroundColor Gray
     Read-Host | Out-Null
+}
+
+function Show-RecoveryMenu {
+    Write-Host "  ┌─────────────────────────────────────────────────────────┐" -ForegroundColor Red
+    Write-Host "  │                ⚠  MENU DE RECUPERACION  ⚠               │" -ForegroundColor Red
+    Write-Host "  ├─────────────────────────────────────────────────────────┤" -ForegroundColor Red
+    Write-Host "  │                                                         │" -ForegroundColor White
+    Write-Host "  │   ADVERTENCIA: Operaciones destructivas                 │" -ForegroundColor Yellow
+    Write-Host "  │   Solo ejecutar bajo supervision de DBA                 │" -ForegroundColor Yellow
+    Write-Host "  │                                                         │" -ForegroundColor White
+    Write-Host "  ├─────────────────────────────────────────────────────────┤" -ForegroundColor Red
+    Write-Host "  │                                                         │" -ForegroundColor White
+    Write-Host "  │   [1] Recuperacion Completa Total                       │" -ForegroundColor Red
+    Write-Host "  │       (Restaurar desde ultimo backup disponible)        │" -ForegroundColor Gray
+    Write-Host "  │                                                         │" -ForegroundColor White
+    Write-Host "  │   [2] Recuperacion Point-in-Time (PITR)                 │" -ForegroundColor Red
+    Write-Host "  │       (Restaurar a un momento especifico)               │" -ForegroundColor Gray
+    Write-Host "  │                                                         │" -ForegroundColor White
+    Write-Host "  │   [3] Validacion Post-Recuperacion                      │" -ForegroundColor Cyan
+    Write-Host "  │       (Verificar integridad tras recuperacion)          │" -ForegroundColor Gray
+    Write-Host "  │                                                         │" -ForegroundColor White
+    Write-Host "  │   [0] Volver al Menu Principal                          │" -ForegroundColor White
+    Write-Host "  │                                                         │" -ForegroundColor White
+    Write-Host "  └─────────────────────────────────────────────────────────┘" -ForegroundColor Red
+    Write-Host ""
+}
+
+function Invoke-RecoveryMenu {
+    do {
+        Show-Banner
+        Show-RecoveryMenu
+        
+        $recoveryOption = Read-Host "  Seleccione una opcion"
+        
+        switch ($recoveryOption) {
+            "1" {
+                Show-Banner
+                Write-Host "  SEARCHING FOR HEALTH STATUS..." -ForegroundColor Gray
+                
+                # --- HEALTH CHECK START ---
+                $healthStatus = "UNKNOWN"
+                try {
+                    $checkFile = Join-Path $PROJECT_PATH "scripts\recuperacion\verificar_estado.sql"
+                    $checkOutput = sqlplus -s / as sysdba "@$checkFile" 2>&1
+                    if ($checkOutput -match "STATUS:HEALTHY") { $healthStatus = "HEALTHY" }
+                    elseif ($checkOutput -match "STATUS:NEEDS_RECOVERY") { $healthStatus = "NEEDS_RECOVERY" }
+                    elseif ($checkOutput -match "STATUS:MOUNTED_OR_OTHER") { $healthStatus = "MOUNTED" }
+                    else { $healthStatus = "DOWN_OR_ERROR" }
+                } catch {
+                    $healthStatus = "DOWN_OR_ERROR"
+                }
+
+                Write-Host "  ANALISIS PREVIO:" -ForegroundColor Cyan
+                if ($healthStatus -eq "HEALTHY") {
+                    Write-Host "  [✔] BASE DE DATOS ONLINE Y SANA (STATUS: HEALTHY)" -ForegroundColor Green
+                    Write-Host ""
+                    Write-Host "  ╔══════════════════════════════════════════════════════════╗" -ForegroundColor Red
+                    Write-Host "  ║                 ⛔  BLOQUEO DE SEGURIDAD  ⛔             ║" -ForegroundColor Red
+                    Write-Host "  ╠══════════════════════════════════════════════════════════╣" -ForegroundColor Red
+                    Write-Host "  ║  LA BASE DE DATOS ESTA FUNCIONANDO CORRECTAMENTE.        ║" -ForegroundColor Yellow
+                    Write-Host "  ║  RECUPERAR AHORA BORRARA TODOS LOS DATOS ACTUALES.       ║" -ForegroundColor Yellow
+                    Write-Host "  ║  NO SE RECOMIENDA PROCEDER.                              ║" -ForegroundColor Yellow
+                    Write-Host "  ╚══════════════════════════════════════════════════════════╝" -ForegroundColor Red
+                    Write-Host ""
+                    $hardConfirm = Read-Host "  Para forzar (PELIGRO), escriba 'SOBRESCRIBIR'"
+                    if ($hardConfirm -ne "SOBRESCRIBIR") {
+                        Write-Host ""
+                        Write-Host "  ✓ Operacion cancelada por seguridad." -ForegroundColor Green
+                        Pause-Script
+                        continue
+                    }
+                } elseif ($healthStatus -eq "NEEDS_RECOVERY") {
+                    Write-Host "  [⚠] SE DETECTARON ARCHIVOS FALTANTES. RECUPERACION RECOMENDADA." -ForegroundColor Yellow
+                } else {
+                    Write-Host "  [!] LA INSTANCIA NO RESPONDE O ESTA EN MODO MOUNT." -ForegroundColor Magenta
+                }
+                # --- HEALTH CHECK END ---
+
+                Show-Banner
+                Write-Host "  ╔═══════════════════════════════════════════╗" -ForegroundColor Red
+                Write-Host "  ║     RECUPERACION COMPLETA TOTAL           ║" -ForegroundColor Red
+                Write-Host "  ╚═══════════════════════════════════════════╝" -ForegroundColor Red
+                Write-Host ""
+                Write-Host "  ⚠  ADVERTENCIA CRITICA  ⚠" -ForegroundColor Red
+                Write-Host ""
+                Write-Host "    Esta operacion:" -ForegroundColor Yellow
+                Write-Host "    - SOBRESCRIBIRA la base de datos actual" -ForegroundColor Red
+                Write-Host "    - Restaurara desde el ultimo backup disponible" -ForegroundColor White
+                Write-Host "    - La BD estara NO DISPONIBLE durante el proceso" -ForegroundColor Yellow
+                Write-Host "    - Requiere REINICIO de la instancia Oracle" -ForegroundColor Yellow
+                Write-Host ""
+                Write-Host "    Comando:" -ForegroundColor Gray
+                Write-Host "    rman TARGET / @recuperacion\recuperar_base_completa.rman" -ForegroundColor Yellow
+                Write-Host ""
+                
+                $confirm1 = Read-Host "  Esta SEGURO que desea continuar? (S/N)"
+                if ($confirm1 -eq "S" -or $confirm1 -eq "s") {
+                    Write-Host ""
+                    Write-Host "  CONFIRMACION FINAL:" -ForegroundColor Red
+                    $confirm2 = Read-Host "  Escriba 'RECUPERAR' para confirmar"
+                    
+                    if ($confirm2 -eq "RECUPERAR") {
+                        $logFile = Get-LogFile -Prefix "RECUPERACION_COMPLETA"
+                        $cmdFile = Join-Path $PROJECT_PATH "scripts\recuperacion\recuperar_base_completa.rman"
+                        
+                        Write-Host ""
+                        Write-Host "  Ejecutando recuperacion completa..." -ForegroundColor Red
+                        Write-Host "  Log: $logFile" -ForegroundColor Cyan
+                        Write-Host ""
+                        
+                        & rman TARGET / cmdfile="$cmdFile" log="$logFile"
+                        
+                        if (Test-Path $logFile) {
+                            Write-Host ""
+                            Write-Host "  ✓ Log guardado en: $logFile" -ForegroundColor Green
+                            Write-Host ""
+                            Write-Host "  IMPORTANTE: Ejecute la validacion post-recuperacion (opcion 3)" -ForegroundColor Yellow
+                        }
+                    } else {
+                        Write-Host ""
+                        Write-Host "  ✗ Operacion cancelada" -ForegroundColor Yellow
+                    }
+                }
+                
+                Pause-Script
+            }
+            "2" {
+                Show-Banner
+                # --- HEALTH CHECK START (Simplified for Option 2) ---
+                $healthStatus = "UNKNOWN"
+                try {
+                    $checkFile = Join-Path $PROJECT_PATH "scripts\recuperacion\verificar_estado.sql"
+                    $checkOutput = sqlplus -s / as sysdba "@$checkFile" 2>&1
+                    if ($checkOutput -match "STATUS:HEALTHY") { $healthStatus = "HEALTHY" }
+                } catch {}
+
+                if ($healthStatus -eq "HEALTHY") {
+                     Write-Host "  ╔══════════════════════════════════════════════════════════╗" -ForegroundColor Red
+                     Write-Host "  ║  ⛔ ALERTA: LA BASE DE DATOS ESTA SANA (ONLINE)          ║" -ForegroundColor Yellow
+                     Write-Host "  ║  Realizar un Point-in-Time Recovery hara que pierda      ║" -ForegroundColor Yellow
+                     Write-Host "  ║  todos los datos generados despues de la fecha elegida.  ║" -ForegroundColor Yellow
+                     Write-Host "  ╚══════════════════════════════════════════════════════════╝" -ForegroundColor Red
+                     Write-Host ""
+                     $hardConfirm = Read-Host "  Para ignorar y continuar, escriba 'PERDER DATOS'"
+                     if ($hardConfirm -ne "PERDER DATOS") {
+                         Write-Host "  ✓ Cancelado." -ForegroundColor Green
+                         Pause-Script
+                         continue
+                     }
+                }
+                # --- HEALTH CHECK END ---
+                Write-Host ""
+                Write-Host "    1. Abrir el archivo:" -ForegroundColor White
+                Write-Host "       recuperacion\recuperar_punto_tiempo.rman" -ForegroundColor Cyan
+                Write-Host ""
+                Write-Host "    2. Editar la LINEA 19 con la fecha/hora deseada:" -ForegroundColor White
+                Write-Host "       SET UNTIL TIME `'TO_DATE('YYYY-MM-DD HH24:MI:SS', ...)`'" -ForegroundColor Gray
+                Write-Host ""
+                Write-Host "    3. Guardar el archivo" -ForegroundColor White
+                Write-Host ""
+                Write-Host "    Comando:" -ForegroundColor Gray
+                Write-Host "    rman TARGET / @recuperacion\recuperar_punto_tiempo.rman" -ForegroundColor Yellow
+                Write-Host ""
+                
+                $edited = Read-Host "  Ya edito el archivo con la fecha correcta? (S/N)"
+                if ($edited -eq "S" -or $edited -eq "s") {
+                    $confirm1 = Read-Host "  Esta SEGURO que desea ejecutar la recuperacion? (S/N)"
+                    
+                    if ($confirm1 -eq "S" -or $confirm1 -eq "s") {
+                        Write-Host ""
+                        Write-Host "  CONFIRMACION FINAL:" -ForegroundColor Red
+                        $confirm2 = Read-Host "  Escriba 'RECUPERAR' para confirmar"
+                        
+                        if ($confirm2 -eq "RECUPERAR") {
+                            $logFile = Get-LogFile -Prefix "RECUPERACION_PITR"
+                            $cmdFile = Join-Path $PROJECT_PATH "scripts\recuperacion\recuperar_punto_tiempo.rman"
+                            
+                            Write-Host ""
+                            Write-Host "  Ejecutando recuperacion point-in-time..." -ForegroundColor Red
+                            Write-Host "  Log: $logFile" -ForegroundColor Cyan
+                            Write-Host ""
+                            
+                            & rman TARGET / cmdfile="$cmdFile" log="$logFile"
+                            
+                            if (Test-Path $logFile) {
+                                Write-Host ""
+                                Write-Host "  ✓ Log guardado en: $logFile" -ForegroundColor Green
+                                Write-Host ""
+                                Write-Host "  IMPORTANTE: Ejecute la validacion post-recuperacion (opcion 3)" -ForegroundColor Yellow
+                            }
+                        } else {
+                            Write-Host ""
+                            Write-Host "  ✗ Operacion cancelada" -ForegroundColor Yellow
+                        }
+                    }
+                } else {
+                    Write-Host ""
+                    Write-Host "  ✗ Operacion cancelada - Edite el archivo primero" -ForegroundColor Yellow
+                }
+                
+                Pause-Script
+            }
+            "3" {
+                Show-Banner
+                Write-Host "  ╔═══════════════════════════════════════════╗" -ForegroundColor Cyan
+                Write-Host "  ║      VALIDACION POST-RECUPERACION         ║" -ForegroundColor Cyan
+                Write-Host "  ╚═══════════════════════════════════════════╝" -ForegroundColor Cyan
+                Write-Host ""
+                Write-Host "    Verifica:" -ForegroundColor White
+                Write-Host "    - Estado de la base de datos" -ForegroundColor Gray
+                Write-Host "    - Integridad de tablespaces" -ForegroundColor Gray
+                Write-Host "    - Conteo de registros en tablas criticas" -ForegroundColor Gray
+                Write-Host "    - Integridad referencial" -ForegroundColor Gray
+                Write-Host "    - Objetos invalidos" -ForegroundColor Gray
+                Write-Host ""
+                Write-Host "    Comando:" -ForegroundColor Gray
+                Write-Host "    sqlplus / as sysdba @recuperacion\validacion_post_recuperacion.sql" -ForegroundColor Yellow
+                Write-Host ""
+                Write-Host "    El script generara: post_recovery_validation.log" -ForegroundColor Cyan
+                Write-Host ""
+                
+                $confirm = Read-Host "  Desea ejecutar ahora? (S/N)"
+                if ($confirm -eq "S" -or $confirm -eq "s") {
+                    Write-Host ""
+                    Write-Host "  Ejecutando validacion..." -ForegroundColor Green
+                    Write-Host ""
+                    
+                    $sqlFile = Join-Path $PROJECT_PATH "scripts\recuperacion\validacion_post_recuperacion.sql"
+                    & sqlplus / as sysdba "@$sqlFile"
+                    
+                    Write-Host ""
+                    Write-Host "  ✓ Validacion completada" -ForegroundColor Green
+                    Write-Host "  ✓ Revisar archivo: post_recovery_validation.log" -ForegroundColor Cyan
+                }
+                
+                Pause-Script
+            }
+            "0" {
+                # Volver al menu principal
+                return
+            }
+            "" {
+                # Enter sin escribir nada - refrescar menu
+                continue
+            }
+            default {
+                Write-Host ""
+                Write-Host "  ⚠ Opcion no valida. Intente de nuevo." -ForegroundColor Red
+                Start-Sleep -Seconds 1
+            }
+        }
+    } while ($recoveryOption -ne "0")
 }
 
 # ============================================================
@@ -343,6 +597,10 @@ EXIT;
             }
 
             Pause-Script
+        }
+        "7" {
+            # Invocar submenu de recuperacion
+            Invoke-RecoveryMenu
         }
         "0" {
             Write-Host ""

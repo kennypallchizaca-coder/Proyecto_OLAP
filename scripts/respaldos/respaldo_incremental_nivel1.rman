@@ -7,15 +7,15 @@
 # Proposito: Backup de cambios desde el ultimo backup (Level 0 o Level 1)
 # ========================================================================
 
-CONNECT TARGET /
 
 RUN {
     # Asignar canal
     ALLOCATE CHANNEL ch1 DEVICE TYPE DISK FORMAT 'C:\oracle\backup\rman\COMISARIATO_INC_%d_%T_%s_%p';
     
+    
     # Determinar dia de la semana para TAG
-    SQL 'ALTER SESSION SET NLS_DATE_FORMAT=''YYYY-MM-DD HH24:MI:SS''';
-    SQL 'SELECT ''[INCREMENTAL BACKUP] Iniciando backup diferencial: '' || TO_CHAR(SYSDATE, ''DAY'') FROM DUAL';
+    SQL "ALTER SESSION SET NLS_DATE_FORMAT='YYYY-MM-DD HH24:MI:SS'";
+    SQL "SELECT '[INCREMENTAL BACKUP] Iniciando backup diferencial: ' || TO_CHAR(SYSDATE, 'DAY') FROM DUAL";
     
     # Ejecutar backup incremental level 1 DIFERENCIAL
     BACKUP 
@@ -34,15 +34,16 @@ RUN {
     # Liberar canal
     RELEASE CHANNEL ch1;
     
+    
     # Registrar fin
-    SQL 'SELECT ''[INCREMENTAL BACKUP] Completado: '' || TO_CHAR(SYSDATE) FROM DUAL';
+    SQL "SELECT '[INCREMENTAL BACKUP] Completado: ' || TO_CHAR(SYSDATE) FROM DUAL";
 }
 
 # Validar backup
-VALIDATE BACKUPSET TAG='COMISARIATO_INC';
+VALIDATE BACKUPSET TAG=COMISARIATO_INC;
 
 # Listar backups incrementales
-LIST BACKUP BY BACKUP INCREMENTAL TAG='COMISARIATO_INC';
+LIST BACKUP BY BACKUP INCREMENTAL TAG=COMISARIATO_INC;
 
 # Eliminar archivos obsoletos
 DELETE NOPROMPT OBSOLETE;

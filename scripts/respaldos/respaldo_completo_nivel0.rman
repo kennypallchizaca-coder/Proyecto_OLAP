@@ -7,7 +7,6 @@
 # Proposito: Backup base para respaldos incrementales de la semana
 # ========================================================================
 
-CONNECT TARGET /
 
 RUN {
     # Asignar canales (paralelismo)

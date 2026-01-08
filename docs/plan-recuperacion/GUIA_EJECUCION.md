@@ -18,9 +18,12 @@
    - [Paso 3: Configurar RMAN](#paso-3-configurar-rman-3-minutos)
    - [Paso 4: Primer Backup Manual](#paso-4-primer-backup-manual-2-5-minutos)
    - [Paso 5: Validar Backup](#paso-5-validar-backup-1-2-minutos)
-6. [Seccion 3: Verificacion Completa del Backup](#seccion-3-verificacion-completa-del-backup)
-7. [Seccion 4: Checklist de Verificacion](#seccion-4-checklist-de-verificacion)
-8. [Seccion 5: Solucion de Problemas](#seccion-5-solucion-de-problemas)
+6. [Seccion 3: Recuperacion Asistida (Menu)](#seccion-3-recuperacion-asistida-menu)
+7. [Seccion 4: Verificacion Completa del Backup](#seccion-4-verificacion-completa-del-backup)
+8. [Seccion 5: Checklist de Verificacion](#seccion-5-checklist-de-verificacion)
+9. [Seccion 6: Solucion de Problemas](#seccion-6-solucion-de-problemas)
+10. [Seccion 7: Uso Diario](#seccion-7-uso-diario)
+11. [Seccion 8: Estadisticas de Prueba](#seccion-8-estadisticas-de-prueba)
 
 ---
 
@@ -75,6 +78,8 @@ El menu ejecuta automaticamente los scripts correspondientes:
 | **[4]** | Validar Respaldos | `validar_respaldos.rman` |
 | **[5]** | Ver Estado de BD | Consulta SQL a `v$database` |
 | **[6]** | Monitorear Respaldos | `monitorear_respaldos.sql` |
+| **[6]** | Monitorear Respaldos | `monitorear_respaldos.sql` |
+| **[7]** | **RECUPERACIÓN (Submenu)** | `recuperar_*.rman` + `verificar_estado.sql` |
 | **[0]** | Salir | - |
 
 ## Ventajas del Menu
@@ -167,6 +172,17 @@ El menu ejecuta automaticamente los scripts correspondientes:
 - Indica tamaño original y comprimido
 - Reporta duración de cada operación
 - Alerta sobre fallos o errores
+
+## 1.4 Diagnóstico y Seguridad (NUEVO)
+
+### verificar_estado.sql
+**Propósito:** Prevenir recuperaciones accidentales en bases de datos sanas
+
+**Funciones:**
+- Verifica si la instancia está ONLINE (READ WRITE)
+- Consulta `v$recover_file` buscando archivos dañados
+- **Bloquea** la ejecución si la BD está sana, exigiendo confirmación manual "SOBRESCRIBIR"
+
 
 ---
 
@@ -618,9 +634,52 @@ Crosschecked 3 objects
 | `#Copies` | `1` | Número de copias creadas |
 | `Crosschecked` | `found to be 'AVAILABLE'` | Archivo físico existe y es accesible |
 
+| `Crosschecked` | `found to be 'AVAILABLE'` | Archivo físico existe y es accesible |
+
 ---
 
-# SECCIÓN 3: VERIFICACIÓN COMPLETA DEL BACKUP
+# SECCIÓN 3: RECUPERACIÓN ASISTIDA (MENU)
+
+> **ADVERTENCIA:** Las operaciones de recuperación son destructivas. El menú incluye un sistema de seguridad para evitar accidentes.
+
+## 3.1 Mecanismo de Seguridad (Health Check)
+
+Si intenta recuperar una base de datos que está funcionando bien, verá esta pantalla:
+
+```
+  ╔══════════════════════════════════════════════════════════╗
+  ║                 ⛔  BLOQUEO DE SEGURIDAD  ⛔             ║
+  ╠══════════════════════════════════════════════════════════╣
+  ║  LA BASE DE DATOS ESTA FUNCIONANDO CORRECTAMENTE.        ║
+  ║  RECUPERAR AHORA BORRARA TODOS LOS DATOS ACTUALES.       ║
+  ╚══════════════════════════════════════════════════════════╝
+```
+
+**Para forzar la recuperación:**
+1. Leer la advertencia.
+2. Escribir **"SOBRESCRIBIR"** (para recuperación completa) o **"PERDER DATOS"** (para Point-in-Time).
+3. Confirmar nuevamente con **"S"**.
+
+## 3.2 Opciones de Recuperación
+
+### [1] Recuperación Completa Total
+Úsela cuando:
+- Se perdió el disco duro
+- Se borraron los archivos `.dbf`
+- La base de datos no arranca (`SHUTDOWN` o `MOUNT` forzado)
+
+### [2] Recuperación Point-in-Time (PITR)
+Úsela cuando:
+- Alguien borró una tabla importante por error hoy a las 10:00 AM
+- Necesita regresar la base de datos al estado de ayer a las 5:00 PM
+- **Requiere:** Editar la fecha en `scripts/recuperacion/recuperar_punto_tiempo.rman`
+
+### [3] Validación Post-Recuperación
+Ejecute SIEMPRE esta opción después de recuperar para verificar que todo quedó bien.
+
+---
+
+# SECCIÓN 4: VERIFICACIÓN COMPLETA DEL BACKUP
 
 ## 3.1 Verificar Archivos Físicos en Disco
 
@@ -811,7 +870,7 @@ Name                              Size(KB) LastWriteTime
 
 ---
 
-# SECCIÓN 4: CHECKLIST DE VERIFICACIÓN
+# SECCIÓN 5: CHECKLIST DE VERIFICACIÓN
 
 Después de completar todos los pasos, verificar cada punto:
 
@@ -843,7 +902,7 @@ El backup se considera EXITOSO si cumple con TODOS los siguientes criterios:
 
 ---
 
-# SECCIÓN 5: SOLUCIÓN DE PROBLEMAS
+# SECCIÓN 6: SOLUCIÓN DE PROBLEMAS
 
 ## Error: ORA-01031 insufficient privileges
 
@@ -919,7 +978,7 @@ RUN { BACKUP DATABASE; }
 
 ---
 
-# SECCIÓN 6: USO DIARIO
+# SECCIÓN 7: USO DIARIO
 
 ## Ejecutar backup manual
 
@@ -952,7 +1011,7 @@ rman TARGET / @backup\validate_backups.rman
 
 ---
 
-# SECCIÓN 7: ESTADÍSTICAS DE PRUEBA
+# SECCIÓN 8: ESTADÍSTICAS DE PRUEBA
 
 ## Última Ejecución Exitosa
 

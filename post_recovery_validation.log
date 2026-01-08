@@ -1,0 +1,72 @@
+========================================
+VALIDACION POST-RECUPERACION
+========================================
+
+Base de D Modo                 Rol                                                                                                                                                                      
+--------- -------------------- ----------------                                                                                                                                                         
+XE        READ WRITE           PRIMARY                                                                                                                                                                  
+
+
+TABLESPACE_NAME                STATUS       Size MB                                                                                                                                                     
+------------------------------ --------- ----------                                                                                                                                                     
+SYSAUX                         AVAILABLE        490                                                                                                                                                     
+SYSTEM                         AVAILABLE        290                                                                                                                                                     
+UNDOTBS1                       AVAILABLE       1525                                                                                                                                                     
+USERS                          AVAILABLE     336,25                                                                                                                                                     
+
+========================================
+CONTEO DE REGISTROS - TABLAS OLTP
+========================================
+
+TABLA           REGISTROS                                                                                                                                                                               
+-------------- ----------                                                                                                                                                                               
+CATEGORIA               5                                                                                                                                                                               
+PROVEEDOR              10                                                                                                                                                                               
+EMPLEADO                5                                                                                                                                                                               
+CLIENTE                20                                                                                                                                                                               
+MODALIDAD_PAGO          7                                                                                                                                                                               
+PRODUCTO              200                                                                                                                                                                               
+PEDIDO             100000                                                                                                                                                                               
+DETALLE_PEDIDO     650718                                                                                                                                                                               
+
+8 filas seleccionadas.
+
+========================================
+CONTEO DE REGISTROS - TABLAS OLAP
+========================================
+
+DIMENSION         REGISTROS                                                                                                                                                                             
+---------------- ----------                                                                                                                                                                             
+DIMTIEMPO              2192                                                                                                                                                                             
+DIMPRODUCTO             200                                                                                                                                                                             
+DIMCATEGORIA              5                                                                                                                                                                             
+DIMPROVEEDOR             10                                                                                                                                                                             
+DIMCLIENTE               20                                                                                                                                                                             
+DIMEMPLEADO               5                                                                                                                                                                             
+DIMMODALIDADPAGO          7                                                                                                                                                                             
+DIMUBICACION              5                                                                                                                                                                             
+FACTVENTAS           650718                                                                                                                                                                             
+
+9 filas seleccionadas.
+
+
+Status                                         Fecha/Hora                                                                                                                                               
+---------------------------------------------- ---------------------------------------------------------------------------                                                                              
+Ultimo pedido recuperado: PED100000            05/01/26 12:40:02,475000                                                                                                                                 
+
+========================================
+VALIDANDO INTEGRIDAD REFERENCIAL
+========================================
+
+Procedimiento PL/SQL terminado correctamente.
+
+
+ninguna fila seleccionada
+
+
+Procedimiento PL/SQL terminado correctamente.
+
+========================================
+VALIDACION COMPLETADA
+Revisar el archivo post_recovery_validation.log
+========================================
